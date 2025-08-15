@@ -1,0 +1,2734 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="erp_v2Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CATEGORY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+        </EntityType>
+        <EntityType Name="CUSTOMER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cust_Address" Type="nvarchar" MaxLength="150" />
+          <Property Name="Cust_Phone" Type="nvarchar" MaxLength="30" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="350" />
+          <Property Name="CustomerName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+          <Property Name="baky" Type="bigint" />
+          <Property Name="Email" Type="nvarchar" MaxLength="350" />
+        </EntityType>
+        <EntityType Name="CUSTOMERCAMPAIGN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="CampaignName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="Impact" Type="nvarchar" MaxLength="200" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CUSTOMERCLASSIFICATION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="Tier" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AssignedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CUSTOMERCONTRACT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="ContractNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CUSTOMERDOCUMENT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="UploadDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CUSTOMERINTERACTION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="1000" />
+          <Property Name="InteractionDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CUSTOMERPOINTS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="Points" Type="bigint" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerSegment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerId" Type="int" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CustomerEmail" Type="nvarchar" MaxLength="200" />
+          <Property Name="CustomerPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="RecencyScore" Type="tinyint" Nullable="false" />
+          <Property Name="FrequencyScore" Type="tinyint" Nullable="false" />
+          <Property Name="MonetaryScore" Type="tinyint" Nullable="false" />
+          <Property Name="RecencyDays" Type="int" Nullable="false" />
+          <Property Name="FrequencyCount" Type="int" Nullable="false" />
+          <Property Name="MonetaryValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="RfmScore" Type="smallint" Nullable="false" />
+          <Property Name="Segment" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="SegmentDescription" Type="nvarchar(max)" />
+          <Property Name="AnalysisDate" Type="datetime2" Precision="3" Nullable="false" />
+          <Property Name="LastPurchaseDate" Type="datetime2" Precision="3" />
+          <Property Name="FirstPurchaseDate" Type="datetime2" Precision="3" />
+          <Property Name="AverageOrderValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TotalOrders" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DELIVERY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SalesID" Type="int" Nullable="false" />
+          <Property Name="DeliveryPersonID" Type="int" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AssignedDate" Type="datetime" />
+          <Property Name="DeliveredDate" Type="datetime" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DEPARTMENT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DepartmentName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EMPLOYEE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserNo" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Surname" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="BirthDay" Type="date" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="ImagePath" Type="nvarchar" MaxLength="255" />
+          <Property Name="Salary" Type="int" Nullable="false" />
+          <Property Name="DepartmentID" Type="int" Nullable="false" />
+          <Property Name="PositionID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EMPLOYEE_ROLE">
+          <Key>
+            <PropertyRef Name="EmployeeID" />
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="EmployeeID" Type="int" Nullable="false" />
+          <Property Name="RoleID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EXPENSE_CATEGORIES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EXPENSES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExpensesName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="ExpenseDate" Type="date" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CurrencyCode" Type="char" MaxLength="3" Nullable="false" />
+          <Property Name="Note" Type="nvarchar" MaxLength="350" />
+          <Property Name="Status" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="RequestedBy" Type="int" Nullable="false" />
+          <Property Name="RequestedDate" Type="datetime" Nullable="false" />
+          <Property Name="ApprovedBy" Type="int" />
+          <Property Name="ApprovedDate" Type="datetime" />
+          <Property Name="ApprovalComment" Type="nvarchar" MaxLength="350" />
+          <Property Name="AttachmentPath" Type="nvarchar" MaxLength="250" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="DeletedBy" Type="int" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="INVOICE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="DueDate" Type="datetime2" Precision="7" />
+          <Property Name="SubTotal" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TaxAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="DiscountAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TotalAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="RemainingAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="InvoiceState" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="350" />
+          <Property Name="CreatedDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime2" Precision="7" />
+          <Property Name="CreatedBy" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModifiedBy" Type="varchar" MaxLength="50" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+        </EntityType>
+        <EntityType Name="LOGIN_HISTORY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeId" Type="int" />
+          <Property Name="AttemptedUserNo" Type="nvarchar(max)" />
+          <Property Name="Timestamp" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="WasSuccessful" Type="bit" Nullable="false" />
+          <Property Name="IpAddress" Type="nvarchar" MaxLength="45" />
+          <Property Name="UserAgent" Type="nvarchar" MaxLength="255" />
+          <Property Name="Location" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="MONTH">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MonthName" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Message" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Timestamp" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="TargetUrl" Type="nvarchar" MaxLength="200" />
+          <Property Name="RelatedEntityType" Type="nvarchar" MaxLength="100" />
+          <Property Name="RelatedEntityId" Type="int" />
+          <Property Name="Severity" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="EmployeeId" Type="int" />
+        </EntityType>
+        <EntityType Name="PartialPayments">
+          <Key>
+            <PropertyRef Name="PaymentId" />
+          </Key>
+          <Property Name="PaymentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SaleId" Type="int" Nullable="false" />
+          <Property Name="AmountPaid" Type="bigint" Nullable="false" />
+          <Property Name="PaymentDate" Type="date" Nullable="false" />
+          <Property Name="PaymentMethod" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime2" Precision="7" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedAt" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="PERMISSION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeID" Type="int" Nullable="false" />
+          <Property Name="PermissionState" Type="int" Nullable="false" />
+          <Property Name="PermissionStartDate" Type="date" Nullable="false" />
+          <Property Name="PermissionEndDate" Type="date" Nullable="false" />
+          <Property Name="PermissionDay" Type="int" Nullable="false" />
+          <Property Name="PermissionExplanation" Type="nvarchar" MaxLength="400" />
+        </EntityType>
+        <EntityType Name="PERMISSIONSTATE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="POSITION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PositionName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DepartmentID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="StockAmount" Type="int" Nullable="false" />
+          <Property Name="Sale_Price" Type="real" />
+          <Property Name="Price" Type="int" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+          <Property Name="MinQty" Type="real" />
+          <Property Name="MaxDiscount" Type="real" />
+        </EntityType>
+        <EntityType Name="PRODUCT_RETURN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SalesID" Type="int" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="ReturnQuantity" Type="int" Nullable="false" />
+          <Property Name="ReturnDate" Type="date" Nullable="false" />
+          <Property Name="ReturnReason" Type="varchar" MaxLength="200" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+        </EntityType>
+        <EntityType Name="PROFIT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="SalesID" Type="int" Nullable="false" />
+          <Property Name="OriginalPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="SalesPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CostOfExpenses" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Profit" Type="decimal" Precision="21" Scale="2" StoreGeneratedPattern="Computed" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PURCHASES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="SupplierID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="PurchaseSalesAmout" Type="int" Nullable="false" />
+          <Property Name="PurchaseSalesPrice" Type="int" Nullable="false" />
+          <Property Name="Total" Type="bigint" />
+          <Property Name="PurchaseDate" Type="date" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+        </EntityType>
+        <EntityType Name="ROLE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="ROLEPERMISSION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleID" Type="int" Nullable="false" />
+          <Property Name="PermissionName" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SALARY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeID" Type="int" Nullable="false" />
+          <Property Name="MonthID" Type="int" Nullable="false" />
+          <Property Name="Year" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SALES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="CategoryID" Type="int" Nullable="false" />
+          <Property Name="ProductSalesAmout" Type="int" Nullable="false" />
+          <Property Name="ProductSalesPrice" Type="int" Nullable="false" />
+          <Property Name="MaxDiscount" Type="real" />
+          <Property Name="Total" Type="bigint" />
+          <Property Name="TotalOrder" Type="bigint" />
+          <Property Name="Madfou3" Type="bigint" />
+          <Property Name="Baky" Type="bigint" />
+          <Property Name="SalesDate" Type="date" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="date" />
+          <Property Name="TransactionId" Type="nvarchar" MaxLength="50" />
+          <Property Name="PaymentState" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SUPPLIER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SupplierCommunication">
+          <Key>
+            <PropertyRef Name="CommunicationID" />
+          </Key>
+          <Property Name="CommunicationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierID" Type="int" Nullable="false" />
+          <Property Name="CommunicationDate" Type="datetime" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="200" />
+          <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ReferenceLink" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SupplierContract">
+          <Key>
+            <PropertyRef Name="ContractID" />
+          </Key>
+          <Property Name="ContractID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierID" Type="int" Nullable="false" />
+          <Property Name="ContractNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="RenewalDate" Type="date" />
+          <Property Name="Terms" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SupplierPerformance">
+          <Key>
+            <PropertyRef Name="PerformanceID" />
+          </Key>
+          <Property Name="PerformanceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierID" Type="int" Nullable="false" />
+          <Property Name="EvaluationDate" Type="date" Nullable="false" />
+          <Property Name="Score" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="ParameterDetails" Type="nvarchar(max)" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SupplierQuote">
+          <Key>
+            <PropertyRef Name="QuoteID" />
+          </Key>
+          <Property Name="QuoteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RequestID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SupplierID" Type="int" Nullable="false" />
+          <Property Name="QuoteDate" Type="date" Nullable="false" />
+          <Property Name="TotalAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Currency" Type="varchar" MaxLength="3" Nullable="false" />
+          <Property Name="Details" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SupplySchedule">
+          <Key>
+            <PropertyRef Name="ScheduleID" />
+          </Key>
+          <Property Name="ScheduleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ContractID" Type="int" Nullable="false" />
+          <Property Name="ExpectedDate" Type="date" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TASK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TaskTitle" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="TaskContent" Type="nvarchar(max)" />
+          <Property Name="TaskStartDate" Type="datetime" Nullable="false" />
+          <Property Name="TaskDeliveryDate" Type="datetime" />
+          <Property Name="TaskState" Type="int" Nullable="false" />
+          <Property Name="EmployeeID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TASKSTATE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__CUSTOMERC__Custo__4F47C5E3">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="CUSTOMERCONTRACT" Type="Self.CUSTOMERCONTRACT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERCONTRACT">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERC__Custo__58D1301D">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="CUSTOMERCLASSIFICATION" Type="Self.CUSTOMERCLASSIFICATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERCLASSIFICATION">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERC__Custo__607251E5">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="CUSTOMERCAMPAIGN" Type="Self.CUSTOMERCAMPAIGN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERCAMPAIGN">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERD__Custo__6442E2C9">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="CUSTOMERDOCUMENT" Type="Self.CUSTOMERDOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERDOCUMENT">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERI__Custo__5CA1C101">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="CUSTOMERINTERACTION" Type="Self.CUSTOMERINTERACTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERINTERACTION">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERP__Custo__540C7B00">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="CUSTOMERPOINTS" Type="Self.CUSTOMERPOINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERPOINTS">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DELIVERY__Delive__18B6AB08">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
+          <End Role="DELIVERY" Type="Self.DELIVERY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DELIVERY">
+              <PropertyRef Name="DeliveryPersonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DELIVERY__SalesI__17C286CF">
+          <End Role="SALES" Type="Self.SALES" Multiplicity="1" />
+          <End Role="DELIVERY" Type="Self.DELIVERY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SALES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DELIVERY">
+              <PropertyRef Name="SalesID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EMPLOYEE___Emplo__29221CFB">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="1" />
+          <End Role="EMPLOYEE_ROLE" Type="Self.EMPLOYEE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ROLE">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EMPLOYEE___RoleI__2A164134">
+          <End Role="ROLE" Type="Self.ROLE" Multiplicity="1" />
+          <End Role="EMPLOYEE_ROLE" Type="Self.EMPLOYEE_ROLE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ROLE">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EMPLOYEE__Depart__2180FB33">
+          <End Role="DEPARTMENT" Type="Self.DEPARTMENT" Multiplicity="1" />
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EMPLOYEE__Positi__22751F6C">
+          <End Role="POSITION" Type="Self.POSITION" Multiplicity="1" />
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POSITION">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="PositionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PartialPa__SaleI__3EDC53F0">
+          <End Role="SALES" Type="Self.SALES" Multiplicity="1" />
+          <End Role="PartialPayments" Type="Self.PartialPayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SALES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PartialPayments">
+              <PropertyRef Name="SaleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__POSITION__Depart__1CBC4616">
+          <End Role="DEPARTMENT" Type="Self.DEPARTMENT" Multiplicity="1" />
+          <End Role="POSITION" Type="Self.POSITION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="POSITION">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SALARY__Employee__3C34F16F">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="1" />
+          <End Role="SALARY" Type="Self.SALARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SALARY">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SALARY__MonthID__3D2915A8">
+          <End Role="MONTH" Type="Self.MONTH" Multiplicity="1" />
+          <End Role="SALARY" Type="Self.SALARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SALARY">
+              <PropertyRef Name="MonthID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierC__Suppl__690797E6">
+          <End Role="SUPPLIER" Type="Self.SUPPLIER" Multiplicity="1" />
+          <End Role="SupplierContract" Type="Self.SupplierContract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierContract">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierC__Suppl__7B264821">
+          <End Role="SUPPLIER" Type="Self.SUPPLIER" Multiplicity="1" />
+          <End Role="SupplierCommunication" Type="Self.SupplierCommunication" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierCommunication">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierP__Suppl__719CDDE7">
+          <End Role="SUPPLIER" Type="Self.SUPPLIER" Multiplicity="1" />
+          <End Role="SupplierPerformance" Type="Self.SupplierPerformance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierPerformance">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierQ__Suppl__76619304">
+          <End Role="SUPPLIER" Type="Self.SUPPLIER" Multiplicity="1" />
+          <End Role="SupplierQuote" Type="Self.SupplierQuote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierQuote">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplySch__Contr__6CD828CA">
+          <End Role="SupplierContract" Type="Self.SupplierContract" Multiplicity="1" />
+          <End Role="SupplySchedule" Type="Self.SupplySchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SupplierContract">
+              <PropertyRef Name="ContractID" />
+            </Principal>
+            <Dependent Role="SupplySchedule">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TASK__EmployeeID__43D61337">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="1" />
+          <End Role="TASK" Type="Self.TASK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TASK">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TASK__TaskState__42E1EEFE">
+          <End Role="TASKSTATE" Type="Self.TASKSTATE" Multiplicity="1" />
+          <End Role="TASK" Type="Self.TASK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TASKSTATE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TASK">
+              <PropertyRef Name="TaskState" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerSegment_Customer">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CustomerSegment" Type="Self.CustomerSegment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CustomerSegment">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EMPLOYEE_DEPARTMENT">
+          <End Role="DEPARTMENT" Type="Self.DEPARTMENT" Multiplicity="1" />
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EMPLOYEE_POSITION">
+          <End Role="POSITION" Type="Self.POSITION" Multiplicity="1" />
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POSITION">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="PositionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EXPENSES_CATEGORIES">
+          <End Role="EXPENSE_CATEGORIES" Type="Self.EXPENSE_CATEGORIES" Multiplicity="1" />
+          <End Role="EXPENSES" Type="Self.EXPENSES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EXPENSE_CATEGORIES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EXPENSES">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOICE_CUSTOMER">
+          <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="1" />
+          <End Role="INVOICE" Type="Self.INVOICE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="INVOICE">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Employees_EmployeeId">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="EmployeeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PERMISSION_EMP">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="1" />
+          <End Role="PERMISSION" Type="Self.PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERMISSION">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PERMISSION_EMPLOYEE">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="1" />
+          <End Role="PERMISSION" Type="Self.PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERMISSION">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PERMISSION_PERMISSIONSTATE">
+          <End Role="PERMISSIONSTATE" Type="Self.PERMISSIONSTATE" Multiplicity="1" />
+          <End Role="PERMISSION" Type="Self.PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PERMISSIONSTATE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERMISSION">
+              <PropertyRef Name="PermissionState" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PERMISSION_STATE">
+          <End Role="PERMISSIONSTATE" Type="Self.PERMISSIONSTATE" Multiplicity="1" />
+          <End Role="PERMISSION" Type="Self.PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PERMISSIONSTATE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERMISSION">
+              <PropertyRef Name="PermissionState" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POSITION_DEPARTMENT">
+          <End Role="DEPARTMENT" Type="Self.DEPARTMENT" Multiplicity="1" />
+          <End Role="POSITION" Type="Self.POSITION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="POSITION">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ROLEPERMISSION_ROLE">
+          <End Role="ROLE" Type="Self.ROLE" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ROLEPERMISSION" Type="Self.ROLEPERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ROLEPERMISSION">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="erp_v2ModelStoreContainer">
+          <EntitySet Name="CATEGORY" EntityType="Self.CATEGORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMER" EntityType="Self.CUSTOMER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMERCAMPAIGN" EntityType="Self.CUSTOMERCAMPAIGN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMERCLASSIFICATION" EntityType="Self.CUSTOMERCLASSIFICATION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMERCONTRACT" EntityType="Self.CUSTOMERCONTRACT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMERDOCUMENT" EntityType="Self.CUSTOMERDOCUMENT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMERINTERACTION" EntityType="Self.CUSTOMERINTERACTION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CUSTOMERPOINTS" EntityType="Self.CUSTOMERPOINTS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerSegment" EntityType="Self.CustomerSegment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DELIVERY" EntityType="Self.DELIVERY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DEPARTMENT" EntityType="Self.DEPARTMENT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMPLOYEE" EntityType="Self.EMPLOYEE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMPLOYEE_ROLE" EntityType="Self.EMPLOYEE_ROLE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EXPENSE_CATEGORIES" EntityType="Self.EXPENSE_CATEGORIES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EXPENSES" EntityType="Self.EXPENSES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="INVOICE" EntityType="Self.INVOICE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LOGIN_HISTORY" EntityType="Self.LOGIN_HISTORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MONTH" EntityType="Self.MONTH" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PartialPayments" EntityType="Self.PartialPayments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PERMISSION" EntityType="Self.PERMISSION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PERMISSIONSTATE" EntityType="Self.PERMISSIONSTATE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="POSITION" EntityType="Self.POSITION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT" EntityType="Self.PRODUCT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRODUCT_RETURN" EntityType="Self.PRODUCT_RETURN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PROFIT" EntityType="Self.PROFIT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PURCHASES" EntityType="Self.PURCHASES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ROLE" EntityType="Self.ROLE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ROLEPERMISSION" EntityType="Self.ROLEPERMISSION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SALARY" EntityType="Self.SALARY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SALES" EntityType="Self.SALES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SUPPLIER" EntityType="Self.SUPPLIER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierCommunication" EntityType="Self.SupplierCommunication" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierContract" EntityType="Self.SupplierContract" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierPerformance" EntityType="Self.SupplierPerformance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierQuote" EntityType="Self.SupplierQuote" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplySchedule" EntityType="Self.SupplySchedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TASK" EntityType="Self.TASK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TASKSTATE" EntityType="Self.TASKSTATE" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CUSTOMERC__Custo__4F47C5E3" Association="Self.FK__CUSTOMERC__Custo__4F47C5E3">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERCONTRACT" EntitySet="CUSTOMERCONTRACT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERC__Custo__58D1301D" Association="Self.FK__CUSTOMERC__Custo__58D1301D">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERCLASSIFICATION" EntitySet="CUSTOMERCLASSIFICATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERC__Custo__607251E5" Association="Self.FK__CUSTOMERC__Custo__607251E5">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERCAMPAIGN" EntitySet="CUSTOMERCAMPAIGN" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERD__Custo__6442E2C9" Association="Self.FK__CUSTOMERD__Custo__6442E2C9">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERDOCUMENT" EntitySet="CUSTOMERDOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERI__Custo__5CA1C101" Association="Self.FK__CUSTOMERI__Custo__5CA1C101">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERINTERACTION" EntitySet="CUSTOMERINTERACTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERP__Custo__540C7B00" Association="Self.FK__CUSTOMERP__Custo__540C7B00">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERPOINTS" EntitySet="CUSTOMERPOINTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DELIVERY__Delive__18B6AB08" Association="Self.FK__DELIVERY__Delive__18B6AB08">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="DELIVERY" EntitySet="DELIVERY" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DELIVERY__SalesI__17C286CF" Association="Self.FK__DELIVERY__SalesI__17C286CF">
+            <End Role="SALES" EntitySet="SALES" />
+            <End Role="DELIVERY" EntitySet="DELIVERY" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EMPLOYEE___Emplo__29221CFB" Association="Self.FK__EMPLOYEE___Emplo__29221CFB">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="EMPLOYEE_ROLE" EntitySet="EMPLOYEE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EMPLOYEE___RoleI__2A164134" Association="Self.FK__EMPLOYEE___RoleI__2A164134">
+            <End Role="ROLE" EntitySet="ROLE" />
+            <End Role="EMPLOYEE_ROLE" EntitySet="EMPLOYEE_ROLE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EMPLOYEE__Depart__2180FB33" Association="Self.FK__EMPLOYEE__Depart__2180FB33">
+            <End Role="DEPARTMENT" EntitySet="DEPARTMENT" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EMPLOYEE__Positi__22751F6C" Association="Self.FK__EMPLOYEE__Positi__22751F6C">
+            <End Role="POSITION" EntitySet="POSITION" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PartialPa__SaleI__3EDC53F0" Association="Self.FK__PartialPa__SaleI__3EDC53F0">
+            <End Role="SALES" EntitySet="SALES" />
+            <End Role="PartialPayments" EntitySet="PartialPayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__POSITION__Depart__1CBC4616" Association="Self.FK__POSITION__Depart__1CBC4616">
+            <End Role="DEPARTMENT" EntitySet="DEPARTMENT" />
+            <End Role="POSITION" EntitySet="POSITION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SALARY__Employee__3C34F16F" Association="Self.FK__SALARY__Employee__3C34F16F">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="SALARY" EntitySet="SALARY" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SALARY__MonthID__3D2915A8" Association="Self.FK__SALARY__MonthID__3D2915A8">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="SALARY" EntitySet="SALARY" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierC__Suppl__690797E6" Association="Self.FK__SupplierC__Suppl__690797E6">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierContract" EntitySet="SupplierContract" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierC__Suppl__7B264821" Association="Self.FK__SupplierC__Suppl__7B264821">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierCommunication" EntitySet="SupplierCommunication" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierP__Suppl__719CDDE7" Association="Self.FK__SupplierP__Suppl__719CDDE7">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierPerformance" EntitySet="SupplierPerformance" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierQ__Suppl__76619304" Association="Self.FK__SupplierQ__Suppl__76619304">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierQuote" EntitySet="SupplierQuote" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplySch__Contr__6CD828CA" Association="Self.FK__SupplySch__Contr__6CD828CA">
+            <End Role="SupplierContract" EntitySet="SupplierContract" />
+            <End Role="SupplySchedule" EntitySet="SupplySchedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TASK__EmployeeID__43D61337" Association="Self.FK__TASK__EmployeeID__43D61337">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="TASK" EntitySet="TASK" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TASK__TaskState__42E1EEFE" Association="Self.FK__TASK__TaskState__42E1EEFE">
+            <End Role="TASKSTATE" EntitySet="TASKSTATE" />
+            <End Role="TASK" EntitySet="TASK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerSegment_Customer" Association="Self.FK_CustomerSegment_Customer">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CustomerSegment" EntitySet="CustomerSegment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EMPLOYEE_DEPARTMENT" Association="Self.FK_EMPLOYEE_DEPARTMENT">
+            <End Role="DEPARTMENT" EntitySet="DEPARTMENT" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EMPLOYEE_POSITION" Association="Self.FK_EMPLOYEE_POSITION">
+            <End Role="POSITION" EntitySet="POSITION" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EXPENSES_CATEGORIES" Association="Self.FK_EXPENSES_CATEGORIES">
+            <End Role="EXPENSE_CATEGORIES" EntitySet="EXPENSE_CATEGORIES" />
+            <End Role="EXPENSES" EntitySet="EXPENSES" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOICE_CUSTOMER" Association="Self.FK_INVOICE_CUSTOMER">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="INVOICE" EntitySet="INVOICE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Employees_EmployeeId" Association="Self.FK_Notifications_Employees_EmployeeId">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PERMISSION_EMP" Association="Self.FK_PERMISSION_EMP">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="PERMISSION" EntitySet="PERMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PERMISSION_EMPLOYEE" Association="Self.FK_PERMISSION_EMPLOYEE">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="PERMISSION" EntitySet="PERMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PERMISSION_PERMISSIONSTATE" Association="Self.FK_PERMISSION_PERMISSIONSTATE">
+            <End Role="PERMISSIONSTATE" EntitySet="PERMISSIONSTATE" />
+            <End Role="PERMISSION" EntitySet="PERMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PERMISSION_STATE" Association="Self.FK_PERMISSION_STATE">
+            <End Role="PERMISSIONSTATE" EntitySet="PERMISSIONSTATE" />
+            <End Role="PERMISSION" EntitySet="PERMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POSITION_DEPARTMENT" Association="Self.FK_POSITION_DEPARTMENT">
+            <End Role="DEPARTMENT" EntitySet="DEPARTMENT" />
+            <End Role="POSITION" EntitySet="POSITION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ROLEPERMISSION_ROLE" Association="Self.FK_ROLEPERMISSION_ROLE">
+            <End Role="ROLE" EntitySet="ROLE" />
+            <End Role="ROLEPERMISSION" EntitySet="ROLEPERMISSION" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="erp_v2Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CATEGORY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="CUSTOMER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cust_Address" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Cust_Phone" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+          <Property Name="baky" Type="Int64" />
+          <NavigationProperty Name="CUSTOMERCONTRACT" Relationship="erp_v2Model.FK__CUSTOMERC__Custo__4F47C5E3" FromRole="CUSTOMER" ToRole="CUSTOMERCONTRACT" />
+          <NavigationProperty Name="CUSTOMERCLASSIFICATION" Relationship="erp_v2Model.FK__CUSTOMERC__Custo__58D1301D" FromRole="CUSTOMER" ToRole="CUSTOMERCLASSIFICATION" />
+          <NavigationProperty Name="CUSTOMERCAMPAIGN" Relationship="erp_v2Model.FK__CUSTOMERC__Custo__607251E5" FromRole="CUSTOMER" ToRole="CUSTOMERCAMPAIGN" />
+          <NavigationProperty Name="CUSTOMERDOCUMENT" Relationship="erp_v2Model.FK__CUSTOMERD__Custo__6442E2C9" FromRole="CUSTOMER" ToRole="CUSTOMERDOCUMENT" />
+          <NavigationProperty Name="CUSTOMERINTERACTION" Relationship="erp_v2Model.FK__CUSTOMERI__Custo__5CA1C101" FromRole="CUSTOMER" ToRole="CUSTOMERINTERACTION" />
+          <NavigationProperty Name="CUSTOMERPOINTS" Relationship="erp_v2Model.FK__CUSTOMERP__Custo__540C7B00" FromRole="CUSTOMER" ToRole="CUSTOMERPOINTS" />
+          <Property Name="Email" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CustomerSegment" Relationship="erp_v2Model.FK_CustomerSegment_Customer" FromRole="CUSTOMER" ToRole="CustomerSegment" />
+          <NavigationProperty Name="INVOICE" Relationship="erp_v2Model.FK_INVOICE_CUSTOMER" FromRole="CUSTOMER" ToRole="INVOICE" />
+        </EntityType>
+        <EntityType Name="PRODUCT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="StockAmount" Type="Int32" Nullable="false" />
+          <Property Name="Sale_Price" Type="Single" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+          <Property Name="MinQty" Type="Single" />
+          <Property Name="MaxDiscount" Type="Single" />
+        </EntityType>
+        <EntityType Name="SALES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="ProductSalesAmout" Type="Int32" Nullable="false" />
+          <Property Name="ProductSalesPrice" Type="Int32" Nullable="false" />
+          <Property Name="Total" Type="Int64" />
+          <Property Name="TotalOrder" Type="Int64" />
+          <Property Name="Madfou3" Type="Int64" />
+          <Property Name="Baky" Type="Int64" />
+          <Property Name="SalesDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+          <Property Name="MaxDiscount" Type="Single" />
+          <NavigationProperty Name="DELIVERY" Relationship="erp_v2Model.FK__DELIVERY__SalesI__17C286CF" FromRole="SALES" ToRole="DELIVERY" />
+          <Property Name="TransactionId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentState" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PartialPayments" Relationship="erp_v2Model.FK__PartialPa__SaleI__3EDC53F0" FromRole="SALES" ToRole="PartialPayments" />
+        </EntityType>
+        <EntityContainer Name="erp_v2Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CATEGORY" EntityType="Self.CATEGORY" />
+          <EntitySet Name="CUSTOMER" EntityType="Self.CUSTOMER" />
+          <EntitySet Name="PRODUCT" EntityType="Self.PRODUCT" />
+          <EntitySet Name="SALES" EntityType="Self.SALES" />
+          <EntitySet Name="SUPPLIER" EntityType="erp_v2Model.SUPPLIER" />
+          <EntitySet Name="PURCHASES" EntityType="erp_v2Model.PURCHASES" />
+          <EntitySet Name="PRODUCT_RETURN" EntityType="erp_v2Model.PRODUCT_RETURN" />
+          <EntitySet Name="PROFIT" EntityType="erp_v2Model.PROFIT" />
+          <EntitySet Name="DEPARTMENT" EntityType="erp_v2Model.DEPARTMENT" />
+          <EntitySet Name="EMPLOYEE" EntityType="erp_v2Model.EMPLOYEE" />
+          <EntitySet Name="POSITION" EntityType="erp_v2Model.POSITION" />
+          <EntitySet Name="ROLE" EntityType="erp_v2Model.ROLE" />
+          <AssociationSet Name="FK__EMPLOYEE__Depart__2180FB33" Association="erp_v2Model.FK__EMPLOYEE__Depart__2180FB33">
+            <End Role="DEPARTMENT" EntitySet="DEPARTMENT" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="FK__POSITION__Depart__1CBC4616" Association="erp_v2Model.FK__POSITION__Depart__1CBC4616">
+            <End Role="DEPARTMENT" EntitySet="DEPARTMENT" />
+            <End Role="POSITION" EntitySet="POSITION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EMPLOYEE__Positi__22751F6C" Association="erp_v2Model.FK__EMPLOYEE__Positi__22751F6C">
+            <End Role="POSITION" EntitySet="POSITION" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="EMPLOYEE_ROLE" Association="erp_v2Model.EMPLOYEE_ROLE">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="ROLE" EntitySet="ROLE" />
+          </AssociationSet>
+          <EntitySet Name="PERMISSION" EntityType="erp_v2Model.PERMISSION" />
+          <EntitySet Name="PERMISSIONSTATE" EntityType="erp_v2Model.PERMISSIONSTATE" />
+          <AssociationSet Name="FK_PERMISSION_EMP" Association="erp_v2Model.FK_PERMISSION_EMP">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="PERMISSION" EntitySet="PERMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PERMISSION_STATE" Association="erp_v2Model.FK_PERMISSION_STATE">
+            <End Role="PERMISSIONSTATE" EntitySet="PERMISSIONSTATE" />
+            <End Role="PERMISSION" EntitySet="PERMISSION" />
+          </AssociationSet>
+          <EntitySet Name="MONTH" EntityType="erp_v2Model.MONTH" />
+          <EntitySet Name="SALARY" EntityType="erp_v2Model.SALARY" />
+          <AssociationSet Name="FK__SALARY__Employee__3C34F16F" Association="erp_v2Model.FK__SALARY__Employee__3C34F16F">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="SALARY" EntitySet="SALARY" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SALARY__MonthID__3D2915A8" Association="erp_v2Model.FK__SALARY__MonthID__3D2915A8">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="SALARY" EntitySet="SALARY" />
+          </AssociationSet>
+          <EntitySet Name="TASK" EntityType="erp_v2Model.TASK" />
+          <EntitySet Name="TASKSTATE" EntityType="erp_v2Model.TASKSTATE" />
+          <AssociationSet Name="FK__TASK__EmployeeID__43D61337" Association="erp_v2Model.FK__TASK__EmployeeID__43D61337">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="TASK" EntitySet="TASK" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TASK__TaskState__42E1EEFE" Association="erp_v2Model.FK__TASK__TaskState__42E1EEFE">
+            <End Role="TASKSTATE" EntitySet="TASKSTATE" />
+            <End Role="TASK" EntitySet="TASK" />
+          </AssociationSet>
+          <EntitySet Name="ROLEPERMISSION" EntityType="erp_v2Model.ROLEPERMISSION" />
+          <AssociationSet Name="FK_ROLEPERMISSION_ROLE" Association="erp_v2Model.FK_ROLEPERMISSION_ROLE">
+            <End Role="ROLE" EntitySet="ROLE" />
+            <End Role="ROLEPERMISSION" EntitySet="ROLEPERMISSION" />
+          </AssociationSet>
+          <EntitySet Name="CUSTOMERCAMPAIGN" EntityType="erp_v2Model.CUSTOMERCAMPAIGN" />
+          <EntitySet Name="CUSTOMERCLASSIFICATION" EntityType="erp_v2Model.CUSTOMERCLASSIFICATION" />
+          <EntitySet Name="CUSTOMERCONTRACT" EntityType="erp_v2Model.CUSTOMERCONTRACT" />
+          <EntitySet Name="CUSTOMERDOCUMENT" EntityType="erp_v2Model.CUSTOMERDOCUMENT" />
+          <EntitySet Name="CUSTOMERINTERACTION" EntityType="erp_v2Model.CUSTOMERINTERACTION" />
+          <EntitySet Name="CUSTOMERPOINTS" EntityType="erp_v2Model.CUSTOMERPOINTS" />
+          <AssociationSet Name="FK__CUSTOMERC__Custo__4F47C5E3" Association="erp_v2Model.FK__CUSTOMERC__Custo__4F47C5E3">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERCONTRACT" EntitySet="CUSTOMERCONTRACT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERC__Custo__58D1301D" Association="erp_v2Model.FK__CUSTOMERC__Custo__58D1301D">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERCLASSIFICATION" EntitySet="CUSTOMERCLASSIFICATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERC__Custo__607251E5" Association="erp_v2Model.FK__CUSTOMERC__Custo__607251E5">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERCAMPAIGN" EntitySet="CUSTOMERCAMPAIGN" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERD__Custo__6442E2C9" Association="erp_v2Model.FK__CUSTOMERD__Custo__6442E2C9">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERDOCUMENT" EntitySet="CUSTOMERDOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERI__Custo__5CA1C101" Association="erp_v2Model.FK__CUSTOMERI__Custo__5CA1C101">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERINTERACTION" EntitySet="CUSTOMERINTERACTION" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CUSTOMERP__Custo__540C7B00" Association="erp_v2Model.FK__CUSTOMERP__Custo__540C7B00">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CUSTOMERPOINTS" EntitySet="CUSTOMERPOINTS" />
+          </AssociationSet>
+          <EntitySet Name="SupplierCommunication" EntityType="erp_v2Model.SupplierCommunication" />
+          <EntitySet Name="SupplierContract" EntityType="erp_v2Model.SupplierContract" />
+          <EntitySet Name="SupplierPerformance" EntityType="erp_v2Model.SupplierPerformance" />
+          <EntitySet Name="SupplierQuote" EntityType="erp_v2Model.SupplierQuote" />
+          <EntitySet Name="SupplySchedule" EntityType="erp_v2Model.SupplySchedule" />
+          <AssociationSet Name="FK__SupplierC__Suppl__690797E6" Association="erp_v2Model.FK__SupplierC__Suppl__690797E6">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierContract" EntitySet="SupplierContract" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierC__Suppl__7B264821" Association="erp_v2Model.FK__SupplierC__Suppl__7B264821">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierCommunication" EntitySet="SupplierCommunication" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierP__Suppl__719CDDE7" Association="erp_v2Model.FK__SupplierP__Suppl__719CDDE7">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierPerformance" EntitySet="SupplierPerformance" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplierQ__Suppl__76619304" Association="erp_v2Model.FK__SupplierQ__Suppl__76619304">
+            <End Role="SUPPLIER" EntitySet="SUPPLIER" />
+            <End Role="SupplierQuote" EntitySet="SupplierQuote" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SupplySch__Contr__6CD828CA" Association="erp_v2Model.FK__SupplySch__Contr__6CD828CA">
+            <End Role="SupplierContract" EntitySet="SupplierContract" />
+            <End Role="SupplySchedule" EntitySet="SupplySchedule" />
+          </AssociationSet>
+          <EntitySet Name="EXPENSE_CATEGORIES" EntityType="erp_v2Model.EXPENSE_CATEGORIES" />
+          <EntitySet Name="EXPENSES" EntityType="erp_v2Model.EXPENSES" />
+          <AssociationSet Name="FK_EXPENSES_CATEGORIES" Association="erp_v2Model.FK_EXPENSES_CATEGORIES">
+            <End Role="EXPENSE_CATEGORIES" EntitySet="EXPENSE_CATEGORIES" />
+            <End Role="EXPENSES" EntitySet="EXPENSES" />
+          </AssociationSet>
+          <EntitySet Name="DELIVERY" EntityType="erp_v2Model.DELIVERY" />
+          <AssociationSet Name="FK__DELIVERY__Delive__18B6AB08" Association="erp_v2Model.FK__DELIVERY__Delive__18B6AB08">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="DELIVERY" EntitySet="DELIVERY" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DELIVERY__SalesI__17C286CF" Association="erp_v2Model.FK__DELIVERY__SalesI__17C286CF">
+            <End Role="SALES" EntitySet="SALES" />
+            <End Role="DELIVERY" EntitySet="DELIVERY" />
+          </AssociationSet>
+          <EntitySet Name="CustomerSegment" EntityType="erp_v2Model.CustomerSegment" />
+          <EntitySet Name="INVOICE" EntityType="erp_v2Model.INVOICE" />
+          <EntitySet Name="LOGIN_HISTORY" EntityType="erp_v2Model.LOGIN_HISTORY" />
+          <EntitySet Name="Notifications" EntityType="erp_v2Model.Notifications" />
+          <EntitySet Name="PartialPayments" EntityType="erp_v2Model.PartialPayments" />
+          <AssociationSet Name="FK_CustomerSegment_Customer" Association="erp_v2Model.FK_CustomerSegment_Customer">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="CustomerSegment" EntitySet="CustomerSegment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_INVOICE_CUSTOMER" Association="erp_v2Model.FK_INVOICE_CUSTOMER">
+            <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+            <End Role="INVOICE" EntitySet="INVOICE" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifications_Employees_EmployeeId" Association="erp_v2Model.FK_Notifications_Employees_EmployeeId">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PartialPa__SaleI__3EDC53F0" Association="erp_v2Model.FK__PartialPa__SaleI__3EDC53F0">
+            <End Role="SALES" EntitySet="SALES" />
+            <End Role="PartialPayments" EntitySet="PartialPayments" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="SUPPLIER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="SupplierContract" Relationship="erp_v2Model.FK__SupplierC__Suppl__690797E6" FromRole="SUPPLIER" ToRole="SupplierContract" />
+          <NavigationProperty Name="SupplierCommunication" Relationship="erp_v2Model.FK__SupplierC__Suppl__7B264821" FromRole="SUPPLIER" ToRole="SupplierCommunication" />
+          <NavigationProperty Name="SupplierPerformance" Relationship="erp_v2Model.FK__SupplierP__Suppl__719CDDE7" FromRole="SUPPLIER" ToRole="SupplierPerformance" />
+          <NavigationProperty Name="SupplierQuote" Relationship="erp_v2Model.FK__SupplierQ__Suppl__76619304" FromRole="SUPPLIER" ToRole="SupplierQuote" />
+        </EntityType>
+        <EntityType Name="PURCHASES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="SupplierID" Type="Int32" Nullable="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="PurchaseSalesAmout" Type="Int32" Nullable="false" />
+          <Property Name="PurchaseSalesPrice" Type="Int32" Nullable="false" />
+          <Property Name="Total" Type="Int64" />
+          <Property Name="PurchaseDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="PRODUCT_RETURN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SalesID" Type="Int32" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="ReturnQuantity" Type="Int32" Nullable="false" />
+          <Property Name="ReturnDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ReturnReason" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="PROFIT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="SalesID" Type="Int32" Nullable="false" />
+          <Property Name="OriginalPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="SalesPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Discount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CostOfExpenses" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Profit1" Type="Decimal" Precision="21" Scale="2" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="DEPARTMENT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DepartmentName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK__EMPLOYEE__Depart__2180FB33" FromRole="DEPARTMENT" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="POSITION" Relationship="erp_v2Model.FK__POSITION__Depart__1CBC4616" FromRole="DEPARTMENT" ToRole="POSITION" />
+        </EntityType>
+        <EntityType Name="EMPLOYEE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserNo" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDay" Type="DateTime" Precision="0" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ImagePath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Salary" Type="Int32" Nullable="false" />
+          <Property Name="DepartmentID" Type="Int32" Nullable="false" />
+          <Property Name="PositionID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DEPARTMENT" Relationship="erp_v2Model.FK__EMPLOYEE__Depart__2180FB33" FromRole="EMPLOYEE" ToRole="DEPARTMENT" />
+          <NavigationProperty Name="POSITION" Relationship="erp_v2Model.FK__EMPLOYEE__Positi__22751F6C" FromRole="EMPLOYEE" ToRole="POSITION" />
+          <NavigationProperty Name="ROLE" Relationship="erp_v2Model.EMPLOYEE_ROLE" FromRole="EMPLOYEE" ToRole="ROLE" />
+          <NavigationProperty Name="PERMISSION" Relationship="erp_v2Model.FK_PERMISSION_EMP" FromRole="EMPLOYEE" ToRole="PERMISSION" />
+          <NavigationProperty Name="SALARY1" Relationship="erp_v2Model.FK__SALARY__Employee__3C34F16F" FromRole="EMPLOYEE" ToRole="SALARY" />
+          <NavigationProperty Name="TASK" Relationship="erp_v2Model.FK__TASK__EmployeeID__43D61337" FromRole="EMPLOYEE" ToRole="TASK" />
+          <NavigationProperty Name="DELIVERY" Relationship="erp_v2Model.FK__DELIVERY__Delive__18B6AB08" FromRole="EMPLOYEE" ToRole="DELIVERY" />
+          <NavigationProperty Name="Notifications" Relationship="erp_v2Model.FK_Notifications_Employees_EmployeeId" FromRole="EMPLOYEE" ToRole="Notifications" />
+        </EntityType>
+        <EntityType Name="POSITION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PositionName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DepartmentID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DEPARTMENT" Relationship="erp_v2Model.FK__POSITION__Depart__1CBC4616" FromRole="POSITION" ToRole="DEPARTMENT" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK__EMPLOYEE__Positi__22751F6C" FromRole="POSITION" ToRole="EMPLOYEE" />
+        </EntityType>
+        <EntityType Name="ROLE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.EMPLOYEE_ROLE" FromRole="ROLE" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="ROLEPERMISSION" Relationship="erp_v2Model.FK_ROLEPERMISSION_ROLE" FromRole="ROLE" ToRole="ROLEPERMISSION" />
+        </EntityType>
+        <Association Name="FK__EMPLOYEE__Depart__2180FB33">
+          <End Type="erp_v2Model.DEPARTMENT" Role="DEPARTMENT" Multiplicity="1" />
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__POSITION__Depart__1CBC4616">
+          <End Type="erp_v2Model.DEPARTMENT" Role="DEPARTMENT" Multiplicity="1" />
+          <End Type="erp_v2Model.POSITION" Role="POSITION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="POSITION">
+              <PropertyRef Name="DepartmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EMPLOYEE__Positi__22751F6C">
+          <End Type="erp_v2Model.POSITION" Role="POSITION" Multiplicity="1" />
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POSITION">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="PositionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMPLOYEE_ROLE">
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <End Type="erp_v2Model.ROLE" Role="ROLE" Multiplicity="*" />
+        </Association>
+        <EntityType Name="PERMISSION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+          <Property Name="PermissionState" Type="Int32" Nullable="false" />
+          <Property Name="PermissionStartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PermissionEndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PermissionDay" Type="Int32" Nullable="false" />
+          <Property Name="PermissionExplanation" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK_PERMISSION_EMP" FromRole="PERMISSION" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="PERMISSIONSTATE1" Relationship="erp_v2Model.FK_PERMISSION_STATE" FromRole="PERMISSION" ToRole="PERMISSIONSTATE" />
+        </EntityType>
+        <EntityType Name="PERMISSIONSTATE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StateName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PERMISSION" Relationship="erp_v2Model.FK_PERMISSION_STATE" FromRole="PERMISSIONSTATE" ToRole="PERMISSION" />
+        </EntityType>
+        <Association Name="FK_PERMISSION_EMP">
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="1" />
+          <End Type="erp_v2Model.PERMISSION" Role="PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERMISSION">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PERMISSION_STATE">
+          <End Type="erp_v2Model.PERMISSIONSTATE" Role="PERMISSIONSTATE" Multiplicity="1" />
+          <End Type="erp_v2Model.PERMISSION" Role="PERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PERMISSIONSTATE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERMISSION">
+              <PropertyRef Name="PermissionState" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="MONTH">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MonthName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SALARY" Relationship="erp_v2Model.FK__SALARY__MonthID__3D2915A8" FromRole="MONTH" ToRole="SALARY" />
+        </EntityType>
+        <EntityType Name="SALARY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+          <Property Name="MonthID" Type="Int32" Nullable="false" />
+          <Property Name="Year" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK__SALARY__Employee__3C34F16F" FromRole="SALARY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="MONTH" Relationship="erp_v2Model.FK__SALARY__MonthID__3D2915A8" FromRole="SALARY" ToRole="MONTH" />
+        </EntityType>
+        <Association Name="FK__SALARY__Employee__3C34F16F">
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="1" />
+          <End Type="erp_v2Model.SALARY" Role="SALARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SALARY">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SALARY__MonthID__3D2915A8">
+          <End Type="erp_v2Model.MONTH" Role="MONTH" Multiplicity="1" />
+          <End Type="erp_v2Model.SALARY" Role="SALARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SALARY">
+              <PropertyRef Name="MonthID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TASK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TaskTitle" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TaskContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TaskStartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TaskDeliveryDate" Type="DateTime" Precision="3" />
+          <Property Name="TaskState" Type="Int32" Nullable="false" />
+          <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK__TASK__EmployeeID__43D61337" FromRole="TASK" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="TASKSTATE1" Relationship="erp_v2Model.FK__TASK__TaskState__42E1EEFE" FromRole="TASK" ToRole="TASKSTATE" />
+        </EntityType>
+        <EntityType Name="TASKSTATE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StateName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TASK" Relationship="erp_v2Model.FK__TASK__TaskState__42E1EEFE" FromRole="TASKSTATE" ToRole="TASK" />
+        </EntityType>
+        <Association Name="FK__TASK__EmployeeID__43D61337">
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="1" />
+          <End Type="erp_v2Model.TASK" Role="TASK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TASK">
+              <PropertyRef Name="EmployeeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TASK__TaskState__42E1EEFE">
+          <End Type="erp_v2Model.TASKSTATE" Role="TASKSTATE" Multiplicity="1" />
+          <End Type="erp_v2Model.TASK" Role="TASK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TASKSTATE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TASK">
+              <PropertyRef Name="TaskState" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ROLEPERMISSION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleID" Type="Int32" Nullable="false" />
+          <Property Name="PermissionName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ROLE" Relationship="erp_v2Model.FK_ROLEPERMISSION_ROLE" FromRole="ROLEPERMISSION" ToRole="ROLE" />
+        </EntityType>
+        <Association Name="FK_ROLEPERMISSION_ROLE">
+          <End Type="erp_v2Model.ROLE" Role="ROLE" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="erp_v2Model.ROLEPERMISSION" Role="ROLEPERMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ROLE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ROLEPERMISSION">
+              <PropertyRef Name="RoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CUSTOMERCAMPAIGN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="CampaignName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="Impact" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK__CUSTOMERC__Custo__607251E5" FromRole="CUSTOMERCAMPAIGN" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="CUSTOMERCLASSIFICATION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="Tier" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AssignedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK__CUSTOMERC__Custo__58D1301D" FromRole="CUSTOMERCLASSIFICATION" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="CUSTOMERCONTRACT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="ContractNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK__CUSTOMERC__Custo__4F47C5E3" FromRole="CUSTOMERCONTRACT" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="CUSTOMERDOCUMENT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="UploadDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK__CUSTOMERD__Custo__6442E2C9" FromRole="CUSTOMERDOCUMENT" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="CUSTOMERINTERACTION">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="InteractionDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK__CUSTOMERI__Custo__5CA1C101" FromRole="CUSTOMERINTERACTION" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="CUSTOMERPOINTS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="Points" Type="Int64" Nullable="false" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK__CUSTOMERP__Custo__540C7B00" FromRole="CUSTOMERPOINTS" ToRole="CUSTOMER" />
+        </EntityType>
+        <Association Name="FK__CUSTOMERC__Custo__4F47C5E3">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.CUSTOMERCONTRACT" Role="CUSTOMERCONTRACT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERCONTRACT">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERC__Custo__58D1301D">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.CUSTOMERCLASSIFICATION" Role="CUSTOMERCLASSIFICATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERCLASSIFICATION">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERC__Custo__607251E5">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.CUSTOMERCAMPAIGN" Role="CUSTOMERCAMPAIGN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERCAMPAIGN">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERD__Custo__6442E2C9">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.CUSTOMERDOCUMENT" Role="CUSTOMERDOCUMENT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERDOCUMENT">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERI__Custo__5CA1C101">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.CUSTOMERINTERACTION" Role="CUSTOMERINTERACTION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERINTERACTION">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CUSTOMERP__Custo__540C7B00">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.CUSTOMERPOINTS" Role="CUSTOMERPOINTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CUSTOMERPOINTS">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SupplierCommunication">
+          <Key>
+            <PropertyRef Name="CommunicationID" />
+          </Key>
+          <Property Name="CommunicationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierID" Type="Int32" Nullable="false" />
+          <Property Name="CommunicationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Subject" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceLink" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="SUPPLIER" Relationship="erp_v2Model.FK__SupplierC__Suppl__7B264821" FromRole="SupplierCommunication" ToRole="SUPPLIER" />
+        </EntityType>
+        <EntityType Name="SupplierContract">
+          <Key>
+            <PropertyRef Name="ContractID" />
+          </Key>
+          <Property Name="ContractID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierID" Type="Int32" Nullable="false" />
+          <Property Name="ContractNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="RenewalDate" Type="DateTime" Precision="0" />
+          <Property Name="Terms" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="SUPPLIER" Relationship="erp_v2Model.FK__SupplierC__Suppl__690797E6" FromRole="SupplierContract" ToRole="SUPPLIER" />
+          <NavigationProperty Name="SupplySchedule" Relationship="erp_v2Model.FK__SupplySch__Contr__6CD828CA" FromRole="SupplierContract" ToRole="SupplySchedule" />
+        </EntityType>
+        <EntityType Name="SupplierPerformance">
+          <Key>
+            <PropertyRef Name="PerformanceID" />
+          </Key>
+          <Property Name="PerformanceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierID" Type="Int32" Nullable="false" />
+          <Property Name="EvaluationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Score" Type="Decimal" Nullable="false" Precision="5" Scale="2" />
+          <Property Name="ParameterDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="SUPPLIER" Relationship="erp_v2Model.FK__SupplierP__Suppl__719CDDE7" FromRole="SupplierPerformance" ToRole="SUPPLIER" />
+        </EntityType>
+        <EntityType Name="SupplierQuote">
+          <Key>
+            <PropertyRef Name="QuoteID" />
+          </Key>
+          <Property Name="QuoteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RequestID" Type="Guid" Nullable="false" />
+          <Property Name="SupplierID" Type="Int32" Nullable="false" />
+          <Property Name="QuoteDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="TotalAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Currency" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+          <Property Name="Details" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="SUPPLIER" Relationship="erp_v2Model.FK__SupplierQ__Suppl__76619304" FromRole="SupplierQuote" ToRole="SUPPLIER" />
+        </EntityType>
+        <EntityType Name="SupplySchedule">
+          <Key>
+            <PropertyRef Name="ScheduleID" />
+          </Key>
+          <Property Name="ScheduleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ContractID" Type="Int32" Nullable="false" />
+          <Property Name="ExpectedDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="SupplierContract" Relationship="erp_v2Model.FK__SupplySch__Contr__6CD828CA" FromRole="SupplySchedule" ToRole="SupplierContract" />
+          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <Association Name="FK__SupplierC__Suppl__690797E6">
+          <End Type="erp_v2Model.SUPPLIER" Role="SUPPLIER" Multiplicity="1" />
+          <End Type="erp_v2Model.SupplierContract" Role="SupplierContract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierContract">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierC__Suppl__7B264821">
+          <End Type="erp_v2Model.SUPPLIER" Role="SUPPLIER" Multiplicity="1" />
+          <End Type="erp_v2Model.SupplierCommunication" Role="SupplierCommunication" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierCommunication">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierP__Suppl__719CDDE7">
+          <End Type="erp_v2Model.SUPPLIER" Role="SUPPLIER" Multiplicity="1" />
+          <End Type="erp_v2Model.SupplierPerformance" Role="SupplierPerformance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierPerformance">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplierQ__Suppl__76619304">
+          <End Type="erp_v2Model.SUPPLIER" Role="SUPPLIER" Multiplicity="1" />
+          <End Type="erp_v2Model.SupplierQuote" Role="SupplierQuote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUPPLIER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SupplierQuote">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SupplySch__Contr__6CD828CA">
+          <End Type="erp_v2Model.SupplierContract" Role="SupplierContract" Multiplicity="1" />
+          <End Type="erp_v2Model.SupplySchedule" Role="SupplySchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SupplierContract">
+              <PropertyRef Name="ContractID" />
+            </Principal>
+            <Dependent Role="SupplySchedule">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EXPENSE_CATEGORIES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EXPENSES" Relationship="erp_v2Model.FK_EXPENSES_CATEGORIES" FromRole="EXPENSE_CATEGORIES" ToRole="EXPENSES" />
+        </EntityType>
+        <EntityType Name="EXPENSES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExpensesName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="ExpenseDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Amount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RequestedBy" Type="Int32" Nullable="false" />
+          <Property Name="RequestedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ApprovedBy" Type="Int32" />
+          <Property Name="ApprovedDate" Type="DateTime" Precision="3" />
+          <Property Name="ApprovalComment" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="AttachmentPath" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeletedBy" Type="Int32" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EXPENSE_CATEGORIES" Relationship="erp_v2Model.FK_EXPENSES_CATEGORIES" FromRole="EXPENSES" ToRole="EXPENSE_CATEGORIES" />
+        </EntityType>
+        <Association Name="FK_EXPENSES_CATEGORIES">
+          <End Type="erp_v2Model.EXPENSE_CATEGORIES" Role="EXPENSE_CATEGORIES" Multiplicity="1" />
+          <End Type="erp_v2Model.EXPENSES" Role="EXPENSES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EXPENSE_CATEGORIES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EXPENSES">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="DELIVERY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SalesID" Type="Int32" Nullable="false" />
+          <Property Name="DeliveryPersonID" Type="Int32" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AssignedDate" Type="DateTime" Precision="3" />
+          <Property Name="DeliveredDate" Type="DateTime" Precision="3" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK__DELIVERY__Delive__18B6AB08" FromRole="DELIVERY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="SALES" Relationship="erp_v2Model.FK__DELIVERY__SalesI__17C286CF" FromRole="DELIVERY" ToRole="SALES" />
+        </EntityType>
+        <Association Name="FK__DELIVERY__Delive__18B6AB08">
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="erp_v2Model.DELIVERY" Role="DELIVERY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DELIVERY">
+              <PropertyRef Name="DeliveryPersonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DELIVERY__SalesI__17C286CF">
+          <End Type="erp_v2Model.SALES" Role="SALES" Multiplicity="1" />
+          <End Type="erp_v2Model.DELIVERY" Role="DELIVERY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SALES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="DELIVERY">
+              <PropertyRef Name="SalesID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CustomerSegment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+          <Property Name="CustomerName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RecencyScore" Type="Byte" Nullable="false" />
+          <Property Name="FrequencyScore" Type="Byte" Nullable="false" />
+          <Property Name="MonetaryScore" Type="Byte" Nullable="false" />
+          <Property Name="RecencyDays" Type="Int32" Nullable="false" />
+          <Property Name="FrequencyCount" Type="Int32" Nullable="false" />
+          <Property Name="MonetaryValue" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="RfmScore" Type="Int16" Nullable="false" />
+          <Property Name="Segment" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SegmentDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AnalysisDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastPurchaseDate" Type="DateTime" Precision="3" />
+          <Property Name="FirstPurchaseDate" Type="DateTime" Precision="3" />
+          <Property Name="AverageOrderValue" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="TotalOrders" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK_CustomerSegment_Customer" FromRole="CustomerSegment" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="INVOICE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InvoiceNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="DueDate" Type="DateTime" Precision="7" />
+          <Property Name="SubTotal" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="TaxAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="DiscountAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="TotalAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="PaidAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="RemainingAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="InvoiceState" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Notes" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="7" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="CUSTOMER" Relationship="erp_v2Model.FK_INVOICE_CUSTOMER" FromRole="INVOICE" ToRole="CUSTOMER" />
+        </EntityType>
+        <EntityType Name="LOGIN_HISTORY">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeId" Type="Int32" />
+          <Property Name="AttemptedUserNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="WasSuccessful" Type="Boolean" Nullable="false" />
+          <Property Name="IpAddress" Type="String" MaxLength="45" FixedLength="false" Unicode="true" />
+          <Property Name="UserAgent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="TargetUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="RelatedEntityType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RelatedEntityId" Type="Int32" />
+          <Property Name="Severity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="EmployeeId" Type="Int32" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="erp_v2Model.FK_Notifications_Employees_EmployeeId" FromRole="Notifications" ToRole="EMPLOYEE" />
+        </EntityType>
+        <EntityType Name="PartialPayments">
+          <Key>
+            <PropertyRef Name="PaymentId" />
+          </Key>
+          <Property Name="PaymentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SaleId" Type="Int32" Nullable="false" />
+          <Property Name="AmountPaid" Type="Int64" Nullable="false" />
+          <Property Name="PaymentDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PaymentMethod" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="7" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedAt" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="SALES" Relationship="erp_v2Model.FK__PartialPa__SaleI__3EDC53F0" FromRole="PartialPayments" ToRole="SALES" />
+        </EntityType>
+        <Association Name="FK_CustomerSegment_Customer">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="erp_v2Model.CustomerSegment" Role="CustomerSegment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CustomerSegment">
+              <PropertyRef Name="CustomerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_INVOICE_CUSTOMER">
+          <End Type="erp_v2Model.CUSTOMER" Role="CUSTOMER" Multiplicity="1" />
+          <End Type="erp_v2Model.INVOICE" Role="INVOICE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CUSTOMER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="INVOICE">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifications_Employees_EmployeeId">
+          <End Type="erp_v2Model.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="erp_v2Model.Notifications" Role="Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="EmployeeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PartialPa__SaleI__3EDC53F0">
+          <End Type="erp_v2Model.SALES" Role="SALES" Multiplicity="1" />
+          <End Type="erp_v2Model.PartialPayments" Role="PartialPayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SALES">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PartialPayments">
+              <PropertyRef Name="SaleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="erp_v2ModelStoreContainer" CdmEntityContainer="erp_v2Entities">
+          <EntitySetMapping Name="CATEGORY">
+            <EntityTypeMapping TypeName="erp_v2Model.CATEGORY">
+              <MappingFragment StoreEntitySet="CATEGORY">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMER">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMER">
+              <MappingFragment StoreEntitySet="CUSTOMER">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="baky" ColumnName="baky" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Cust_Address" ColumnName="Cust_Address" />
+                <ScalarProperty Name="Cust_Phone" ColumnName="Cust_Phone" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT">
+            <EntityTypeMapping TypeName="erp_v2Model.PRODUCT">
+              <MappingFragment StoreEntitySet="PRODUCT">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="StockAmount" ColumnName="StockAmount" />
+                <ScalarProperty Name="Sale_Price" ColumnName="Sale_Price" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="MinQty" ColumnName="MinQty" />
+                <ScalarProperty Name="MaxDiscount" ColumnName="MaxDiscount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SALES">
+            <EntityTypeMapping TypeName="erp_v2Model.SALES">
+              <MappingFragment StoreEntitySet="SALES">
+                <ScalarProperty Name="PaymentState" ColumnName="PaymentState" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="MaxDiscount" ColumnName="MaxDiscount" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="ProductSalesAmout" ColumnName="ProductSalesAmout" />
+                <ScalarProperty Name="ProductSalesPrice" ColumnName="ProductSalesPrice" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="TotalOrder" ColumnName="TotalOrder" />
+                <ScalarProperty Name="Madfou3" ColumnName="Madfou3" />
+                <ScalarProperty Name="Baky" ColumnName="Baky" />
+                <ScalarProperty Name="SalesDate" ColumnName="SalesDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SUPPLIER">
+            <EntityTypeMapping TypeName="erp_v2Model.SUPPLIER">
+              <MappingFragment StoreEntitySet="SUPPLIER">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PURCHASES">
+            <EntityTypeMapping TypeName="erp_v2Model.PURCHASES">
+              <MappingFragment StoreEntitySet="PURCHASES">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="PurchaseSalesPrice" ColumnName="PurchaseSalesPrice" />
+                <ScalarProperty Name="PurchaseSalesAmout" ColumnName="PurchaseSalesAmout" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRODUCT_RETURN">
+            <EntityTypeMapping TypeName="erp_v2Model.PRODUCT_RETURN">
+              <MappingFragment StoreEntitySet="PRODUCT_RETURN">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="ReturnReason" ColumnName="ReturnReason" />
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="ReturnQuantity" ColumnName="ReturnQuantity" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="SalesID" ColumnName="SalesID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PROFIT">
+            <EntityTypeMapping TypeName="erp_v2Model.PROFIT">
+              <MappingFragment StoreEntitySet="PROFIT">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Profit1" ColumnName="Profit" />
+                <ScalarProperty Name="CostOfExpenses" ColumnName="CostOfExpenses" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="SalesPrice" ColumnName="SalesPrice" />
+                <ScalarProperty Name="OriginalPrice" ColumnName="OriginalPrice" />
+                <ScalarProperty Name="SalesID" ColumnName="SalesID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DEPARTMENT">
+            <EntityTypeMapping TypeName="erp_v2Model.DEPARTMENT">
+              <MappingFragment StoreEntitySet="DEPARTMENT">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE">
+            <EntityTypeMapping TypeName="erp_v2Model.EMPLOYEE">
+              <MappingFragment StoreEntitySet="EMPLOYEE">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="PositionID" ColumnName="PositionID" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="Salary" ColumnName="Salary" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserNo" ColumnName="UserNo" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POSITION">
+            <EntityTypeMapping TypeName="erp_v2Model.POSITION">
+              <MappingFragment StoreEntitySet="POSITION">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="DepartmentID" ColumnName="DepartmentID" />
+                <ScalarProperty Name="PositionName" ColumnName="PositionName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ROLE">
+            <EntityTypeMapping TypeName="erp_v2Model.ROLE">
+              <MappingFragment StoreEntitySet="ROLE">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="EMPLOYEE_ROLE" TypeName="erp_v2Model.EMPLOYEE_ROLE" StoreEntitySet="EMPLOYEE_ROLE">
+            <EndProperty Name="ROLE">
+              <ScalarProperty Name="ID" ColumnName="RoleID" />
+            </EndProperty>
+            <EndProperty Name="EMPLOYEE">
+              <ScalarProperty Name="ID" ColumnName="EmployeeID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="PERMISSION">
+            <EntityTypeMapping TypeName="erp_v2Model.PERMISSION">
+              <MappingFragment StoreEntitySet="PERMISSION">
+                <ScalarProperty Name="PermissionExplanation" ColumnName="PermissionExplanation" />
+                <ScalarProperty Name="PermissionDay" ColumnName="PermissionDay" />
+                <ScalarProperty Name="PermissionEndDate" ColumnName="PermissionEndDate" />
+                <ScalarProperty Name="PermissionStartDate" ColumnName="PermissionStartDate" />
+                <ScalarProperty Name="PermissionState" ColumnName="PermissionState" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PERMISSIONSTATE">
+            <EntityTypeMapping TypeName="erp_v2Model.PERMISSIONSTATE">
+              <MappingFragment StoreEntitySet="PERMISSIONSTATE">
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MONTH">
+            <EntityTypeMapping TypeName="erp_v2Model.MONTH">
+              <MappingFragment StoreEntitySet="MONTH">
+                <ScalarProperty Name="MonthName" ColumnName="MonthName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SALARY">
+            <EntityTypeMapping TypeName="erp_v2Model.SALARY">
+              <MappingFragment StoreEntitySet="SALARY">
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Year" ColumnName="Year" />
+                <ScalarProperty Name="MonthID" ColumnName="MonthID" />
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TASK">
+            <EntityTypeMapping TypeName="erp_v2Model.TASK">
+              <MappingFragment StoreEntitySet="TASK">
+                <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+                <ScalarProperty Name="TaskState" ColumnName="TaskState" />
+                <ScalarProperty Name="TaskDeliveryDate" ColumnName="TaskDeliveryDate" />
+                <ScalarProperty Name="TaskStartDate" ColumnName="TaskStartDate" />
+                <ScalarProperty Name="TaskContent" ColumnName="TaskContent" />
+                <ScalarProperty Name="TaskTitle" ColumnName="TaskTitle" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TASKSTATE">
+            <EntityTypeMapping TypeName="erp_v2Model.TASKSTATE">
+              <MappingFragment StoreEntitySet="TASKSTATE">
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ROLEPERMISSION">
+            <EntityTypeMapping TypeName="erp_v2Model.ROLEPERMISSION">
+              <MappingFragment StoreEntitySet="ROLEPERMISSION">
+                <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMERCAMPAIGN">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMERCAMPAIGN">
+              <MappingFragment StoreEntitySet="CUSTOMERCAMPAIGN">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Impact" ColumnName="Impact" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMERCLASSIFICATION">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMERCLASSIFICATION">
+              <MappingFragment StoreEntitySet="CUSTOMERCLASSIFICATION">
+                <ScalarProperty Name="AssignedDate" ColumnName="AssignedDate" />
+                <ScalarProperty Name="Tier" ColumnName="Tier" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMERCONTRACT">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMERCONTRACT">
+              <MappingFragment StoreEntitySet="CUSTOMERCONTRACT">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ContractNumber" ColumnName="ContractNumber" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMERDOCUMENT">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMERDOCUMENT">
+              <MappingFragment StoreEntitySet="CUSTOMERDOCUMENT">
+                <ScalarProperty Name="UploadDate" ColumnName="UploadDate" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMERINTERACTION">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMERINTERACTION">
+              <MappingFragment StoreEntitySet="CUSTOMERINTERACTION">
+                <ScalarProperty Name="InteractionDate" ColumnName="InteractionDate" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CUSTOMERPOINTS">
+            <EntityTypeMapping TypeName="erp_v2Model.CUSTOMERPOINTS">
+              <MappingFragment StoreEntitySet="CUSTOMERPOINTS">
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Points" ColumnName="Points" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierCommunication">
+            <EntityTypeMapping TypeName="erp_v2Model.SupplierCommunication">
+              <MappingFragment StoreEntitySet="SupplierCommunication">
+                <ScalarProperty Name="ReferenceLink" ColumnName="ReferenceLink" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="CommunicationDate" ColumnName="CommunicationDate" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="CommunicationID" ColumnName="CommunicationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierContract">
+            <EntityTypeMapping TypeName="erp_v2Model.SupplierContract">
+              <MappingFragment StoreEntitySet="SupplierContract">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Terms" ColumnName="Terms" />
+                <ScalarProperty Name="RenewalDate" ColumnName="RenewalDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="ContractNumber" ColumnName="ContractNumber" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="ContractID" ColumnName="ContractID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierPerformance">
+            <EntityTypeMapping TypeName="erp_v2Model.SupplierPerformance">
+              <MappingFragment StoreEntitySet="SupplierPerformance">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="ParameterDetails" ColumnName="ParameterDetails" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="EvaluationDate" ColumnName="EvaluationDate" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="PerformanceID" ColumnName="PerformanceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierQuote">
+            <EntityTypeMapping TypeName="erp_v2Model.SupplierQuote">
+              <MappingFragment StoreEntitySet="SupplierQuote">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="QuoteDate" ColumnName="QuoteDate" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="RequestID" ColumnName="RequestID" />
+                <ScalarProperty Name="QuoteID" ColumnName="QuoteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplySchedule">
+            <EntityTypeMapping TypeName="erp_v2Model.SupplySchedule">
+              <MappingFragment StoreEntitySet="SupplySchedule">
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ExpectedDate" ColumnName="ExpectedDate" />
+                <ScalarProperty Name="ContractID" ColumnName="ContractID" />
+                <ScalarProperty Name="ScheduleID" ColumnName="ScheduleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EXPENSE_CATEGORIES">
+            <EntityTypeMapping TypeName="erp_v2Model.EXPENSE_CATEGORIES">
+              <MappingFragment StoreEntitySet="EXPENSE_CATEGORIES">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EXPENSES">
+            <EntityTypeMapping TypeName="erp_v2Model.EXPENSES">
+              <MappingFragment StoreEntitySet="EXPENSES">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="DeletedBy" ColumnName="DeletedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="AttachmentPath" ColumnName="AttachmentPath" />
+                <ScalarProperty Name="ApprovalComment" ColumnName="ApprovalComment" />
+                <ScalarProperty Name="ApprovedDate" ColumnName="ApprovedDate" />
+                <ScalarProperty Name="ApprovedBy" ColumnName="ApprovedBy" />
+                <ScalarProperty Name="RequestedDate" ColumnName="RequestedDate" />
+                <ScalarProperty Name="RequestedBy" ColumnName="RequestedBy" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="CurrencyCode" ColumnName="CurrencyCode" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ExpenseDate" ColumnName="ExpenseDate" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="ExpensesName" ColumnName="ExpensesName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DELIVERY">
+            <EntityTypeMapping TypeName="erp_v2Model.DELIVERY">
+              <MappingFragment StoreEntitySet="DELIVERY">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="DeliveredDate" ColumnName="DeliveredDate" />
+                <ScalarProperty Name="AssignedDate" ColumnName="AssignedDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DeliveryPersonID" ColumnName="DeliveryPersonID" />
+                <ScalarProperty Name="SalesID" ColumnName="SalesID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerSegment">
+            <EntityTypeMapping TypeName="erp_v2Model.CustomerSegment">
+              <MappingFragment StoreEntitySet="CustomerSegment">
+                <ScalarProperty Name="TotalOrders" ColumnName="TotalOrders" />
+                <ScalarProperty Name="AverageOrderValue" ColumnName="AverageOrderValue" />
+                <ScalarProperty Name="FirstPurchaseDate" ColumnName="FirstPurchaseDate" />
+                <ScalarProperty Name="LastPurchaseDate" ColumnName="LastPurchaseDate" />
+                <ScalarProperty Name="AnalysisDate" ColumnName="AnalysisDate" />
+                <ScalarProperty Name="SegmentDescription" ColumnName="SegmentDescription" />
+                <ScalarProperty Name="Segment" ColumnName="Segment" />
+                <ScalarProperty Name="RfmScore" ColumnName="RfmScore" />
+                <ScalarProperty Name="MonetaryValue" ColumnName="MonetaryValue" />
+                <ScalarProperty Name="FrequencyCount" ColumnName="FrequencyCount" />
+                <ScalarProperty Name="RecencyDays" ColumnName="RecencyDays" />
+                <ScalarProperty Name="MonetaryScore" ColumnName="MonetaryScore" />
+                <ScalarProperty Name="FrequencyScore" ColumnName="FrequencyScore" />
+                <ScalarProperty Name="RecencyScore" ColumnName="RecencyScore" />
+                <ScalarProperty Name="CustomerPhone" ColumnName="CustomerPhone" />
+                <ScalarProperty Name="CustomerEmail" ColumnName="CustomerEmail" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="INVOICE">
+            <EntityTypeMapping TypeName="erp_v2Model.INVOICE">
+              <MappingFragment StoreEntitySet="INVOICE">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="InvoiceState" ColumnName="InvoiceState" />
+                <ScalarProperty Name="RemainingAmount" ColumnName="RemainingAmount" />
+                <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LOGIN_HISTORY">
+            <EntityTypeMapping TypeName="erp_v2Model.LOGIN_HISTORY">
+              <MappingFragment StoreEntitySet="LOGIN_HISTORY">
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="UserAgent" ColumnName="UserAgent" />
+                <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+                <ScalarProperty Name="WasSuccessful" ColumnName="WasSuccessful" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="AttemptedUserNo" ColumnName="AttemptedUserNo" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="erp_v2Model.Notifications">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Severity" ColumnName="Severity" />
+                <ScalarProperty Name="RelatedEntityId" ColumnName="RelatedEntityId" />
+                <ScalarProperty Name="RelatedEntityType" ColumnName="RelatedEntityType" />
+                <ScalarProperty Name="TargetUrl" ColumnName="TargetUrl" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PartialPayments">
+            <EntityTypeMapping TypeName="erp_v2Model.PartialPayments">
+              <MappingFragment StoreEntitySet="PartialPayments">
+                <ScalarProperty Name="DeletedAt" ColumnName="DeletedAt" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
+                <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="SaleId" ColumnName="SaleId" />
+                <ScalarProperty Name="PaymentId" ColumnName="PaymentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

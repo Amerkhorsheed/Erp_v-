@@ -1,0 +1,1846 @@
+@{
+    ViewBag.Title = "Sales Management Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <style>
+        /* ================================================================= */
+        /* =                SALES MANAGEMENT DASHBOARD STYLES             = */
+        /* ================================================================= */
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.2);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+       keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+
+        /* KPI Cards */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .kpi-card.success::before { background: var(--gradient-success); }
+        .kpi-card.warning::before { background: var(--gradient-warning); }
+        .kpi-card.info::before { background: var(--gradient-info); }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .kpi-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .kpi-icon.primary { background: var(--gradient-primary); }
+        .kpi-icon.success { background: var(--gradient-success); }
+        .kpi-icon.warning { background: var(--gradient-warning); }
+        .kpi-icon.info { background: var(--gradient-info); }
+
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .kpi-subtitle {
+            font-size: 0.85rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .kpi-trend {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .kpi-trend.up {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+
+        .kpi-trend.down {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Search and Filter Section */
+        .search-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin: 0;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-search {
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            height: fit-content;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            color: white;
+        }
+
+        .btn-refresh {
+            background: var(--gradient-info);
+            color: white;
+            border: none;
+            margin-right: 10px;
+        }
+
+        .btn-refresh:hover {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            transform: translateY(-2px);
+        }
+
+        /* Data Table Section */
+        .table-section {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .table-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .table-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .view-toggle {
+            display: flex;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        #toggleGroupView {
+            background: var(--gradient-warning);
+            color: white;
+        }
+
+        #toggleGroupView:hover {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .grouped-transactions-container {
+            padding: 20px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .btn-process {
+            background: var(--gradient-success);
+            color: white;
+        }
+
+        .btn-email {
+            background: var(--gradient-info);
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Payment Actions Styling */
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .payment-actions .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .payment-actions .btn-email {
+            background: var(--gradient-info);
+            border: none;
+        }
+
+        .payment-actions .btn-email:hover {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            padding: 0;
+            overflow-x: auto;
+        }
+
+        .sales-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: collapse;
+        }
+
+        .sales-table th {
+            background: #f8f9fa;
+            padding: 15px 12px;
+            font-weight: 600;
+            color: var(--dark-color);
+            border-bottom: 2px solid #dee2e6;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .sales-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .sales-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .sales-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .payment-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .status-partial {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-unpaid {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-success);
+            transition: width 0.3s ease;
+        }
+
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        /* Pagination */
+        .pagination-container {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .pagination {
+            margin: 0;
+        }
+
+        .page-link {
+            color: var(--primary-color);
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+        }
+
+        .page-link:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Loading and Empty States */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+            color: var(--primary-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .kpi-container {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .modal-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .btn-close {
+            filter: invert(1);
+        }
+
+        /* Grouped Transaction Styles */
+        .transaction-group {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+        }
+
+        .transaction-group:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .transaction-group.expanded {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .transaction-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .transaction-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+
+        .transaction-group.expanded .transaction-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .transaction-id {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transaction-group.expanded .transaction-id {
+            color: white;
+        }
+
+        .transaction-summary {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .transaction-group.expanded .transaction-summary {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .transaction-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--primary-color);
+        }
+
+        .transaction-group.expanded .expand-icon {
+            transform: rotate(180deg);
+            color: white;
+        }
+
+        .transaction-details {
+            display: none;
+            background: white;
+        }
+
+        .transaction-group.expanded .transaction-details {
+            display: block;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products-table th {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            font-weight: 600;
+            color: var(--dark-color);
+            border-bottom: 2px solid #dee2e6;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .products-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f3f4;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .products-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .transaction-actions {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-totals {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .total-item {
+            text-align: center;
+        }
+
+        .total-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .total-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .total-value.success { color: var(--success-color); }
+        .total-value.warning { color: #856404; }
+        .total-value.danger { color: var(--danger-color); }
+
+        .btn-pay-now {
+            background: var(--gradient-success);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pay-now:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            color: white;
+        }
+
+        .btn-pay-now:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .item-count-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .transaction-group.expanded .item-count-badge {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .customer-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .transaction-group.expanded .customer-avatar {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive adjustments for grouped view */
+        media (max-width: 768px) {
+            .transaction-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .transaction-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .transaction-summary {
+                flex-wrap: wrap;
+            }
+
+            .transaction-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .transaction-totals {
+                justify-content: space-around;
+                width: 100%;
+            }
+        }
+    </style>
+}
+
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">
+            <i class="fas fa-chart-line me-3"></i>
+            Sales Management Dashboard
+        </h1>
+        <p class="dashboard-subtitle">Monitor sales performance, manage payments, and track customer transactions</p>
+    </div>
+
+    <!-- KPI Section -->
+    <div class="kpi-container" id="kpiContainer">
+        <div class="kpi-card">
+            <div class="kpi-header">
+                <span class="kpi-title">Total Sales</span>
+                <div class="kpi-icon primary">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+            <div class="kpi-value" id="totalSales">-</div>
+            <div class="kpi-subtitle">
+                <span id="totalRevenue">$0</span>
+                <span class="kpi-trend up">Revenue</span>
+            </div>
+        </div>
+
+        <div class="kpi-card success">
+            <div class="kpi-header">
+                <span class="kpi-title">Fully Paid</span>
+                <div class="kpi-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+            <div class="kpi-value" id="paidSales">-</div>
+            <div class="kpi-subtitle">
+                <span id="paymentRate">0%</span>
+                <span class="kpi-trend up">Payment Rate</span>
+            </div>
+        </div>
+
+        <div class="kpi-card warning">
+            <div class="kpi-header">
+                <span class="kpi-title">Partial Payment</span>
+                <div class="kpi-icon warning">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+            <div class="kpi-value" id="partialSales">-</div>
+            <div class="kpi-subtitle">
+                <span id="partialRate">0%</span>
+                <span class="kpi-trend">Partial Rate</span>
+            </div>
+        </div>
+
+        <div class="kpi-card info">
+            <div class="kpi-header">
+                <span class="kpi-title">Unpaid</span>
+                <div class="kpi-icon info">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="kpi-value" id="unpaidSales">-</div>
+            <div class="kpi-subtitle">
+                <span id="unpaidRate">0%</span>
+                <span class="kpi-trend down">Unpaid Rate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section">
+        <div class="search-header">
+            <h3 class="search-title">
+                <i class="fas fa-search me-2"></i>
+                Search & Filter
+            </h3>
+        </div>
+        <div class="filter-row">
+            <div class="form-group">
+                <label class="form-label">Search</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search by customer, product, or transaction ID...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Payment Status</label>
+                <select class="form-control" id="paymentStatusFilter">
+                    <option value="">All Status</option>
+                    <option value="paid">Fully Paid</option>
+                    <option value="partial">Partial Payment</option>
+                    <option value="unpaid">Unpaid</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input type="date" class="form-control" id="endDate">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-search" onclick="loadSalesData()">
+                    <i class="fas fa-search me-2"></i>
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table Section -->
+    <div class="table-section">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-table me-2"></i>
+                Sales Data
+            </h3>
+            <div class="table-actions">
+                <div class="view-toggle">
+                    <button type="button" class="btn btn-action" id="toggleGroupView" onclick="toggleGroupView()" title="Toggle between grouped and list view">
+                        <i class="fas fa-layer-group me-1"></i>
+                        <span id="viewToggleText">List View</span>
+                    </button>
+                </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-action btn-refresh" onclick="refreshSalesData()" title="Refresh sales data">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Refresh
+                    </button>
+                    <button type="button" class="btn btn-action btn-process" onclick="showPaymentModal()">
+                        <i class="fas fa-credit-card me-1"></i>
+                        Process Payment
+                    </button>
+                    <button type="button" class="btn btn-action btn-email" onclick="showBulkEmailModal()">
+                        <i class="fas fa-envelope me-1"></i>
+                        Send Email to All
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="table-container">
+            <!-- Grouped Transactions Container -->
+            <div id="groupedTransactions" class="grouped-transactions-container">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                </div>
+            </div>
+            
+            <!-- Original Table (Hidden by default, shown when grouping is disabled) -->
+            <table class="sales-table" id="originalTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="checkbox-custom" id="selectAll" onchange="toggleSelectAll()">
+                        </th>
+                        <th>Transaction ID</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Remaining</th>
+                        <th>Payment Status</th>
+                        <th>Progress</th>
+                        <th>Sale Date</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTableBody">
+                    <tr>
+                        <td colspan="12" class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-container">
+            <div class="pagination-info" id="paginationInfo">
+                Showing 0 of 0 entries
+            </div>
+            <nav>
+                <ul class="pagination" id="pagination">
+                    <!-- Pagination will be generated by JavaScript -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Processing Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-credit-card me-2"></i>
+                    Process Payment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Selected Sales</label>
+                    <div id="selectedSalesInfo" class="alert alert-info">
+                        No sales selected
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="paymentAmount" class="form-label">Payment Amount</label>
+                    <input type="number" class="form-control" id="paymentAmount" step="0.01" min="0" placeholder="Enter payment amount">
+                </div>
+                <div class="mb-3">
+                    <label for="customerEmail" class="form-label">Customer Email (Optional)</label>
+                    <input type="email" class="form-control" id="customerEmail" placeholder="Enter customer email for confirmation">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="processPayment()">
+                    <i class="fas fa-check me-1"></i>
+                    Process Payment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-invoice me-2"></i>
+                    Generate & Send Invoice
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Selected Sales</label>
+                    <div id="selectedSalesInfoEmail" class="alert alert-info">
+                        No sales selected
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="emailAddress" class="form-label">Customer Email *</label>
+                            <input type="email" class="form-control" id="emailAddress" placeholder="Enter customer email address" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="emailSubject" class="form-label">Email Subject</label>
+                            <input type="text" class="form-control" id="emailSubject" value="Invoice for Your Recent Purchase" placeholder="Enter email subject">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="emailMessage" class="form-label">Additional Message (Optional)</label>
+                    <textarea class="form-control" id="emailMessage" rows="3" placeholder="Add any additional message for the customer..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="includePaymentLink" checked>
+                        <label class="form-check-label" for="includePaymentLink">
+                            Include payment link for outstanding balance
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="attachPDF" checked>
+                        <label class="form-check-label" for="attachPDF">
+                            Attach PDF invoice
+                        </label>
+                    </div>
+                </div>
+                <!-- Invoice Preview -->
+                <div class="mb-3">
+                    <label class="form-label">Invoice Preview</label>
+                    <div id="invoicePreview" class="border rounded p-3" style="max-height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-file-invoice fa-3x mb-2"></i>
+                            <p>Invoice preview will appear here after selecting sales</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-info me-2" onclick="previewInvoice()">
+                    <i class="fas fa-eye me-1"></i>
+                    Preview Invoice
+                </button>
+                <button type="button" class="btn btn-primary" onclick="sendInvoiceEmail()">
+                    <i class="fas fa-paper-plane me-1"></i>
+                    Send Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentPage = 1;
+        let pageSize = 10;
+        let selectedSales = [];
+        let isGroupedView = true;
+        let groupedTransactions = {};
+        let allSalesData = [];
+
+        // Initialize dashboard
+        $(document).ready(function() {
+            loadKPIs();
+            loadSalesData();
+            
+            // Set up search input debounce
+            let searchTimeout;
+            $('#searchInput').on('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    loadSalesData();
+                }, 500);
+            });
+
+            // Set up filter change handlers
+            $('#paymentStatusFilter, #startDate, #endDate').on('change', function() {
+                loadSalesData();
+            });
+            
+            // Set up view toggle handler
+            $('#toggleGroupView').on('click', function() {
+                toggleGroupView();
+            });
+        });
+
+        // Load KPIs
+        function loadKPIs() {
+            $.get('/SalesManagement/GetKPIs')
+                .done(function(response) {
+                    if (response.success) {
+                        const data = response.data;
+                        $('#totalSales').text(data.totalSales.toLocaleString());
+                        $('#totalRevenue').text('$' + data.totalRevenue.toLocaleString());
+                        $('#paidSales').text(data.paidSales.toLocaleString());
+                        $('#paymentRate').text(data.paymentRate + '%');
+                        $('#partialSales').text(data.partialPaymentSales.toLocaleString());
+                        $('#partialRate').text(data.partialPaymentRate + '%');
+                        $('#unpaidSales').text(data.unpaidSales.toLocaleString());
+                        $('#unpaidRate').text(data.unpaidRate + '%');
+                    }
+                })
+                .fail(function() {
+                    console.error('Failed to load KPIs');
+                });
+        }
+
+        // Load sales data
+        function loadSalesData(page = 1) {
+            currentPage = page;
+            const searchTerm = $('#searchInput').val();
+            const paymentStatus = $('#paymentStatusFilter').val();
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+
+            const params = {
+                searchTerm: searchTerm,
+                paymentStatus: paymentStatus,
+                startDate: startDate,
+                endDate: endDate,
+                page: page,
+                pageSize: pageSize
+            };
+
+            $.get('/SalesManagement/GetSalesData', params)
+                .done(function(response) {
+                    if (response.success) {
+                        allSalesData = response.data;
+                        
+                        if (isGroupedView) {
+                            renderGroupedTransactions(allSalesData);
+                        } else {
+                            renderSalesTable(allSalesData);
+                        }
+                        
+                        renderPagination(response.totalPages, response.currentPage, response.totalRecords);
+                    } else {
+                        showError('Failed to load sales data: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    showError('Failed to load sales data');
+                });
+        }
+
+        // Refresh sales data and KPIs
+        function refreshSalesData() {
+            // Show loading state on refresh button
+            const refreshBtn = $('button[onclick="refreshSalesData()"]');
+            const originalHtml = refreshBtn.html();
+            refreshBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Refreshing...');
+            
+            // Clear selections
+            selectedSales = [];
+            $('.sale-checkbox').prop('checked', false);
+            $('#selectAll').prop('checked', false);
+            
+            // Reload both KPIs and sales data
+            loadKPIs();
+            loadSalesData(currentPage);
+            
+            // Restore button state after a short delay
+            setTimeout(function() {
+                refreshBtn.prop('disabled', false).html(originalHtml);
+                showSuccess('Sales data refreshed successfully!');
+            }, 1000);
+        }
+
+        // Toggle between grouped and list view
+        function toggleGroupView() {
+            isGroupedView = !isGroupedView;
+            const toggleBtn = $('#toggleGroupView');
+            const toggleText = $('#viewToggleText');
+            const groupedContainer = $('#groupedTransactions');
+            const originalTable = $('#originalTable');
+            
+            if (isGroupedView) {
+                toggleBtn.find('i').removeClass('fa-list').addClass('fa-layer-group');
+                toggleText.text('List View');
+                groupedContainer.show();
+                originalTable.hide();
+                renderGroupedTransactions(allSalesData);
+            } else {
+                toggleBtn.find('i').removeClass('fa-layer-group').addClass('fa-list');
+                toggleText.text('Grouped View');
+                groupedContainer.hide();
+                originalTable.show();
+                renderSalesTable(allSalesData);
+            }
+        }
+
+        // Group sales data by transaction ID
+        function groupSalesByTransaction(salesData) {
+            const grouped = {};
+            
+            salesData.forEach(function(sale) {
+                const transactionId = sale.TransactionId;
+                if (!grouped[transactionId]) {
+                    grouped[transactionId] = {
+                        transactionId: transactionId,
+                        customerName: sale.CustomerName,
+                        salesDate: sale.SalesDate,
+                        items: [],
+                        totalAmount: 0,
+                        totalPaid: 0,
+                        totalRemaining: 0,
+                        paymentStatus: sale.PaymentStatus,
+                        paymentPercentage: 0
+                    };
+                }
+                
+                grouped[transactionId].items.push({
+                    productName: sale.ProductName,
+                    quantity: sale.SalesAmount,
+                    unitPrice: sale.Price,
+                    totalPrice: sale.TotalAmount,
+                    paid: sale.Madfou3,
+                    remaining: sale.Baky
+                });
+                
+                grouped[transactionId].totalAmount += sale.TotalAmount;
+                grouped[transactionId].totalPaid += sale.Madfou3;
+                grouped[transactionId].totalRemaining += sale.Baky;
+            });
+            
+            // Calculate payment percentage for each group
+            Object.keys(grouped).forEach(function(transactionId) {
+                const group = grouped[transactionId];
+                group.paymentPercentage = group.totalAmount > 0 ? 
+                    Math.round((group.totalPaid / group.totalAmount) * 100) : 0;
+                    
+                // Determine payment status based on totals
+                if (group.totalRemaining === 0) {
+                    group.paymentStatus = 'Fully Paid';
+                } else if (group.totalPaid > 0) {
+                    group.paymentStatus = 'Partially Paid';
+                } else {
+                    group.paymentStatus = 'Unpaid';
+                }
+            });
+            
+            return grouped;
+        }
+
+        // Render grouped transactions
+        function renderGroupedTransactions(salesData) {
+            const container = $('#groupedTransactions');
+            container.empty();
+            
+            if (salesData.length === 0) {
+                container.append(`
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h5>No sales found</h5>
+                        <p>Try adjusting your search criteria</p>
+                    </div>
+                `);
+                return;
+            }
+            
+            groupedTransactions = groupSalesByTransaction(salesData);
+            
+            Object.keys(groupedTransactions).forEach(function(transactionId) {
+                const group = groupedTransactions[transactionId];
+                const statusClass = getStatusClass(group.paymentStatus);
+                const customerInitials = group.customerName.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                const groupHtml = `
+                    <div class="transaction-group" data-transaction-id="${transactionId}">
+                        <div class="transaction-header" onclick="toggleTransactionDetails('${transactionId}')">
+                            <div class="transaction-info">
+                                <div class="transaction-id">
+                                    <i class="fas fa-receipt"></i>
+                                    #${transactionId}
+                                    <span class="item-count-badge">${group.items.length} items</span>
+                                </div>
+                                <div class="transaction-summary">
+                                    <div class="customer-info">
+                                        <div class="customer-avatar">${customerInitials}</div>
+                                        <span>${group.customerName}</span>
+                                    </div>
+                                    <div class="total-info">
+                                        <strong>$${group.totalAmount.toLocaleString()}</strong>
+                                    </div>
+                                    <div class="payment-status ${statusClass}">
+                                        ${group.paymentStatus}
+                                    </div>
+                                    <div class="date-info">
+                                        ${new Date(group.salesDate).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-meta">
+                                <div class="progress-info">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${group.paymentPercentage}%"></div>
+                                    </div>
+                                    <small>${group.paymentPercentage}%</small>
+                                </div>
+                                <i class="fas fa-chevron-down expand-icon"></i>
+                            </div>
+                        </div>
+                        <div class="transaction-details">
+                            <table class="products-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                        <th>Paid</th>
+                                        <th>Remaining</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${group.items.map(item => `
+                                        <tr>
+                                            <td><strong>${item.productName}</strong></td>
+                                            <td>${item.quantity}</td>
+                                            <td>$${item.unitPrice.toLocaleString()}</td>
+                                            <td><strong>$${item.totalPrice.toLocaleString()}</strong></td>
+                                            <td class="text-success">$${item.paid.toLocaleString()}</td>
+                                            <td class="text-danger">$${item.remaining.toLocaleString()}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div class="transaction-actions">
+                                <div class="transaction-totals">
+                                    <div class="total-item">
+                                        <div class="total-label">Total Amount</div>
+                                        <div class="total-value">$${group.totalAmount.toLocaleString()}</div>
+                                    </div>
+                                    <div class="total-item">
+                                        <div class="total-label">Paid</div>
+                                        <div class="total-value success">$${group.totalPaid.toLocaleString()}</div>
+                                    </div>
+                                    <div class="total-item">
+                                        <div class="total-label">Remaining</div>
+                                        <div class="total-value ${group.totalRemaining > 0 ? 'danger' : 'success'}">$${group.totalRemaining.toLocaleString()}</div>
+                                    </div>
+                                </div>
+                                <div class="payment-actions">
+                                    ${group.totalRemaining > 0 ? `
+                                        <button type="button" class="btn btn-pay-now" onclick="processGroupPayment('${transactionId}')">
+                                            <i class="fas fa-credit-card"></i>
+                                            Pay Now ($${group.totalRemaining.toLocaleString()})
+                                        </button>
+                                    ` : `
+                                        <button type="button" class="btn btn-pay-now" disabled>
+                                            <i class="fas fa-check-circle"></i>
+                                            Fully Paid
+                                        </button>
+                                    `}
+                                    <button type="button" class="btn btn-action btn-email" onclick="showGroupEmailModal('${transactionId}')">
+                                        <i class="fas fa-envelope"></i>
+                                        Send Email
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.append(groupHtml);
+            });
+        }
+
+        // Toggle transaction details
+        function toggleTransactionDetails(transactionId) {
+            const group = $(`.transaction-group[data-transaction-id="${transactionId}"]`);
+            group.toggleClass('expanded');
+        }
+
+        // Process payment for a specific transaction group
+        function processGroupPayment(transactionId) {
+            const group = groupedTransactions[transactionId];
+            if (!group) return;
+            
+            // Set selected sales to all items in this transaction
+            selectedSales = [transactionId];
+            
+            // Pre-fill payment amount with remaining balance
+            $('#paymentAmount').val(group.totalRemaining);
+            
+            // Show payment modal
+            showPaymentModal();
+        }
+
+        // Render sales table (original table view)
+        function renderSalesTable(salesData) {
+            const tbody = $('#salesTableBody');
+            tbody.empty();
+
+            if (salesData.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="12" class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h5>No sales found</h5>
+                            <p>Try adjusting your search criteria</p>
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+
+            salesData.forEach(function(sale) {
+                const statusClass = getStatusClass(sale.PaymentStatus);
+                const progressWidth = sale.PaymentPercentage;
+                
+                const row = `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="checkbox-custom sale-checkbox" 
+                                   value="${sale.TransactionId}" onchange="updateSelectedSales()">
+                        </td>
+                        <td><strong>#${sale.TransactionId}</strong></td>
+                        <td>${sale.CustomerName}</td>
+                        <td>${sale.ProductName}</td>
+                        <td>${sale.SalesAmount}</td>
+                        <td>$${sale.Price.toLocaleString()}</td>
+                        <td><strong>$${sale.TotalAmount.toLocaleString()}</strong></td>
+                        <td>$${sale.Madfou3.toLocaleString()}</td>
+                        <td>$${sale.Baky.toLocaleString()}</td>
+                        <td>
+                            <span class="payment-status ${statusClass}">
+                                ${sale.PaymentStatus}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progressWidth}%"></div>
+                            </div>
+                            <small>${progressWidth}%</small>
+                        </td>
+                        <td>${new Date(sale.SalesDate).toLocaleDateString()}</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        // Get status CSS class
+        function getStatusClass(status) {
+            switch (status) {
+                case 'Fully Paid': return 'status-paid';
+                case 'Partially Paid': return 'status-partial';
+                case 'Unpaid': return 'status-unpaid';
+                default: return 'status-unpaid';
+            }
+        }
+
+        // Render pagination
+        function renderPagination(totalPages, currentPage, totalRecords) {
+            const pagination = $('#pagination');
+            const paginationInfo = $('#paginationInfo');
+            
+            // Update info
+            const startRecord = ((currentPage - 1) * pageSize) + 1;
+            const endRecord = Math.min(currentPage * pageSize, totalRecords);
+            paginationInfo.text(`Showing ${startRecord} to ${endRecord} of ${totalRecords} entries`);
+
+            // Clear pagination
+            pagination.empty();
+
+            if (totalPages <= 1) return;
+
+            // Previous button
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="loadSalesData(${currentPage - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `);
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="loadSalesData(${i})">${i}</a>
+                    </li>
+                `);
+            }
+
+            // Next button
+            pagination.append(`
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="loadSalesData(${currentPage + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `);
+        }
+
+        // Toggle select all
+        function toggleSelectAll() {
+            const selectAll = $('#selectAll').is(':checked');
+            $('.sale-checkbox').prop('checked', selectAll);
+            updateSelectedSales();
+        }
+
+        // Update selected sales
+        function updateSelectedSales() {
+            selectedSales = [];
+            $('.sale-checkbox:checked').each(function() {
+                selectedSales.push($(this).val());
+            });
+            
+            // Update select all checkbox
+            const totalCheckboxes = $('.sale-checkbox').length;
+            const checkedCheckboxes = $('.sale-checkbox:checked').length;
+            $('#selectAll').prop('indeterminate', checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes);
+            $('#selectAll').prop('checked', checkedCheckboxes === totalCheckboxes && totalCheckboxes > 0);
+        }
+
+        // Show payment modal
+        function showPaymentModal() {
+            if (selectedSales.length === 0) {
+                showError('Please select at least one sale to process payment.');
+                return;
+            }
+
+            $('#selectedSalesInfo').html(`
+                <strong>${selectedSales.length}</strong> sales selected: 
+                <span class="badge bg-primary">${selectedSales.join(', ')}</span>
+            `);
+            $('#paymentAmount').val('');
+            $('#customerEmail').val('');
+            
+            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            modal.show();
+        }
+
+        // Show email modal
+        function showEmailModal() {
+            if (selectedSales.length === 0) {
+                showError('Please select at least one sale to send email.');
+                return;
+            }
+
+            $('#selectedSalesInfoEmail').html(`
+                <strong>${selectedSales.length}</strong> sales selected: 
+                <span class="badge bg-primary">${selectedSales.join(', ')}</span>
+            `);
+            $('#emailAddress').val('');
+            $('#emailSubject').val('Invoice for Your Recent Purchase');
+            $('#emailMessage').val('');
+            
+            // Load invoice preview
+            previewInvoice();
+            
+            const modal = new bootstrap.Modal(document.getElementById('emailModal'));
+            modal.show();
+        }
+
+        // Show bulk email modal for all transactions
+        function showBulkEmailModal() {
+            if (isGroupedView) {
+                // Get all transaction IDs from grouped view
+                const allTransactionIds = Object.keys(groupedTransactions);
+                if (allTransactionIds.length === 0) {
+                    showError('No transactions available to send emails.');
+                    return;
+                }
+                selectedSales = allTransactionIds;
+            } else {
+                // Get all sales from table view
+                if (allSalesData.length === 0) {
+                    showError('No sales available to send emails.');
+                    return;
+                }
+                selectedSales = [...new Set(allSalesData.map(sale => sale.TransactionId))];
+            }
+
+            $('#selectedSalesInfoEmail').html(`
+                <strong>${selectedSales.length}</strong> transactions selected for bulk email: 
+                <span class="badge bg-success">All Transactions</span>
+            `);
+            $('#emailAddress').val('');
+            $('#emailSubject').val('Invoice Summary - All Transactions');
+            $('#emailMessage').val('Please find attached invoices for all your transactions.');
+            
+            // Load invoice preview
+            previewInvoice();
+            
+            const modal = new bootstrap.Modal(document.getElementById('emailModal'));
+            modal.show();
+        }
+
+        // Show email modal for specific transaction group
+        function showGroupEmailModal(transactionId) {
+            const group = groupedTransactions[transactionId];
+            if (!group) {
+                showError('Transaction not found.');
+                return;
+            }
+
+            selectedSales = [transactionId];
+            
+            $('#selectedSalesInfoEmail').html(`
+                <strong>Transaction #${transactionId}</strong> selected: 
+                <span class="badge bg-info">${group.customerName} - $${group.totalAmount.toLocaleString()}</span>
+            `);
+            $('#emailAddress').val('');
+            $('#emailSubject').val(`Invoice for Transaction #${transactionId}`);
+            $('#emailMessage').val(`Dear ${group.customerName}, please find your invoice for transaction #${transactionId}.`);
+            
+            // Load invoice preview
+            previewInvoice();
+            
+            const modal = new bootstrap.Modal(document.getElementById('emailModal'));
+            modal.show();
+        }
+
+        // Process payment
+        function processPayment() {
+            const paymentAmount = parseFloat($('#paymentAmount').val());
+            const customerEmail = $('#customerEmail').val();
+
+            if (!paymentAmount || paymentAmount <= 0) {
+                showError('Please enter a valid payment amount.');
+                return;
+            }
+
+            const data = {
+                saleIds: selectedSales,
+                paymentAmount: paymentAmount,
+                customerEmail: customerEmail
+            };
+
+            $.post('/SalesManagement/ProcessPayment', data)
+                .done(function(response) {
+                    if (response.success) {
+                        showSuccess(response.message);
+                        $('#paymentModal').modal('hide');
+                        loadKPIs();
+                        loadSalesData(currentPage);
+                        selectedSales = [];
+                        $('.sale-checkbox').prop('checked', false);
+                        $('#selectAll').prop('checked', false);
+                    } else {
+                        showError(response.message);
+                    }
+                })
+                .fail(function() {
+                    showError('Failed to process payment. Please try again.');
+                });
+        }
+
+        // Preview invoice
+        function previewInvoice() {
+            if (selectedSales.length === 0) {
+                $('#invoicePreview').html(`
+                    <div class="text-center text-muted">
+                        <i class="fas fa-file-invoice fa-3x mb-2"></i>
+                        <p>Please select sales to preview invoice</p>
+                    </div>
+                `);
+                return;
+            }
+
+            // Show loading
+            $('#invoicePreview').html(`
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+                    <p>Generating invoice preview...</p>
+                </div>
+            `);
+
+            $.post('/SalesManagement/GenerateInvoicePreview', { saleIds: selectedSales })
+                .done(function(response) {
+                    if (response.success) {
+                        $('#invoicePreview').html(response.invoiceHtml);
+                    } else {
+                        $('#invoicePreview').html(`
+                            <div class="text-center text-danger">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                                <p>Failed to generate preview: ${response.message}</p>
+                            </div>
+                        `);
+                    }
+                })
+                .fail(function() {
+                    $('#invoicePreview').html(`
+                        <div class="text-center text-danger">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                            <p>Failed to generate invoice preview</p>
+                        </div>
+                    `);
+                });
+        }
+
+        // Send invoice email
+        function sendInvoiceEmail() {
+            const emailAddress = $('#emailAddress').val();
+            const emailSubject = $('#emailSubject').val();
+            const emailMessage = $('#emailMessage').val();
+            const includePaymentLink = $('#includePaymentLink').is(':checked');
+            const attachPDF = $('#attachPDF').is(':checked');
+
+            if (!emailAddress) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+
+            if (!emailSubject.trim()) {
+                showError('Please enter an email subject.');
+                return;
+            }
+
+            // Show loading state
+            const sendButton = $('button[onclick="sendInvoiceEmail()"]');
+            const originalText = sendButton.html();
+            sendButton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Sending...');
+
+            const data = {
+                saleIds: selectedSales,
+                customerEmail: emailAddress,
+                emailSubject: emailSubject,
+                additionalMessage: emailMessage,
+                includePaymentLink: includePaymentLink,
+                attachPDF: attachPDF
+            };
+
+            $.post('/SalesManagement/SendInvoiceEmail', data)
+                .done(function(response) {
+                    if (response.success) {
+                        showSuccess('Invoice email sent successfully!');
+                        $('#emailModal').modal('hide');
+                        // Clear selections
+                        selectedSales = [];
+                        $('.sale-checkbox').prop('checked', false);
+                        $('#selectAll').prop('checked', false);
+                    } else {
+                        showError(response.message || 'Failed to send invoice email.');
+                    }
+                })
+                .fail(function(xhr) {
+                    let errorMessage = 'Failed to send invoice email. Please try again.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+                    showError(errorMessage);
+                })
+                .always(function() {
+                    // Restore button state
+                    sendButton.prop('disabled', false).html(originalText);
+                });
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            // Create a toast notification
+            const toast = $(`
+                <div class="toast align-items-center text-white bg-success border-0 position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999;" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-check-circle me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `);
+            $('body').append(toast);
+            const bsToast = new bootstrap.Toast(toast[0], { delay: 5000 });
+            bsToast.show();
+            toast.on('hidden.bs.toast', function() {
+                toast.remove();
+            });
+        }
+
+        // Show error message
+        function showError(message) {
+            // Create a toast notification
+            const toast = $(`
+                <div class="toast align-items-center text-white bg-danger border-0 position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999;" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-exclamation-triangle me-2"></i>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `);
+            $('body').append(toast);
+            const bsToast = new bootstrap.Toast(toast[0], { delay: 7000 });
+            bsToast.show();
+            toast.on('hidden.bs.toast', function() {
+                toast.remove();
+            });
+        }
+    </script>
+}

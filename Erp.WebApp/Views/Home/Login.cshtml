@@ -1,0 +1,391 @@
+﻿@model Erp.WebApp.ViewModels.LoginViewModel
+
+@{
+    ViewBag.Title = "Login to your ERP";
+    Layout = null; // Custom standalone layout for a premium login
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Fonts + Icons + Bootstrap -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg: #0b1220;
+            --text: #eaf0ff;
+            --muted: #9fb0d1;
+            --card: rgba(255,255,255,0.06);
+            --card-border: rgba(255,255,255,0.12);
+            --ring: #4c6fff;
+            --shadow: 0 20px 60px rgba(0,0,0,.45);
+            --brand-1: #6b8cff; --brand-2: #7c5cff; --brand-3: #00e1ff;
+
+            --success: #22c55e;
+            --danger: #ef4444;
+        }
+        [data-theme="light"] {
+            --bg: #f6f8ff;
+            --text: #0f172a;
+            --muted: #6b7280;
+            --card: rgba(255,255,255,0.86);
+            --card-border: #e8ecf7;
+            --ring: #6b8cff;
+            --shadow: 0 20px 60px rgba(13, 18, 54, .15);
+        }
+
+        html, body {
+            height: 100%;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Background artistry */
+        .bg-wrap {
+            position: fixed; inset: 0; overflow: hidden; pointer-events: none;
+        }
+        .bg-radials::before,
+        .bg-radials::after {
+            content: ""; position: absolute; width: 1200px; height: 1200px; border-radius: 50%;
+            filter: blur(100px); opacity: .22; transform: translate(-20%, -20%);
+            background: radial-gradient(closest-side, #7c5cff, transparent 72%);
+        }
+        .bg-radials::after {
+            right: -20%; bottom: -20%; left: auto; top: auto;
+            background: radial-gradient(closest-side, #00e1ff, transparent 72%);
+        }
+
+        .bg-grid {
+            position: absolute; inset: 0;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,.08) 1px, transparent 0);
+            background-size: 22px 22px; opacity: .35;
+        }
+
+        /* Container */
+        .page {
+            min-height: 100%;
+            display: grid;
+            place-items: center;
+            padding: clamp(18px, 3vw, 36px);
+        }
+
+        /* Card layout */
+        .auth-card {
+            position: relative;
+            width: min(1050px, 96vw);
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+        }
+        media (max-width: 900px) {
+            .auth-card { grid-template-columns: 1fr; }
+        }
+
+        /* Brand side */
+        .brand-side {
+            position: relative;
+            padding: clamp(28px, 4vw, 48px);
+            color: #fff;
+            background:
+                linear-gradient(135deg, rgba(107,140,255,.22), rgba(124,92,255,.18)),
+                linear-gradient(115deg, rgba(0,225,255,.20), transparent 55%);
+            isolation: isolate;
+        }
+        .brand-badge {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 8px 12px; border-radius: 999px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.18);
+            font-weight: 600;
+        }
+        .brand-title {
+            margin: 22px 0 8px 0;
+            font-family: Poppins, Inter, system-ui;
+            font-weight: 700;
+            font-size: clamp(28px, 3vw, 42px);
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, var(--brand-1), var(--brand-2) 45%, var(--brand-3) 95%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .brand-sub { color: rgba(255,255,255,.9); font-size: 1.05rem; }
+        .brand-points { margin-top: 22px; display: grid; gap: 10px; color: #e8eeff; }
+        .brand-points i { color: #bcd1ff; }
+
+        .hero-graphic {
+            position: absolute; inset: auto -30% -40px auto; width: 520px; height: 520px; opacity: .22;
+            background: conic-gradient(from 180deg, rgba(124,92,255,.35), rgba(0,225,255,.35), rgba(124,92,255,.35));
+            filter: blur(18px) saturate(1.2);
+            border-radius: 50%;
+            animation: floaty 8s ease-in-out infinite;
+            z-index: -1;
+        }
+        @@keyframes floaty { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.02); } }
+
+        /* Form side */
+        .form-side {
+            background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.03));
+            padding: clamp(28px, 4vw, 48px);
+        }
+
+        .top-actions {
+            display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px;
+        }
+        .chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 12px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid var(--card-border);
+            color: var(--text); cursor: pointer;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .chip:hover { transform: translateY(-1px); border-color: var(--ring); box-shadow: 0 8px 18px rgba(0,0,0,.15); }
+
+        .form-title { font-weight: 800; font-size: 1.6rem; margin: 10px 0 18px 0; letter-spacing: -0.01em; }
+        .muted { color: var(--muted); }
+
+        /* Inputs with icons + floating labels */
+        .field {
+            position: relative; margin-bottom: 18px;
+        }
+        .field .icon {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 1rem; pointer-events: none;
+        }
+        .form-control {
+            height: 52px; padding: 12px 14px 12px 40px;
+            background: rgba(255,255,255,.06);
+            color: var(--text);
+            border: 1px solid var(--card-border);
+            border-radius: 12px; outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+        .form-control::placeholder { color: transparent; }
+        .form-control:focus {
+            border-color: var(--ring);
+            box-shadow: 0 0 0 4px rgba(108, 140, 255, .22);
+            background: rgba(255,255,255,.10);
+        }
+        .floating-label {
+            position: absolute; left: 40px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); transition: .15s ease; pointer-events: none;
+            background: transparent; padding: 0 6px;
+        }
+        .form-control:focus + .floating-label,
+        .form-control:not(:placeholder-shown) + .floating-label {
+            top: -8px; transform: none; font-size: .8rem; color: var(--ring);
+            background: var(--bg);
+        }
+
+        /* Password toggle */
+        .toggle-pass {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            border: none; background: transparent; color: var(--muted);
+            padding: 6px 8px; border-radius: 8px;
+        }
+        .toggle-pass:hover { color: var(--text); }
+
+        /* Button */
+        .btn-primary-modern {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; height: 52px; border-radius: 12px; border: none;
+            color: #fff; font-weight: 700; letter-spacing: .02em;
+            background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
+            background-size: 200% 100%; transition: transform .15s ease, box-shadow .2s ease, background-position .6s ease;
+        }
+        .btn-primary-modern:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(0,0,0,.25); background-position: 100% 0; }
+        .btn-primary-modern:disabled { opacity: .75; cursor: not-allowed; }
+
+        /* Validation */
+        .validation-summary-valid, .field-validation-valid { display: none; }
+        .validation-summary-errors {
+            display: block; margin-bottom: 14px;
+            padding: 10px 12px; border-radius: 12px;
+            background: rgba(239, 68, 68, .12); border: 1px solid rgba(239,68,68,.25); color: #fecaca;
+        }
+        .text-danger { color: #fda4af !important; font-size: .9rem; margin-top: 6px; }
+
+        /* Footer */
+        .form-footer {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            margin-top: 12px; color: var(--muted);
+        }
+        .link-muted { color: var(--muted); text-decoration: none; font-weight: 600; }
+        .link-muted:hover { color: var(--text); text-decoration: underline; }
+
+        /* Small top brand */
+        .corner-brand {
+            position: fixed; top: 14px; left: 14px;
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 8px 12px; border-radius: 12px;
+            background: rgba(255,255,255,.06); border: 1px solid var(--card-border);
+            backdrop-filter: blur(8px); z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background layers -->
+    <div class="bg-wrap">
+        <div class="bg-grid"></div>
+        <div class="bg-radials"></div>
+    </div>
+
+    <!-- Small brand badge -->
+    <div class="corner-brand">
+        <i class="fa-solid fa-cubes-stacked"></i>
+        <strong>ERP Suite</strong>
+    </div>
+
+    <main class="page" data-theme="dark">
+        <section class="auth-card">
+            <!-- Brand/Message side -->
+            <aside class="brand-side">
+                <span class="brand-badge">
+                    <i class="fa-solid fa-shield-halved"></i> Enterprise‑grade security
+                </span>
+                <h1 class="brand-title">Welcome back</h1>
+                <p class="brand-sub">Your business, one powerful login away.</p>
+                <div class="brand-points">
+                    <div><i class="fa-solid fa-circle-check me-2"></i> Real‑time insights, zero friction</div>
+                    <div><i class="fa-solid fa-circle-check me-2"></i> Role‑based access and audit trails</div>
+                    <div><i class="fa-solid fa-circle-check me-2"></i> Modern design that gets out of your way</div>
+                </div>
+                <div class="hero-graphic" aria-hidden="true"></div>
+            </aside>
+
+            <!-- Form side -->
+            <section class="form-side">
+                <div class="top-actions">
+                    <button id="themeToggle" type="button" class="chip" aria-label="Toggle theme">
+                        <i class="fa-solid fa-moon"></i>
+                        <span>Theme</span>
+                    </button>
+                </div>
+
+                <h2 class="form-title">Admin Login</h2>
+                <p class="muted mb-3">Sign in to continue to your dashboard.</p>
+
+                @using (Html.BeginForm("Login", "Home", FormMethod.Post, new { role = "form", id = "loginForm", autocomplete = "on" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger validation-summary-errors" })
+
+                    <!-- UserNo -->
+                    <div class="field">
+                        <i class="fa-solid fa-id-badge icon"></i>
+                        @Html.TextBoxFor(m => m.UserNo, new
+                        {
+                            @class = "form-control",
+                            placeholder = "User ID",
+                            autocomplete = "username",
+                            aria_label = "User ID"
+                        })
+                        <label class="floating-label" for="UserNo">User ID</label>
+                        @Html.ValidationMessageFor(m => m.UserNo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field">
+                        <i class="fa-solid fa-lock icon"></i>
+                        @Html.PasswordFor(m => m.Password, new
+                        {
+                            @class = "form-control",
+                            placeholder = "Password",
+                            autocomplete = "current-password",
+                            aria_label = "Password",
+                            id = "Password"
+                        })
+                        <label class="floating-label" for="Password">Password</label>
+                        <button type="button" class="toggle-pass" aria-label="Show password" tabindex="-1">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between my-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remember" />
+                            <label class="form-check-label muted" for="remember">Remember me</label>
+                        </div>
+                        <a class="link-muted" href="#" tabindex="0">Forgot password?</a>
+                    </div>
+
+                    <button id="btnSubmit" type="submit" class="btn-primary-modern mt-3">
+                        <span class="btn-text">Log In</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="form-footer">
+                        <span>Need an account?</span>
+                        <a href="#" class="link-muted">Contact your administrator</a>
+                    </div>
+                }
+            </section>
+        </section>
+    </main>
+
+    <!-- Scripts: jQuery + Validation + Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" crossorigin="anonymous"></script>
+
+    <script>
+        // Theme toggle with persistence
+        (function () {
+            const root = document.querySelector('main.page');
+            const key = 'loginTheme';
+            const btn = document.getElementById('themeToggle');
+            const saved = localStorage.getItem(key);
+            if (saved === 'light') root.setAttribute('data-theme', 'light');
+            btn?.addEventListener('click', () => {
+                const isLight = root.getAttribute('data-theme') === 'light';
+                if (isLight) { root.removeAttribute('data-theme'); localStorage.setItem(key, 'dark'); }
+                else { root.setAttribute('data-theme', 'light'); localStorage.setItem(key, 'light'); }
+            });
+        })();
+
+        // Password show/hide
+        (function () {
+            const btn = document.querySelector('.toggle-pass');
+            const input = document.getElementById('Password');
+            btn?.addEventListener('click', () => {
+                const isPwd = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isPwd ? 'text' : 'password');
+                btn.innerHTML = isPwd ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+                btn.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+            });
+        })();
+
+        // Submit loading state + prevent double submit
+        (function () {
+            const form = document.getElementById('loginForm');
+            const btn = document.getElementById('btnSubmit');
+            const text = btn?.querySelector('.btn-text');
+            const spinner = btn?.querySelector('.spinner-border');
+
+            form?.addEventListener('submit', function () {
+                if (!$(form).valid()) return; // let validation messages show
+                btn.setAttribute('disabled', 'disabled');
+                spinner?.classList.remove('d-none');
+                text.textContent = 'Signing in...';
+            });
+        })();
+    </script>
+</body>
+</html>
+```

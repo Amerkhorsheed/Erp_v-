@@ -1,0 +1,841 @@
+@model Erp.WebApp.ViewModels.EditInvoiceViewModel
+@{
+    ViewBag.Title = "Edit Invoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #2563eb;
+        --primary-hover: #1d4ed8;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #06b6d4;
+        --light-bg: #f8fafc;
+        --border-color: #e2e8f0;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .edit-invoice-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+
+    .edit-invoice-header {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .edit-invoice-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .edit-invoice-title i {
+        color: var(--primary-color);
+    }
+
+    .invoice-meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .invoice-number {
+        background: var(--light-bg);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .invoice-state {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .state-draft {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .state-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .state-paid {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .state-overdue {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .state-cancelled {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #4b5563;
+    }
+
+    .invoice-form {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--danger-color);
+    }
+
+    .form-control:disabled {
+        background-color: var(--light-bg);
+        color: var(--text-secondary);
+        cursor: not-allowed;
+    }
+
+    .invalid-feedback {
+        color: var(--danger-color);
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    .items-section {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1.5rem;
+        background: var(--light-bg);
+    }
+
+    .items-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .btn-success {
+        background: var(--success-color);
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #059669;
+    }
+
+    .btn-success:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .items-table th {
+        background: var(--light-bg);
+        padding: 0.75rem;
+        text-align: left;
+        font-weight: 600;
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .items-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    .item-input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .item-input:disabled {
+        background-color: var(--light-bg);
+        color: var(--text-secondary);
+    }
+
+    .btn-danger {
+        background: var(--danger-color);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+    }
+
+    .btn-danger:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .totals-section {
+        background: var(--light-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .totals-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .total-row:last-child {
+        border-bottom: none;
+        font-weight: 600;
+        font-size: 1.125rem;
+        color: var(--primary-color);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-color);
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.75rem 2rem;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+    }
+
+    .btn-warning {
+        background: var(--warning-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+    }
+
+    .btn-info {
+        background: var(--info-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .btn-info:hover {
+        background: #0891b2;
+    }
+
+    .empty-items {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+    }
+
+    .readonly-notice {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        color: #92400e;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .edit-invoice-container {
+            padding: 1rem;
+        }
+
+        .edit-invoice-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .items-table {
+            font-size: 0.75rem;
+        }
+
+        .totals-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="edit-invoice-container">
+    <div class="edit-invoice-header">
+        <div>
+            <h1 class="edit-invoice-title">
+                <i class="fas fa-edit"></i>
+                Edit Invoice
+            </h1>
+        </div>
+        <div class="invoice-meta">
+            <div class="invoice-number">
+                #@(Model.InvoiceNumber ?? "Draft")
+            </div>
+            <div class="invoice-state state-@Model.InvoiceState.ToLower()">
+                @Model.InvoiceState
+            </div>
+            <a href="@Url.Action("Index", "InvoiceManagement")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Invoices
+            </a>
+        </div>
+    </div>
+
+    @if (Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled")
+    {
+        <div class="readonly-notice">
+            <i class="fas fa-info-circle"></i>
+            This invoice is @Model.InvoiceState.ToLower() and cannot be modified. You can only view the details.
+        </div>
+    }
+
+    @using (Html.BeginForm("Edit", "InvoiceManagement", FormMethod.Post, new { @class = "invoice-form-container" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.InvoiceID)
+        @Html.HiddenFor(m => m.InvoiceNumber)
+        
+        <div class="invoice-form">
+            <!-- Invoice Information Section -->
+            <div class="form-section">
+                <h3 class="section-title">Invoice Information</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CustomerID, "Customer", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.CustomerID, 
+                            new SelectList(Model.Customers, "ID", "CustomerName", Model.CustomerID), 
+                            "Select Customer", 
+                            new { @class = "form-control", @id = "customerSelect", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                        @Html.ValidationMessageFor(m => m.CustomerID, "", new { @class = "invalid-feedback" })
+                    </div>
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.InvoiceDate, "Invoice Date", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.InvoiceDate, "{0:yyyy-MM-dd}", 
+                            new { @class = "form-control", @type = "date", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                        @Html.ValidationMessageFor(m => m.InvoiceDate, "", new { @class = "invalid-feedback" })
+                    </div>
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DueDate, "Due Date", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.DueDate, "{0:yyyy-MM-dd}", 
+                            new { @class = "form-control", @type = "date", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                        @Html.ValidationMessageFor(m => m.DueDate, "", new { @class = "invalid-feedback" })
+                    </div>
+                    
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.InvoiceState, "Invoice State", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.InvoiceState, 
+                            new SelectList(new[] { "Draft", "Pending", "Paid", "Overdue", "Cancelled" }, Model.InvoiceState), 
+                            "Select State", 
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.InvoiceState, "", new { @class = "invalid-feedback" })
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Notes, "Notes", new { @class = "form-label" })
+                    @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @rows = "3", @placeholder = "Additional notes or comments...", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                    @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "invalid-feedback" })
+                </div>
+            </div>
+
+            <!-- Invoice Items Section -->
+            <div class="form-section">
+                <div class="items-section">
+                    <div class="items-header">
+                        <h3 class="section-title" style="margin: 0; border: none; padding: 0;">Invoice Items</h3>
+                        <button type="button" class="btn btn-success" id="addItemBtn" 
+                                @(Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" ? "disabled" : "")>
+                            <i class="fas fa-plus"></i>
+                            Add Item
+                        </button>
+                    </div>
+                    
+                    <div id="itemsContainer">
+                        <table class="items-table" id="itemsTable" style="@(Model.Items.Any() ? "" : "display: none;")">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Discount %</th>
+                                    <th>Line Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTableBody">
+                                @for (int i = 0; i < Model.Items.Count; i++)
+                                {
+                                    <tr data-item-id="@i">
+                                        @Html.HiddenFor(m => m.Items[i].ItemID)
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Items[i].ProductID, 
+                                                new SelectList(Model.Products, "ID", "ProductName", Model.Items[i].ProductID), 
+                                                "Select Product", 
+                                                new { @class = "item-input product-select", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                                        </td>
+                                        <td>
+                                            @Html.DropDownListFor(m => m.Items[i].CategoryID, 
+                                                new SelectList(Model.Categories, "ID", "CategoryName", Model.Items[i].CategoryID), 
+                                                "Select Category", 
+                                                new { @class = "item-input category-select", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Items[i].Quantity, 
+                                                new { @class = "item-input quantity-input", @type = "number", @min = "1", @step = "1", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Items[i].UnitPrice, 
+                                                new { @class = "item-input price-input", @type = "number", @min = "0", @step = "0.01", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.Items[i].DiscountPercentage, 
+                                                new { @class = "item-input discount-input", @type = "number", @min = "0", @max = "100", @step = "0.01", @disabled = Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" })
+                                        </td>
+                                        <td>
+                                            <span class="line-total">$@Model.Items[i].LineTotal.ToString("F2")</span>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger remove-item" 
+                                                    @(Model.InvoiceState == "Paid" || Model.InvoiceState == "Cancelled" ? "disabled" : "")>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        
+                        <div id="emptyItemsMessage" class="empty-items" style="@(Model.Items.Any() ? "display: none;" : "")">
+                            <i class="fas fa-shopping-cart" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                            <p>No items added yet. Click "Add Item" to get started.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Totals Section -->
+            <div class="totals-section">
+                <div class="totals-grid">
+                    <div></div>
+                    <div style="min-width: 300px;">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotalAmount">$@Model.TotalAmount.ToString("F2")</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Total Discount:</span>
+                            <span id="totalDiscount">$0.00</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Total Amount:</span>
+                            <span id="totalAmount">$@Model.TotalAmount.ToString("F2")</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Paid Amount:</span>
+                            <span>$@Model.PaidAmount.ToString("F2")</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Remaining Amount:</span>
+                            <span>$@Model.RemainingAmount.ToString("F2")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="@Url.Action("Index", "InvoiceManagement")" class="btn btn-secondary">
+                    Cancel
+                </a>
+                
+                @if (Model.InvoiceState != "Paid" && Model.InvoiceState != "Cancelled")
+                {
+                    <button type="button" class="btn btn-info" onclick="markAsPaid(@Model.InvoiceID)">
+                        <i class="fas fa-check-circle"></i>
+                        Mark as Paid
+                    </button>
+                    
+                    <button type="button" class="btn btn-warning" onclick="updateState(@Model.InvoiceID, 'Cancelled')">
+                        <i class="fas fa-ban"></i>
+                        Cancel Invoice
+                    </button>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Update Invoice
+                    </button>
+                }
+                else
+                {
+                    <span class="btn btn-secondary" style="cursor: default;">
+                        <i class="fas fa-lock"></i>
+                        Invoice Locked
+                    </span>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Initialize data
+        const products = @Html.Raw(Json.Encode(Model.Products));
+        const categories = @Html.Raw(Json.Encode(Model.Categories));
+        const isReadonly = '@Model.InvoiceState' === 'Paid' || '@Model.InvoiceState' === 'Cancelled';
+        
+        let itemCounter = @Model.Items.Count;
+        
+        // Add item button click
+        $('#addItemBtn').click(function() {
+            if (!isReadonly) {
+                addNewItem();
+            }
+        });
+        
+        function addNewItem() {
+            const productOptions = products.map(p => 
+                `<option value="${p.ID}" data-price="${p.ProductSalesPrice}" data-category="${p.CategoryID}">${p.ProductName}</option>`
+            ).join('');
+            
+            const categoryOptions = categories.map(c => 
+                `<option value="${c.ID}">${c.CategoryName}</option>`
+            ).join('');
+            
+            const newRow = `
+                <tr data-item-id="${itemCounter}">
+                    <input type="hidden" name="Items[${itemCounter}].ItemID" value="0" />
+                    <td>
+                        <select class="item-input product-select" name="Items[${itemCounter}].ProductID" required>
+                            <option value="">Select Product</option>
+                            ${productOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="item-input category-select" name="Items[${itemCounter}].CategoryID" required>
+                            <option value="">Select Category</option>
+                            ${categoryOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="item-input quantity-input" 
+                               name="Items[${itemCounter}].Quantity" 
+                               min="1" step="1" value="1" required>
+                    </td>
+                    <td>
+                        <input type="number" class="item-input price-input" 
+                               name="Items[${itemCounter}].UnitPrice" 
+                               min="0" step="0.01" value="0.00" required>
+                    </td>
+                    <td>
+                        <input type="number" class="item-input discount-input" 
+                               name="Items[${itemCounter}].DiscountPercentage" 
+                               min="0" max="100" step="0.01" value="0.00">
+                    </td>
+                    <td>
+                        <span class="line-total">$0.00</span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            
+            $('#itemsTableBody').append(newRow);
+            $('#itemsTable').show();
+            $('#emptyItemsMessage').hide();
+            
+            itemCounter++;
+            
+            // Bind events for the new row
+            bindItemEvents();
+            updateTotals();
+        }
+        
+        function bindItemEvents() {
+            // Product selection change
+            $('.product-select').off('change').on('change', function() {
+                if (!isReadonly) {
+                    const selectedOption = $(this).find('option:selected');
+                    const price = selectedOption.data('price') || 0;
+                    const categoryId = selectedOption.data('category') || '';
+                    
+                    const row = $(this).closest('tr');
+                    row.find('.price-input').val(price.toFixed(2));
+                    row.find('.category-select').val(categoryId);
+                    
+                    calculateLineTotal(row);
+                }
+            });
+            
+            // Quantity, price, discount change
+            $('.quantity-input, .price-input, .discount-input').off('input').on('input', function() {
+                if (!isReadonly) {
+                    const row = $(this).closest('tr');
+                    calculateLineTotal(row);
+                }
+            });
+            
+            // Remove item
+            $('.remove-item').off('click').on('click', function() {
+                if (!isReadonly) {
+                    $(this).closest('tr').remove();
+                    
+                    if ($('#itemsTableBody tr').length === 0) {
+                        $('#itemsTable').hide();
+                        $('#emptyItemsMessage').show();
+                    }
+                    
+                    updateTotals();
+                }
+            });
+        }
+        
+        function calculateLineTotal(row) {
+            const quantity = parseFloat(row.find('.quantity-input').val()) || 0;
+            const unitPrice = parseFloat(row.find('.price-input').val()) || 0;
+            const discountPercent = parseFloat(row.find('.discount-input').val()) || 0;
+            
+            const subtotal = quantity * unitPrice;
+            const discountAmount = subtotal * (discountPercent / 100);
+            const lineTotal = subtotal - discountAmount;
+            
+            row.find('.line-total').text('$' + lineTotal.toFixed(2));
+            
+            updateTotals();
+        }
+        
+        function updateTotals() {
+            let subtotal = 0;
+            let totalDiscount = 0;
+            
+            $('#itemsTableBody tr').each(function() {
+                const quantity = parseFloat($(this).find('.quantity-input').val()) || 0;
+                const unitPrice = parseFloat($(this).find('.price-input').val()) || 0;
+                const discountPercent = parseFloat($(this).find('.discount-input').val()) || 0;
+                
+                const itemSubtotal = quantity * unitPrice;
+                const itemDiscount = itemSubtotal * (discountPercent / 100);
+                
+                subtotal += itemSubtotal;
+                totalDiscount += itemDiscount;
+            });
+            
+            const totalAmount = subtotal - totalDiscount;
+            
+            $('#subtotalAmount').text('$' + subtotal.toFixed(2));
+            $('#totalDiscount').text('$' + totalDiscount.toFixed(2));
+            $('#totalAmount').text('$' + totalAmount.toFixed(2));
+        }
+        
+        // Global functions for button actions
+        window.markAsPaid = function(invoiceId) {
+            if (confirm('Are you sure you want to mark this invoice as paid?')) {
+                $.post('@Url.Action("MarkAsPaid", "InvoiceManagement")', {
+                    invoiceId: invoiceId
+                })
+                .done(function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    alert('Error marking invoice as paid');
+                });
+            }
+        };
+        
+        window.updateState = function(invoiceId, newState) {
+            if (confirm(`Are you sure you want to ${newState.toLowerCase()} this invoice?`)) {
+                $.post('@Url.Action("UpdateState", "InvoiceManagement")', {
+                    invoiceId: invoiceId,
+                    newState: newState
+                })
+                .done(function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                })
+                .fail(function() {
+                    alert('Error updating invoice state');
+                });
+            }
+        };
+        
+        // Form validation
+        $('form').submit(function(e) {
+            if (isReadonly) {
+                e.preventDefault();
+                return false;
+            }
+            
+            if ($('#itemsTableBody tr').length === 0) {
+                e.preventDefault();
+                alert('Please add at least one item to the invoice.');
+                return false;
+            }
+            
+            // Validate all required fields
+            let isValid = true;
+            $(this).find('[required]:not(:disabled)').each(function() {
+                if (!$(this).val()) {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return false;
+            }
+        });
+        
+        // Initialize events and calculations
+        bindItemEvents();
+        updateTotals();
+    });
+</script>

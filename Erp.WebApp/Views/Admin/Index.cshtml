@@ -1,0 +1,662 @@
+﻿@using System.Globalization
+@{
+    ViewBag.Title = "Admin Dashboard";
+
+    // Safe parsing: never throw if ViewBag carries strings/nulls
+    Func<object, decimal> SafeToDecimal = (val) =>
+    {
+        if (val == null) return 0M;
+        if (val is decimal d) return d;
+        if (val is int i) return i;
+        if (val is long l) return l;
+        if (val is double db) return (decimal)db;
+        if (val is float f) return (decimal)f;
+        var s = Convert.ToString(val);
+        if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed)) return parsed;
+        if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.CurrentCulture, out parsed)) return parsed;
+        return 0M;
+    };
+
+    // Safe numeric values for KPIs
+    decimal totalProfitVal = SafeToDecimal(ViewBag.TotalProfit);
+    decimal totalRevenueVal = SafeToDecimal(ViewBag.TotalRevenue);
+    decimal totalCustomersVal = SafeToDecimal(ViewBag.TotalCustomers);
+    decimal totalSuppliersVal = SafeToDecimal(ViewBag.TotalSuppliers);
+
+    // Default currency symbol (server-side) — overridden by user's selection client-side
+    var currencySymbol = (string)(ViewBag.CurrencySymbol ?? "֏");
+
+    // Fallback display formatting (for when JS is disabled)
+    Func<decimal, string> FormatCurrency = v => currencySymbol + " " + v.ToString("#,0", CultureInfo.CurrentUICulture);
+    Func<decimal, string> FormatInt = v => v.ToString("#,0", CultureInfo.CurrentUICulture);
+}
+
+<!-- Fonts + Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    :root {
+        --bg: #f5f7fb;
+        --bg-accent: radial-gradient(1200px 600px at 10% -10%, #eaf1ff 0%, transparent 60%),
+                     radial-gradient(900px 600px at 110% 0%, #fff6ea 0%, transparent 55%);
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --card-bg: #ffffffcc;
+        --card-border: #e7eaf3;
+        --glass: blur(12px);
+        --shadow: 0 10px 30px -10px rgba(13, 18, 54, 0.15);
+        --shadow-hover: 0 20px 45px -12px rgba(13, 18, 54, 0.22);
+        --grid: rgba(15, 23, 42, 0.08);
+        --tick: rgba(15, 23, 42, 0.55);
+        --title-grad: linear-gradient(90deg, #6b8cff, #7c5cff 45%, #00e1ff 90%);
+        --ring: #dfe8ff;
+
+        --success-1: #22c55e; --success-2: #10b981;
+        --info-1: #3b82f6;   --info-2: #06b6d4;
+        --violet-1: #7c3aed; --violet-2: #a78bfa;
+        --warn-1: #f59e0b;   --warn-2: #f97316;
+        --danger-1: #ef4444; --danger-2: #fb7185;
+    }
+    [data-theme="dark"] {
+        --bg: #0b1220;
+        --bg-accent: radial-gradient(1200px 600px at 0% -10%, rgba(124,92,255,.18) 0%, transparent 60%),
+                     radial-gradient(900px 600px at 120% 0%, rgba(0,225,255,.16) 0%, transparent 55%);
+        --text: #e8eefc;
+        --text-muted: #9fb0d1;
+        --card-bg: #0f172acc;
+        --card-border: #1f2a44;
+        --glass: blur(10px);
+        --shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+        --shadow-hover: 0 20px 60px -18px rgba(0, 0, 0, 0.65);
+        --grid: rgba(148, 163, 184, 0.18);
+        --tick: rgba(226, 232, 240, 0.7);
+        --title-grad: linear-gradient(90deg, #9eb4ff, #c6b7ff 50%, #9ff7ff 95%);
+        --ring: #23304d;
+    }
+
+    html, body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    body::before {
+        content: "";
+        position: fixed; inset: 0;
+        background: var(--bg-accent);
+        pointer-events: none; z-index: 0;
+    }
+    .container-fluid { position: relative; z-index: 1; }
+
+    .page-header {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px; margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+    .title-wrap h1 {
+        margin: 0;
+        font-family: Poppins, Inter, system-ui;
+        font-size: clamp(24px, 2.2vw, 36px);
+        font-weight: 700; letter-spacing: -0.02em;
+        background: var(--title-grad);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .subtle { color: var(--text-muted); font-size: 0.95rem; margin-top: 4px; }
+
+    .header-actions {
+        display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    }
+    .theme-toggle, .ui-select {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 10px 14px; border-radius: 999px;
+        background: var(--card-bg); border: 1px solid var(--card-border);
+        box-shadow: var(--shadow); cursor: pointer; user-select: none;
+        transition: transform .2s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+        color: var(--text);
+        font-weight: 600;
+    }
+    .theme-toggle:hover, .ui-select:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); border-color: var(--ring); }
+    .theme-toggle .dot {
+        width: 22px; height: 22px; border-radius: 50%;
+        background: radial-gradient(circle at 30% 30%, #ffd36e 0%, #ffb703 60%, #f59e0b 100%);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,.15), 0 6px 14px rgba(249, 115, 22, .35);
+        flex-shrink: 0;
+    }
+    [data-theme="dark"] .theme-toggle .dot {
+        background: radial-gradient(circle at 40% 40%, #90caf9 0%, #60a5fa 60%, #3b82f6 100%);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,.08), 0 6px 16px rgba(59, 130, 246, .35);
+    }
+    .ui-select select {
+        appearance: none; -webkit-appearance: none; -moz-appearance: none;
+        background: transparent; border: none; color: inherit; font: inherit; outline: none;
+        padding-right: 18px; cursor: pointer;
+    }
+    .ui-select .icon { font-size: 0.9rem; opacity: .7; }
+
+    .card {
+        border: 1px solid var(--card-border);
+        background: var(--card-bg);
+        backdrop-filter: var(--glass);
+        border-radius: 16px; box-shadow: var(--shadow);
+        transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--ring); }
+    .card .card-header {
+        background: transparent;
+        font-weight: 700; color: var(--text);
+        border-bottom: 1px solid rgba(127,127,127,.12);
+        padding: 16px 18px;
+    }
+    .card .card-body { padding: 18px; }
+
+    .kpi-card { position: relative; overflow: hidden; color: white; border: none; }
+    .kpi-card .card-body { position: relative; z-index: 2; }
+    .kpi-card .card-title {
+        font-weight: 600; font-size: 0.85rem; text-transform: uppercase;
+        letter-spacing: .06em; opacity: .95;
+    }
+    .kpi-card .kpi-value {
+        font-size: clamp(26px, 2.6vw, 36px); font-weight: 800;
+        letter-spacing: -0.02em; line-height: 1.15;
+    }
+    .kpi-trend {
+        margin-top: 8px; font-size: 0.9rem; font-weight: 600; opacity: .95;
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 10px; border-radius: 999px;
+        background: rgba(255,255,255,.14); backdrop-filter: blur(6px);
+    }
+    .kpi-card .card-icon {
+        position: absolute; right: -28px; bottom: -28px;
+        font-size: 110px; opacity: 0.18;
+        filter: drop-shadow(0 8px 12px rgba(0,0,0,.2));
+        transform: rotate(-15deg);
+    }
+    .kpi-glow { content: ""; position: absolute; inset: -30%;
+        background: radial-gradient(550px 250px at 10% 10%, rgba(255,255,255,.3) 0%, transparent 55%);
+        z-index: 1; pointer-events: none; mix-blend-mode: screen; }
+
+    .bg-gradient-profit    { background: linear-gradient(135deg, var(--success-1), var(--success-2)); }
+    .bg-gradient-revenue   { background: linear-gradient(135deg, var(--info-1), var(--info-2)); }
+    .bg-gradient-customers { background: linear-gradient(135deg, var(--violet-1), var(--violet-2)); }
+    .bg-gradient-suppliers { background: linear-gradient(135deg, var(--warn-1), var(--warn-2)); }
+
+    .chart-card { overflow: hidden; }
+    .chart-card .card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .chart-actions { display: inline-flex; gap: 8px; }
+    .chip {
+        font-size: .85rem; color: var(--text);
+        border: 1px solid var(--card-border);
+        background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+        padding: 6px 10px; border-radius: 10px; cursor: pointer;
+        transition: background .2s ease, border-color .2s ease;
+    }
+    .chip:hover { border-color: var(--ring); }
+
+    /* Subtle scrollbars */
+    ::-webkit-scrollbar{ width:10px;height:10px }
+    ::-webkit-scrollbar-thumb{ background: rgba(127,127,127,.3); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover{ background: rgba(127,127,127,.5); border: 2px solid transparent; }
+
+    /* Entrance animation */
+    keyframes floatIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .stagger > [class*="col-"] { animation: floatIn .6s ease both; }
+    .stagger > [class*="col-"]:nth-child(2) { animation-delay: .06s; }
+    .stagger > [class*="col-"]:nth-child(3) { animation-delay: .12s; }
+    .stagger > [class*="col-"]:nth-child(4) { animation-delay: .18s; }
+</style>
+
+<div class="container-fluid" data-currency="@currencySymbol">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="title-wrap">
+            <h1>NextGen Dashboard</h1>
+            <div class="subtle">A clean, responsive, animated control center for your business.</div>
+        </div>
+
+        <div class="header-actions">
+            <!-- Currency selector -->
+            <label class="ui-select" for="currencySelect" title="Display currency (no conversion)">
+                <i class="fa-solid fa-money-bill-wave icon" aria-hidden="true"></i>
+                <select id="currencySelect" aria-label="Select display currency">
+                    <option value="AMD">AMD ֏</option>
+                    <option value="SYR">SYR</option>
+                    <option value="USD">USD $</option>
+                    <option value="EUR">EUR €</option>
+                </select>
+                <i class="fa-solid fa-chevron-down icon" aria-hidden="true"></i>
+            </label>
+
+            <!-- Theme toggle -->
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                <span class="dot" aria-hidden="true"></span>
+                <span style="color: var(--text-muted); font-weight: 600;">Theme</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Cards Row -->
+    <div class="row stagger">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card kpi-card bg-gradient-profit">
+                <span class="kpi-glow"></span>
+                <div class="card-body">
+                    <div class="card-title">Total Profit</div>
+                    <div class="kpi-value"
+                         data-countup
+                         data-format="currency"
+                         data-decimals="0"
+                         data-value="@totalProfitVal.ToString(CultureInfo.InvariantCulture)">
+                        @FormatCurrency(totalProfitVal)
+                    </div>
+                    <div class="kpi-trend"><i class="fa-solid fa-arrow-trend-up"></i> Healthy Growth</div>
+                    <i class="fa-solid fa-chart-line card-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card kpi-card bg-gradient-revenue">
+                <span class="kpi-glow"></span>
+                <div class="card-body">
+                    <div class="card-title">Total Revenue</div>
+                    <div class="kpi-value"
+                         data-countup
+                         data-format="currency"
+                         data-decimals="0"
+                         data-value="@totalRevenueVal.ToString(CultureInfo.InvariantCulture)">
+                        @FormatCurrency(totalRevenueVal)
+                    </div>
+                    <div class="kpi-trend"><i class="fa-solid fa-signal"></i> Steady Momentum</div>
+                    <i class="fa-solid fa-coins card-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card kpi-card bg-gradient-customers">
+                <span class="kpi-glow"></span>
+                <div class="card-body">
+                    <div class="card-title">Active Customers</div>
+                    <div class="kpi-value"
+                         data-countup
+                         data-format="int"
+                         data-decimals="0"
+                         data-value="@totalCustomersVal.ToString(CultureInfo.InvariantCulture)">
+                        @FormatInt(totalCustomersVal)
+                    </div>
+                    <div class="kpi-trend"><i class="fa-solid fa-user-plus"></i> Community Rising</div>
+                    <i class="fa-solid fa-users card-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card kpi-card bg-gradient-suppliers">
+                <span class="kpi-glow"></span>
+                <div class="card-body">
+                    <div class="card-title">Valued Suppliers</div>
+                    <div class="kpi-value"
+                         data-countup
+                         data-format="int"
+                         data-decimals="0"
+                         data-value="@totalSuppliersVal.ToString(CultureInfo.InvariantCulture)">
+                        @FormatInt(totalSuppliersVal)
+                    </div>
+                    <div class="kpi-trend"><i class="fa-solid fa-handshake"></i> Strong Network</div>
+                    <i class="fa-solid fa-truck-fast card-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+        <div class="col-xl-12 mb-4">
+            <div class="card chart-card">
+                <div class="card-header">
+                    <span>Monthly Performance</span>
+                    <div class="chart-actions">
+                        <span class="chip" data-action="ytd">YTD</span>
+                        <span class="chip" data-action="mtd">MTD</span>
+                        <span class="chip" data-action="all">All</span>
+                    </div>
+                </div>
+                <div class="card-body" style="height: 380px;">
+                    <canvas id="profitExpenseChart" role="img" aria-label="Line chart showing monthly profit and expenses"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Charts -->
+    <div class="row">
+        <div class="col-xl-8 mb-4">
+            <div class="card chart-card">
+                <div class="card-header">Top 10 Products by Revenue</div>
+                <div class="card-body" style="height: 430px;">
+                    <canvas id="topProductsChart" role="img" aria-label="Horizontal bar chart of top ten products by revenue"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 mb-4">
+            <div class="card chart-card">
+                <div class="card-header">Busiest Sales Days</div>
+                <div class="card-body" style="height: 430px;">
+                    <canvas id="salesByDayChart" role="img" aria-label="Radar chart of total sales by weekday"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // --- Currency utilities (symbol only; no conversion of values) ---
+        const codeToSymbol = (code) => ({ AMD: '֏', SYR: 'SYR', USD: '$', EUR: '€' }[code] || '֏');
+        const symbolToCode = (symbol) => {
+            switch(symbol){ case '֏': return 'AMD'; case 'SYR': return 'SYR'; case '$': return 'USD'; case '€': return 'EUR'; default: return 'AMD'; }
+        };
+        const getContainer = () => document.querySelector('.container-fluid');
+        const getCurrencySymbol = () => getContainer()?.dataset.currency || '֏';
+
+        // --- Theme persistence + toggle ---
+        (function initTheme(){
+            const saved = localStorage.getItem('theme');
+            if(saved) document.documentElement.setAttribute('data-theme', saved);
+            const btn = document.getElementById('themeToggle');
+            if (btn) btn.addEventListener('click', () => {
+                const curr = document.documentElement.getAttribute('data-theme');
+                const next = curr === 'dark' ? '' : 'dark';
+                if(next) document.documentElement.setAttribute('data-theme', next);
+                else document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', next);
+                setTimeout(updateChartTheme, 0);
+            });
+        })();
+
+        // --- Count-up animation (reads clean numeric data-value) ---
+        (function initCountUp(){
+            const els = document.querySelectorAll('[data-countup]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(!entry.isIntersecting) return;
+                    const el = entry.target; observer.unobserve(el);
+
+                    const raw = el.getAttribute('data-value');
+                    const target = Number(raw);
+                    if(!isFinite(target)) return; // leave fallback as-is
+
+                    const format = (el.getAttribute('data-format') || 'int').toLowerCase();
+                    const decimalsAttr = el.getAttribute('data-decimals');
+                    const decimals = isFinite(Number(decimalsAttr)) ? Number(decimalsAttr) : (format === 'currency' ? 0 : 0);
+                    const nf = new Intl.NumberFormat(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+                    const fmt = (n) => format === 'currency' ? (getCurrencySymbol() + ' ' + nf.format(n)) : nf.format(n);
+
+                    const duration = 900;
+                    const start = performance.now(); const from = 0;
+                    const step = (now) => {
+                        const t = Math.min(1, (now - start) / duration);
+                        const eased = t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
+                        const val = from + (target - from) * eased;
+                        el.textContent = fmt(decimals ? Number(val.toFixed(decimals)) : Math.round(val));
+                        if (t < 1) requestAnimationFrame(step);
+                        else el.dataset.done = '1';
+                    };
+                    requestAnimationFrame(step);
+                });
+            }, { threshold: .35 });
+            els.forEach(el => observer.observe(el));
+        })();
+
+        // --- Chart.js defaults ---
+        Chart.defaults.font.family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial";
+        Chart.defaults.plugins.legend.labels.boxWidth = 10;
+        Chart.defaults.elements.line.borderWidth = 3;
+        Chart.defaults.elements.point.radius = 0;
+        Chart.defaults.elements.point.hitRadius = 12;
+
+        const CHART_COLORS = {
+            blue: 'rgb(54, 162, 235)',
+            green: 'rgb(75, 192, 192)',
+            purple: 'rgb(153, 102, 255)',
+            orange: 'rgb(255, 159, 64)',
+            red: 'rgb(255, 99, 132)',
+            yellow: 'rgb(255, 205, 86)'
+        };
+
+        const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '';
+        const gridColor = () => cssVar('--grid') || 'rgba(0,0,0,.1)';
+        const tickColor = () => cssVar('--tick') || '#666';
+        const textColor = () => cssVar('--text') || '#222';
+
+        const makeVGradient = (ctx, color, height) => {
+            const g = ctx.createLinearGradient(0, 0, 0, height);
+            g.addColorStop(0, color.replace('rgb', 'rgba').replace(')', ', 0.35)'));
+            g.addColorStop(1, color.replace('rgb', 'rgba').replace(')', ', 0.02)'));
+            return g;
+        };
+        const makeHGradient = (ctx, from, to, width) => {
+            const g = ctx.createLinearGradient(0, 0, width, 0);
+            g.addColorStop(0, from); g.addColorStop(1, to);
+            return g;
+        };
+
+        // Declare charts in outer scope for later updates
+        let profitExpenseChart, topProductsChart, salesByDayChart;
+
+        // --- Chart 1: Profit vs Expenses ---
+        (function initLineChart(){
+            const ctxLine = document.getElementById('profitExpenseChart').getContext('2d');
+            const gradientProfit = makeVGradient(ctxLine, CHART_COLORS.green, 380);
+            const gradientExpense = makeVGradient(ctxLine, CHART_COLORS.red, 380);
+
+            profitExpenseChart = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(ViewBag.ChartLabels ?? "[]"),
+                    datasets: [
+                        {
+                            label: "Profit",
+                            borderColor: CHART_COLORS.green,
+                            backgroundColor: gradientProfit,
+                            data: @Html.Raw(ViewBag.ProfitData ?? "[]"),
+                            fill: true,
+                            tension: 0.35,
+                            pointHoverRadius: 5,
+                            pointHoverBorderWidth: 2
+                        },
+                        {
+                            label: "Expenses",
+                            borderColor: CHART_COLORS.red,
+                            backgroundColor: gradientExpense,
+                            data: @Html.Raw(ViewBag.ExpenseData ?? "[]"),
+                            fill: true,
+                            tension: 0.35,
+                            pointHoverRadius: 5,
+                            pointHoverBorderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: textColor(), font: { weight: 600 } } },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#fff', bodyColor: '#e5e7eb',
+                            padding: 12, displayColors: true,
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: ${getCurrencySymbol()} ${ctx.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: gridColor(), drawBorder: false }, ticks: { color: tickColor() } },
+                        y: {
+                            grid: { color: gridColor(), drawBorder: false },
+                            ticks: {
+                                color: tickColor(),
+                                callback: (v) => {
+                                    const n = Number(v);
+                                    const sym = getCurrencySymbol();
+                                    return sym + ' ' + (Math.abs(n) >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'') + 'K' : n);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        })();
+
+        // --- Chart 2: Top Products Horizontal Bar ---
+        (function initBarChart(){
+            const ctxBar = document.getElementById('topProductsChart').getContext('2d');
+            const barGradient = makeHGradient(ctxBar, cssVar('--violet-2') || '#a78bfa', cssVar('--info-1') || '#3b82f6', 600);
+
+            topProductsChart = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: @Html.Raw(ViewBag.TopProductsLabels ?? "[]"),
+                    datasets: [{
+                        label: 'Total Revenue',
+                        data: @Html.Raw(ViewBag.TopProductsData ?? "[]"),
+                        backgroundColor: barGradient,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#fff', bodyColor: '#e5e7eb',
+                            callbacks: { label: (ctx) => `${getCurrencySymbol()} ${ctx.parsed.x.toLocaleString()}` }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: gridColor(), drawBorder: false },
+                            ticks: {
+                                color: tickColor(),
+                                callback: function(value) {
+                                    const v = Number(value);
+                                    const sym = getCurrencySymbol();
+                                    return sym + ' ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace(/\.0$/,'') + 'K' : v);
+                                }
+                            }
+                        },
+                        y: { grid: { display: false }, ticks: { color: tickColor(), font: { weight: 600 } } }
+                    }
+                }
+            });
+        })();
+
+        // --- Chart 3: Sales by Day Radar ---
+        (function initRadarChart(){
+            salesByDayChart = new Chart(document.getElementById('salesByDayChart').getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: @Html.Raw(ViewBag.SalesByDayLabels ?? "[]"),
+                    datasets: [{
+                        label: 'Total Sales',
+                        data: @Html.Raw(ViewBag.SalesByDayData ?? "[]"),
+                        backgroundColor: 'rgba(124, 92, 255, 0.18)',
+                        borderColor: cssVar('--violet-1') || CHART_COLORS.purple,
+                        borderWidth: 2,
+                        pointBackgroundColor: cssVar('--violet-1') || CHART_COLORS.purple,
+                        pointHoverRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#fff', bodyColor: '#e5e7eb',
+                            callbacks: { label: (ctx) => `${ctx.label}: ${ctx.parsed.r.toLocaleString()}` }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            grid: { color: gridColor() },
+                            angleLines: { color: gridColor() },
+                            pointLabels: { color: tickColor(), font: { weight: 600 }},
+                            ticks: { color: tickColor(), backdropColor: 'transparent' }
+                        }
+                    }
+                }
+            });
+        })();
+
+        // --- Re-style charts on theme switch ---
+        function updateChartTheme() {
+            const legendsColor = textColor();
+            const g = gridColor();
+            const t = tickColor();
+            const apply = (chart) => {
+                if(!chart) return;
+                if(chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = legendsColor;
+                const scales = chart.options.scales || {};
+                Object.keys(scales).forEach(axis => {
+                    if(scales[axis].grid)  scales[axis].grid.color = g;
+                    if(scales[axis].ticks) scales[axis].ticks.color = t;
+                    if(axis === 'r') {
+                        if(scales[axis].angleLines) scales[axis].angleLines.color = g;
+                        if(scales[axis].pointLabels) scales[axis].pointLabels.color = t;
+                    }
+                });
+                chart.update('none');
+            };
+            apply(profitExpenseChart);
+            apply(topProductsChart);
+            apply(salesByDayChart);
+        }
+
+        // --- Currency selector behavior & persistence ---
+        (function initCurrency(){
+            const select = document.getElementById('currencySelect');
+            const container = getContainer();
+            const savedCode = localStorage.getItem('currencyCode');
+            const defaultCode = savedCode || symbolToCode(container?.dataset.currency || '֏') || 'AMD';
+
+            const applyCurrency = (code) => {
+                const symbol = codeToSymbol(code);
+                if(container) container.dataset.currency = symbol; // single source of truth
+                localStorage.setItem('currencyCode', code);
+                // Update KPI text immediately if animation already done
+                document.querySelectorAll('[data-countup]').forEach(el => {
+                    el.setAttribute('data-symbol', symbol);
+                    if (el.dataset.done === '1') {
+                        const raw = Number(el.getAttribute('data-value')) || 0;
+                        const format = (el.getAttribute('data-format') || 'int').toLowerCase();
+                        const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+                        const nf = new Intl.NumberFormat(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+                        el.textContent = (format === 'currency') ? (symbol + ' ' + nf.format(raw)) : nf.format(raw);
+                    }
+                });
+                // Refresh charts to show the new symbol in ticks/tooltips
+                if (profitExpenseChart) profitExpenseChart.update('none');
+                if (topProductsChart) topProductsChart.update('none');
+                if (salesByDayChart) salesByDayChart.update('none');
+            };
+
+            // Initialize selector and apply currency
+            if (select) {
+                select.value = defaultCode;
+                applyCurrency(defaultCode);
+                select.addEventListener('change', () => applyCurrency(select.value));
+            }
+        })();
+    </script>
+}

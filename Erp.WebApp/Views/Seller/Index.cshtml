@@ -1,0 +1,782 @@
+@model Erp.WebApp.ViewModels.CreateSaleViewModel
+
+@{
+    ViewBag.Title = "New Sale";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this path is correct
+}
+
+@*
+    =================================================================
+    =         EMBEDDED STYLES (FROM sales.css)                    =
+    =================================================================
+*@
+@section Styles {
+    <style>
+        /* ================================================================= */
+        /* =         STYLES FOR THE SALES PAGE                            = */
+        /* ================================================================= */
+
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-color: #f4f7f6;
+            --card-bg-color: #ffffff;
+            --text-color: #333;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --gradient-bg: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            --border-radius: 12px;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 25px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 28px var(--shadow-color);
+            }
+
+        .card-header {
+            background: var(--gradient-bg);
+            color: white;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+        }
+
+        /* Ensure the product list appears above other content */
+        #productList {
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+            display: none; /* Controlled by JavaScript */
+        }
+
+        .product-list-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+            .product-list-item:hover {
+                background-color: #f8f9fa;
+                border-left-color: var(--primary-color);
+                transform: translateX(5px);
+            }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .quantity-btn:hover {
+                background-color: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 0.25rem;
+        }
+
+        .remove-item-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+            .remove-item-btn:hover {
+                background-color: #dc3545;
+                color: white;
+            }
+
+        .total-section {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+            .total-row.final {
+                border-top: 2px solid var(--primary-color);
+                padding-top: 1rem;
+                margin-top: 1rem;
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+
+        .btn-complete-sale {
+            background: var(--gradient-bg);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+            .btn-complete-sale:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(106, 17, 203, 0.3);
+            }
+
+            .btn-complete-sale:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-animation {
+            animation: successPulse 0.6s ease-in-out;
+        }
+
+        keyframes successPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+
+        /* ================================================================= */
+        /* =         NEW: STYLES FOR THE TOAST NOTIFICATION SYSTEM         = */
+        /* ================================================================= */
+
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            z-index: 1050;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .toast-notification.show {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+        /* Color variations for different types of messages */
+        .toast-info {
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+        }
+
+        .toast-success {
+            background: linear-gradient(45deg, #198754, #15b372);
+        }
+
+        .toast-warning {
+            background: linear-gradient(45deg, #ffc107, #ff9800);
+            color: #000;
+        }
+
+        .toast-danger {
+            background: linear-gradient(45deg, #dc3545, #f05a68);
+        }
+    </style>
+}
+
+<!-- =================================================== -->
+<!-- =         PRIMARY SALE CREATION CONTAINER         = -->
+<!-- =================================================== -->
+<div id="saleCreationContainer">
+    <div class="row g-4">
+        <!-- Left Column: Invoice Items -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="bi bi-receipt-cutoff"></i> Create Invoice</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3 position-relative">
+                        <label for="productSearch" class="form-label fw-bold">Add Product</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" id="productSearch" class="form-control" placeholder="Start typing to search for a product...">
+                        </div>
+                        <div id="productList" class="list-group mt-1"></div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th style="width: 120px;">Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th style="width: 120px;">Discount ($)</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoiceItems">
+                                <!-- JS will render items here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Customer & Total -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="bi bi-person-check-fill"></i> Details</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <label for="customerSelect" class="form-label fw-bold">Customer</label>
+                        <select id="customerSelect" class="form-select">
+                            <option>Loading customers...</option>
+                        </select>
+                        <div id="customerEmailInfo" class="mt-2" style="display: none;">
+                            <small class="text-muted"><i class="bi bi-envelope"></i> <span id="customerEmailText"></span></small>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="total-section">
+                        <div class="total-row"><span>Subtotal</span><span id="subTotal">$0.00</span></div>
+                        <div class="total-row"><span>Total Discount</span><span id="totalDiscount" class="text-danger">-$0.00</span></div>
+                        <div class="total-row final"><span>Grand Total</span><span id="grandTotal">$0.00</span></div>
+                    </div>
+
+                    <hr />
+
+                    <button id="completeSaleBtn" class="btn-complete-sale" disabled>
+                        <i class="bi bi-check-circle me-2"></i>Complete Sale
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- =================================================== -->
+<!-- =         SUCCESS PANEL (Initially Hidden)        = -->
+<!-- =================================================== -->
+<div id="saleSuccessPanel" style="display: none;" class="card text-center">
+    <div class="card-body p-4">
+        <h3 class="card-title text-success"><i class="bi bi-check-circle-fill"></i> Sale Completed!</h3>
+        <p id="successMessageText" class="lead"></p>
+        <div class="mt-4">
+            <h5 class="mb-3">Choose an action:</h5>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a id="viewInvoiceBtn" href="#" class="btn btn-primary btn-lg"><i class="bi bi-receipt"></i> View Invoice</a>
+                <button id="printInvoiceBtn" class="btn btn-info btn-lg"><i class="bi bi-printer"></i> Print Invoice</button>
+                <a id="whatsAppActionBtn" href="#" class="btn btn-success btn-lg" target="_blank" title="Send invoice via WhatsApp" style="display: none;"><i class="bi bi-whatsapp"></i> Send WhatsApp</a>
+            </div>
+            <div class="mt-3">
+                <button id="newSaleBtn" class="btn btn-outline-secondary btn-lg"><i class="bi bi-plus-circle"></i> New Sale</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*
+    =================================================================
+    =         EMBEDDED SCRIPT (FROM sales.js)                     =
+    =================================================================
+*@
+@section Scripts {
+    <script>
+        // =================================================================
+        // =         JAVASCRIPT FOR THE SALES PAGE (MODULAR PATTERN)       =
+        // =================================================================
+
+        // Encapsulate all logic in an App object to avoid polluting the global namespace
+        const App = {
+            Sales: {
+                // --- STATE MANAGEMENT ---
+                state: {
+                    invoice: [],
+                    customers: [], // Will be loaded from ViewBag
+                    products: [],  // Will be loaded from ViewBag
+                    searchDebounceTimeout: null,
+                    currentSaleIds: null, // Will be set after successful sale
+                },
+
+                // --- DOM ELEMENT CACHE ---
+                dom: {},
+
+                // --- INITIALIZATION ---
+                init: function () {
+                    // **MODIFIED**: Parse the JSON data provided by the controller in the ViewBag
+                    try {
+                        this.state.customers = @Html.Raw(ViewBag.CustomersJson ?? "[]");
+                        this.state.products = @Html.Raw(ViewBag.ProductsJson ?? "[]");
+                    } catch (e) {
+                        console.error("Failed to parse initial data from ViewBag.", e);
+                        this.showToast("Error loading initial page data.", "danger");
+                    }
+
+                    this.cacheDom();
+                    this.bindEvents();
+                    this.renderInitialData(); // New function to populate dropdowns
+                    this.renderInvoice(); // Render the initial empty state
+                },
+
+                // --- SETUP FUNCTIONS ---
+                cacheDom: function () {
+                    this.dom.saleCreationContainer = document.getElementById('saleCreationContainer');
+                    this.dom.customerSelect = document.getElementById('customerSelect');
+                    this.dom.customerInfo = document.getElementById('customerEmailInfo');
+                    this.dom.customerInfoText = document.getElementById('customerEmailText');
+                    this.dom.productSearch = document.getElementById('productSearch');
+                    this.dom.productList = document.getElementById('productList');
+                    this.dom.invoiceItems = document.getElementById('invoiceItems');
+                    this.dom.subTotal = document.getElementById('subTotal');
+                    this.dom.totalDiscount = document.getElementById('totalDiscount');
+                    this.dom.grandTotal = document.getElementById('grandTotal');
+                    this.dom.completeSaleBtn = document.getElementById('completeSaleBtn');
+                    this.dom.successPanel = document.getElementById('saleSuccessPanel');
+                    this.dom.successMessageText = document.getElementById('successMessageText');
+                    this.dom.viewInvoiceBtn = document.getElementById('viewInvoiceBtn');
+                    this.dom.printInvoiceBtn = document.getElementById('printInvoiceBtn');
+                    this.dom.whatsAppActionBtn = document.getElementById('whatsAppActionBtn');
+                    this.dom.newSaleBtn = document.getElementById('newSaleBtn');
+                },
+
+                bindEvents: function () {
+                    this.dom.productSearch.addEventListener('input', this.handleProductSearch.bind(this));
+                    this.dom.completeSaleBtn.addEventListener('click', this.submitSale.bind(this));
+                    this.dom.customerSelect.addEventListener('change', this.renderUIState.bind(this));
+                    this.dom.newSaleBtn.addEventListener('click', this.resetSale.bind(this));
+                    this.dom.printInvoiceBtn.addEventListener('click', this.printInvoice.bind(this));
+                },
+
+                // --- NEW FUNCTION ---
+                // Replaces the old 'loadInitialData' by using the pre-loaded data.
+                renderInitialData: function () {
+                    if (this.state.customers.length > 0) {
+                        this.dom.customerSelect.innerHTML = '<option value="" disabled selected>Select a customer...</option>';
+                        this.dom.customerSelect.innerHTML += this.state.customers.map(c =>
+                            // FIX: Use the standardized 'ID' property for the option value.
+                            `<option value="${c.ID}">${c.CustomerName}</option>`
+                        ).join('');
+                    } else {
+                        this.dom.customerSelect.innerHTML = '<option>No customers found</option>';
+                    }
+                },
+
+                // --- EVENT HANDLERS ---
+                handleProductSearch: function (e) {
+                    clearTimeout(this.state.searchDebounceTimeout);
+                    this.state.searchDebounceTimeout = setTimeout(() => {
+                        this.searchProducts(e.target.value);
+                    }, 200); // Shortened delay as it's client-side
+                },
+
+                // --- CORE LOGIC (MODIFIED) ---
+                searchProducts: function (query) {
+                    if (!query || query.length < 2) {
+                        this.dom.productList.style.display = 'none';
+                        return;
+                    }
+
+                    const lowerCaseQuery = query.toLowerCase();
+                    // **MODIFIED**: Search the PRE-LOADED products array instead of fetching from an API.
+                    const filteredProducts = this.state.products.filter(p =>
+                        p.ProductName.toLowerCase().includes(lowerCaseQuery)
+                    );
+
+                    this.dom.productList.style.display = 'block';
+
+                    if (filteredProducts.length === 0) {
+                        this.dom.productList.innerHTML = `<div class="list-group-item">No products found.</div>`;
+                        return;
+                    }
+
+                    // Use the correct property names from your ProductDetailDTO
+                    this.dom.productList.innerHTML = filteredProducts.map(p => `
+                        <a href="#" class="list-group-item list-group-item-action product-list-item"
+                           data-id="${p.ProductID}" data-name="${p.ProductName}" data-price="${p.Sale_Price}" data-stock="${p.stockAmount}">
+                            <strong>${p.ProductName}</strong> (Stock: ${p.stockAmount}) - $${p.Sale_Price.toFixed(2)}
+                        </a>
+                    `).join('');
+
+                    // Re-bind click events to the new list items
+                    this.dom.productList.querySelectorAll('.product-list-item').forEach(item => {
+                        item.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const data = e.currentTarget.dataset;
+                            this.addProductToInvoice(parseInt(data.id), data.name, parseFloat(data.price), parseInt(data.stock));
+                        });
+                    });
+                },
+
+                addProductToInvoice: function (id, name, price, stock) {
+                    this.dom.productSearch.value = '';
+                    this.dom.productList.style.display = 'none';
+
+                    if (this.state.invoice.find(item => item.productId === id)) {
+                        this.showToast(`'${name}' is already in the invoice.`, 'warning');
+                        return;
+                    }
+
+                    this.state.invoice.push({
+                        productId: id, productName: name, quantity: 1,
+                        unitPrice: price, discount: 0, maxStock: stock
+                    });
+                    this.renderInvoice();
+                },
+
+                updateInvoiceItem: function (index, key, value) {
+                    const item = this.state.invoice[index];
+                    if (!item) return;
+
+                    if (key === 'quantity') {
+                        value = parseInt(value) || 1;
+                        if (value < 1) value = 1;
+                        if (value > item.maxStock) {
+                            this.showToast(`Max stock for '${item.productName}' is ${item.maxStock}.`, 'warning');
+                            value = item.maxStock;
+                        }
+                    } else if (key === 'discount') {
+                        value = parseFloat(value) || 0;
+                        const maxDiscount = item.quantity * item.unitPrice;
+                        if (value < 0) value = 0;
+                        if (value > maxDiscount) {
+                            this.showToast(`Discount cannot exceed the line total of $${maxDiscount.toFixed(2)}.`, 'warning');
+                            value = maxDiscount;
+                        }
+                    }
+                    item[key] = value;
+                    this.renderInvoice();
+                },
+
+                removeItem: function (index) {
+                    this.state.invoice.splice(index, 1);
+                    this.renderInvoice();
+                },
+
+                submitSale: async function () {
+                    if (this.dom.completeSaleBtn.disabled) return;
+
+                    this.dom.completeSaleBtn.disabled = true;
+                    this.dom.completeSaleBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+
+                    try {
+                        const saleData = {
+                            customerId: parseInt(this.dom.customerSelect.value),
+                            items: this.state.invoice.map(item => ({
+                                productId: item.productId,
+                                quantity: item.quantity,
+                                unitPrice: item.unitPrice,
+                                discount: item.discount
+                            }))
+                        };
+
+                        console.log('Submitting sale data:', saleData);
+
+                        // **MODIFIED**: The URL now points to our new controller action.
+                        const response = await fetch('/Seller/CreateSale', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                                // In a real app with forms, you would add an Anti-Forgery Token here
+                            },
+                            body: JSON.stringify(saleData)
+                        });
+
+                        console.log('Raw response status:', response.status);
+                        console.log('Raw response headers:', response.headers);
+                        
+                        const result = await response.json();
+                        console.log('=== SALE API RESPONSE ANALYSIS ===');
+                    console.log('Complete API response:', result);
+                    console.log('Response type:', typeof result);
+                    console.log('Response keys:', Object.keys(result));
+                    console.log('Has saleIds:', 'saleIds' in result);
+                    console.log('saleIds value:', result.saleIds);
+                    console.log('saleIds type:', typeof result.saleIds);
+                    console.log('saleIds is array:', Array.isArray(result.saleIds));
+                    console.log('Has whatsAppUrl:', 'whatsAppUrl' in result);
+                    console.log('whatsAppUrl value:', result.whatsAppUrl);
+                    console.log('=== END ANALYSIS ===');
+                        
+                        if (!response.ok) {
+                            throw new Error(result.message || 'Sale creation failed on the server.');
+                        }
+
+                        this.handleSaleSuccess(result);
+
+                    } catch (error) {
+                        this.showToast(error.message, 'danger');
+                        this.renderUIState(); // Reset button state on failure
+                    }
+                },
+
+                // Inside Views/Seller/Index.cshtml in the <script> section...
+
+                handleSaleSuccess: function (result) {
+                    console.log('=== SALE SUCCESS HANDLER DIAGNOSTICS ===');
+                    console.log('Sale success result:', result);
+                    
+                    // Professional Diagnostic Analysis
+                    console.log('🔍 DIAGNOSTIC CHECKLIST:');
+                    console.log('✓ API Response Structure:', {
+                        hasSuccess: 'success' in result,
+                        successValue: result.success,
+                        hasSaleIds: 'saleIds' in result,
+                        saleIdsValue: result.saleIds,
+                        saleIdsType: typeof result.saleIds,
+                        isValidArray: Array.isArray(result.saleIds) && result.saleIds.length > 0,
+                        hasWhatsAppUrl: 'whatsAppUrl' in result,
+                        whatsAppUrlValue: result.whatsAppUrl
+                    });
+                    
+                    // Issue Classification
+                    if (!result.saleIds || !Array.isArray(result.saleIds) || result.saleIds.length === 0) {
+                        console.error('❌ ISSUE IDENTIFIED: API not returning saleIds properly');
+                        console.log('📋 TROUBLESHOOTING STEPS:');
+                        console.log('1. Check API endpoint response format');
+                        console.log('2. Verify database transaction completion');
+                        console.log('3. Review API controller return statement');
+                    } else {
+                        console.log('✅ saleIds received successfully:', result.saleIds);
+                    }
+                    
+                    if (!result.whatsAppUrl) {
+                        console.warn('⚠️ WhatsApp URL not provided - button will be hidden');
+                    }
+                    
+                    // With the API fix, 'result.message' and 'result.saleIds' will be correct (camelCase).
+                    // This code adds extra safety checks.
+                    if (result.success) {
+                        this.showToast(result.message || 'Sale completed successfully!', 'success');
+                    }
+
+                    // Store transaction IDs for later use
+                    this.state.currentSaleIds = result.saleIds;
+                    console.log('📦 Stored transaction IDs in state:', this.state.currentSaleIds);
+                    console.log('🎯 Print functionality status:', this.state.currentSaleIds ? 'ENABLED' : 'DISABLED');
+                    console.log('=== END DIAGNOSTICS ===');
+
+                    // --- ROBUSTNESS FIX IS HERE ---
+                    // First, check if the saleIds array exists and has items.
+                    if (result.saleIds && Array.isArray(result.saleIds) && result.saleIds.length > 0) {
+                        const idsString = result.saleIds.join(', ');
+                        this.dom.successMessageText.textContent = `Transaction with ID(s) ${idsString} has been processed.`;
+                        this.dom.viewInvoiceBtn.href = `/Invoice/Index?ids=${idsString}`;
+                        this.dom.viewInvoiceBtn.style.display = 'inline-block';
+                    } else {
+                        // If for some reason saleIds is missing, don't crash. Show a generic message.
+                        this.dom.successMessageText.textContent = 'The transaction has been processed successfully.';
+                        // And hide the button that depends on the IDs.
+                        this.dom.viewInvoiceBtn.style.display = 'none';
+                    }
+
+                    // Show WhatsApp button only if WhatsApp URL is available
+                    console.log('WhatsApp URL from result:', result.whatsAppUrl);
+                    if (result.whatsAppUrl) {
+                        console.log('Showing WhatsApp button with URL:', result.whatsAppUrl);
+                        this.dom.whatsAppActionBtn.href = result.whatsAppUrl;
+                        this.dom.whatsAppActionBtn.style.display = 'inline-block';
+                    } else {
+                        console.log('Hiding WhatsApp button - no URL provided');
+                        this.dom.whatsAppActionBtn.style.display = 'none';
+                    }
+
+                    // Switch to the success panel
+                    this.dom.saleCreationContainer.style.display = 'none';
+                    this.dom.successPanel.style.display = 'block';
+                },
+
+                resetSale: function () {
+                    this.state.invoice = [];
+                    this.dom.customerSelect.value = '';
+                    this.dom.saleCreationContainer.style.display = '';
+                    this.dom.successPanel.style.display = 'none';
+                    this.renderInvoice();
+                },
+
+                printInvoice: function () {
+                    console.log('Print button clicked. Current transaction IDs:', this.state.currentSaleIds);
+                    
+                    if (this.state.currentSaleIds && this.state.currentSaleIds.length > 0) {
+                        const idsString = this.state.currentSaleIds.join(',');
+                        const printUrl = `/Invoice/Index?ids=${idsString}&print=true`;
+                        
+                        console.log('Opening print URL:', printUrl);
+                        
+                        // Open in new window for printing
+                        const printWindow = window.open(printUrl, '_blank', 'width=800,height=600');
+                        
+                        // Focus on the new window and trigger print dialog
+                        if (printWindow) {
+                            printWindow.onload = function() {
+                                printWindow.focus();
+                                printWindow.print();
+                            };
+                        } else {
+                            this.showToast('Unable to open print window. Please check your popup blocker settings.', 'warning');
+                        }
+                    } else {
+                        this.showToast('Please complete a sale first before printing an invoice.', 'warning');
+                    }
+                },
+
+                calculateGrandTotal: function () {
+                    return this.state.invoice.reduce((total, item) => total + (item.quantity * item.unitPrice) - item.discount, 0);
+                },
+
+                // --- UI RENDERING ---
+                renderInvoice: function () {
+                    let subTotal = 0, totalDiscount = 0;
+
+                    if (this.state.invoice.length === 0) {
+                        this.dom.invoiceItems.innerHTML = `<tr><td colspan="6" class="text-center text-muted p-4"><div class="empty-state"><i class="bi bi-cart-plus"></i><p>No items added yet.</p></div></td></tr>`;
+                    } else {
+                        this.dom.invoiceItems.innerHTML = this.state.invoice.map((item, index) => {
+                            const lineTotal = (item.quantity * item.unitPrice) - item.discount;
+                            subTotal += item.quantity * item.unitPrice;
+                            totalDiscount += item.discount;
+                            return `
+                                <tr>
+                                    <td>${item.productName}</td>
+                                    <td><input type="number" class="form-control form-control-sm quantity-input" value="${item.quantity}" min="1" max="${item.maxStock}" onchange="App.Sales.updateInvoiceItem(${index}, 'quantity', this.value)"></td>
+                                    <td>$${item.unitPrice.toFixed(2)}</td>
+                                    <td><input type="number" class="form-control form-control-sm" value="${item.discount.toFixed(2)}" min="0" step="0.01" onchange="App.Sales.updateInvoiceItem(${index}, 'discount', this.value)"></td>
+                                    <td class="fw-bold">$${lineTotal.toFixed(2)}</td>
+                                    <td><button class="remove-item-btn" onclick="App.Sales.removeItem(${index})"><i class="bi bi-trash"></i></button></td>
+                                </tr>
+                            `;
+                        }).join('');
+                    }
+
+                    this.dom.subTotal.textContent = `$${subTotal.toFixed(2)}`;
+                    this.dom.totalDiscount.textContent = `-$${totalDiscount.toFixed(2)}`;
+                    this.dom.grandTotal.textContent = `$${(subTotal - totalDiscount).toFixed(2)}`;
+
+                    this.renderUIState();
+                },
+
+                renderUIState: function () {
+                    const customerId = this.dom.customerSelect.value;
+                    if (customerId) {
+                        // FIX: Find the customer using the standardized 'ID' property.
+                        const customer = this.state.customers.find(c => c.ID == customerId);
+                        this.dom.customerInfoText.textContent = customer?.Email || 'No email on file';
+                        this.dom.customerInfo.style.display = 'block';
+                    } else {
+                        this.dom.customerInfo.style.display = 'none';
+                    }
+
+                    const hasItems = this.state.invoice.length > 0;
+                    const hasCustomer = this.dom.customerSelect.value !== '';
+                    this.dom.completeSaleBtn.disabled = !(hasItems && hasCustomer);
+                    if (!this.dom.completeSaleBtn.disabled) {
+                        this.dom.completeSaleBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Complete Sale';
+                    }
+                },
+
+                // --- UTILITIES ---
+                showToast: function (message, type = 'info') {
+                    const toast = document.createElement('div');
+                    toast.className = `toast-notification toast-${type}`;
+                    toast.textContent = message;
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.classList.add('show'), 10);
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => toast.remove(), 500);
+                    }, 5000);
+                }
+            }
+        };
+
+        // Make the App object globally accessible for inline event handlers (onclick, onchange)
+        window.App = App;
+        // Start the application logic once the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => App.Sales.init());
+    </script>
+}
