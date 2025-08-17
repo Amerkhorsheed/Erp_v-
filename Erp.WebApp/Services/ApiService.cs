@@ -1,18 +1,13 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Erp.WebApp.Services.Interfaces;
 
 namespace Erp.WebApp.Services
 {
-    public interface IApiService
-    {
-        Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = null);
-        Task<TResponse> GetAsync<TResponse>(string uri, string token);
-    }
-
     public class ApiService : IApiService
     {
         private readonly HttpClient _httpClient;
@@ -25,6 +20,29 @@ namespace Erp.WebApp.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        // Overload to satisfy IApiService signature
+        public async Task<T> PostAsync<T>(string endpoint, object data, string token)
+        {
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var json = JsonConvert.SerializeObject(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(endpoint, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new HttpRequestException($"POST {endpoint} failed with status code {response.StatusCode}. Response: {errorContent}");
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseContent);
+        }
+
+        // Keep the generic request/response method if needed elsewhere
         public async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest data, string token = null)
         {
             if (!string.IsNullOrEmpty(token))

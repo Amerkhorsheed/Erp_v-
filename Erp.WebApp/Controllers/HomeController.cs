@@ -1,4 +1,5 @@
-﻿using Erp.WebApp.Services;
+using Erp.WebApp.Services;
+using Erp.WebApp.Services.Interfaces;
 using Erp.WebApp.ViewModels;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -43,7 +44,7 @@ namespace Erp.WebApp.Controllers
                     return View(model);
                 }
 
-                _authService.SignIn(loginResponse.Token, loginResponse.Role);
+                _authService.SignIn(loginResponse.Token, loginResponse.Role, model.UserNo.ToString());
 
                 switch (loginResponse.Role)
                 {

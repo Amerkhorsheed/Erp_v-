@@ -49,9 +49,10 @@ namespace Erp.WebApp
 
             // --- Service Registrations ---
             container.RegisterType<IAuthService, AuthService>();
-            container.RegisterType<IEmailService, EmailService>();
+            container.RegisterType<Erp.WebApp.Services.Interfaces.IEmailService, Erp.WebApp.Services.EmailService>();
             container.RegisterType<ISalesManagementEmailService, SalesManagementEmailService>();
-            container.RegisterType<IInvoicePdfService, InvoicePdfService>();
+            container.RegisterType<Erp.WebApp.Services.Interfaces.IInvoicePdfService, Erp.WebApp.Services.InvoicePdfService>();
+            container.RegisterType<Erp.WebApp.Services.Interfaces.INotificationService, Erp.WebApp.Services.NotificationService>();
 
             // --- BLL Registrations ---
             container.RegisterType<Erp_V1.BLL.InvoiceBLL>();
@@ -65,7 +66,7 @@ namespace Erp.WebApp
                 var client = new HttpClient { BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["ApiBaseUrl"]) };
                 return client;
             }));
-            container.RegisterType<IApiService, ApiService>();
+            container.RegisterType<Erp.WebApp.Services.Interfaces.IApiService, Erp.WebApp.Services.ApiService>();
         }
 
         private static IConfiguration BuildConfiguration()

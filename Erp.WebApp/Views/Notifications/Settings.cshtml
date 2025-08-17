@@ -1,0 +1,356 @@
+@model List<Erp.WebApp.ViewModels.NotificationSettingViewModel>
+@{
+    ViewBag.Title = "Notification Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-cog"></i> Notification Settings
+                    </h4>
+                    <p class="card-text mb-0">
+                        Configure which notifications you want to receive and their preferences.
+                    </p>
+                </div>
+                
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        using (Html.BeginForm("UpdateSettings", "Notifications", FormMethod.Post, new { @class = "settings-form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            
+                            <div class="settings-container">
+                                @for (int i = 0; i < Model.Count; i++)
+                                {
+                                    <div class="setting-item card mb-3">
+                                        <div class="card-body">
+                                            @Html.HiddenFor(m => m[i].Id)
+                                            @Html.HiddenFor(m => m[i].NotificationType)
+                                            
+                                            <div class="row align-items-center">
+                                                <div class="col-md-6">
+                                                    <div class="setting-info">
+                                                        <h6 class="setting-title">
+                                                            @{
+                                                                var iconClass = "fas fa-bell";
+                                                                switch (Model[i].NotificationType?.ToLower())
+                                                                {
+                                                                    case "system":
+                                                                        iconClass = "fas fa-cogs";
+                                                                        break;
+                                                                    case "sales":
+                                                                        iconClass = "fas fa-chart-line";
+                                                                        break;
+                                                                    case "inventory":
+                                                                        iconClass = "fas fa-boxes";
+                                                                        break;
+                                                                    case "payment":
+                                                                        iconClass = "fas fa-credit-card";
+                                                                        break;
+                                                                    case "user":
+                                                                        iconClass = "fas fa-user";
+                                                                        break;
+                                                                    case "alert":
+                                                                        iconClass = "fas fa-exclamation-triangle";
+                                                                        break;
+                                                                }
+                                                            }
+                                                            <i class="@iconClass"></i> @Model[i].NotificationType Notifications
+                                                        </h6>
+                                                        <p class="setting-description text-muted mb-0">
+                                                            @{
+                                                                var description = "General notifications";
+                                                                switch (Model[i].NotificationType?.ToLower())
+                                                                {
+                                                                    case "system":
+                                                                        description = "System updates, maintenance, and technical alerts";
+                                                                        break;
+                                                                    case "sales":
+                                                                        description = "Sales targets, achievements, and performance updates";
+                                                                        break;
+                                                                    case "inventory":
+                                                                        description = "Stock levels, low inventory, and product updates";
+                                                                        break;
+                                                                    case "payment":
+                                                                        description = "Payment reminders, invoice updates, and financial alerts";
+                                                                        break;
+                                                                    case "user":
+                                                                        description = "User account changes, profile updates, and personal notifications";
+                                                                        break;
+                                                                    case "alert":
+                                                                        description = "Important alerts and urgent notifications";
+                                                                        break;
+                                                                }
+                                                            }
+                                                            @description
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-2">
+                                                    <div class="form-check form-switch">
+                                                        @Html.CheckBoxFor(m => m[i].IsEnabled, new { @class = "form-check-input", id = $"switch_{i}" })
+                                                        <label class="form-check-label" for="switch_@(i)">
+                                                            @(Model[i].IsEnabled ? "Enabled" : "Disabled")
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <div class="threshold-setting" style="@(Model[i].IsEnabled ? "" : "opacity: 0.5; pointer-events: none;")">
+                                                        <label class="form-label small">Threshold Value</label>
+                                                        @Html.TextBoxFor(m => m[i].ThresholdValue, new { @class = "form-control form-control-sm", placeholder = "Optional threshold", type = "number", min = "0" })
+                                                        <small class="form-text text-muted">
+                                                            @{
+                                                                var thresholdHelp = "Optional numeric threshold";
+                                                                switch (Model[i].NotificationType?.ToLower())
+                                                                {
+                                                                    case "inventory":
+                                                                        thresholdHelp = "Minimum stock level to trigger alerts";
+                                                                        break;
+                                                                    case "sales":
+                                                                        thresholdHelp = "Sales target amount for notifications";
+                                                                        break;
+                                                                    case "payment":
+                                                                        thresholdHelp = "Days before payment due for reminders";
+                                                                        break;
+                                                                }
+                                                            }
+                                                            @thresholdHelp
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            @if (!string.IsNullOrEmpty(Model[i].AdditionalSettings))
+                                            {
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <div class="additional-settings" style="@(Model[i].IsEnabled ? "" : "opacity: 0.5; pointer-events: none;")">
+                                                            <label class="form-label small">Additional Settings (JSON)</label>
+                                                            @Html.TextAreaFor(m => m[i].AdditionalSettings, new { @class = "form-control form-control-sm", rows = "2", placeholder = "Optional JSON configuration" })
+                                                            <small class="form-text text-muted">Advanced configuration in JSON format</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            
+                            <div class="form-actions mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Settings
+                                </button>
+                                <button type="button" class="btn btn-secondary ml-2" onclick="resetToDefaults()">
+                                    <i class="fas fa-undo"></i> Reset to Defaults
+                                </button>
+                                <a href="@Url.Action("Index", "Notifications")" class="btn btn-outline-secondary ml-2">
+                                    <i class="fas fa-arrow-left"></i> Back to Notifications
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state text-center py-5">
+                            <i class="fas fa-cog fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Notification Settings Found</h5>
+                            <p class="text-muted">Notification settings will be created automatically when you receive your first notifications.</p>
+                            <a href="@Url.Action("Index", "Notifications")" class="btn btn-primary">
+                                <i class="fas fa-arrow-left"></i> Back to Notifications
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Help Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-question-circle"></i> Help & Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-info-circle text-info"></i> Notification Types</h6>
+                            <ul class="list-unstyled small">
+                                <li><strong>System:</strong> Technical updates and maintenance alerts</li>
+                                <li><strong>Sales:</strong> Performance metrics and target notifications</li>
+                                <li><strong>Inventory:</strong> Stock level and product alerts</li>
+                                <li><strong>Payment:</strong> Financial reminders and invoice updates</li>
+                                <li><strong>User:</strong> Account and profile related notifications</li>
+                                <li><strong>Alert:</strong> Urgent and important system alerts</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-cogs text-warning"></i> Configuration Tips</h6>
+                            <ul class="list-unstyled small">
+                                <li><strong>Threshold Values:</strong> Set numeric limits for triggering notifications</li>
+                                <li><strong>Additional Settings:</strong> Use JSON format for advanced configuration</li>
+                                <li><strong>Enable/Disable:</strong> Toggle notification types on or off</li>
+                                <li><strong>Real-time Updates:</strong> Changes take effect immediately</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handle switch toggle labels
+            $('.form-check-input').change(function() {
+                var label = $(this).siblings('.form-check-label');
+                var thresholdDiv = $(this).closest('.row').find('.threshold-setting, .additional-settings');
+                
+                if ($(this).is(':checked')) {
+                    label.text('Enabled');
+                    thresholdDiv.css({'opacity': '1', 'pointer-events': 'auto'});
+                } else {
+                    label.text('Disabled');
+                    thresholdDiv.css({'opacity': '0.5', 'pointer-events': 'none'});
+                }
+            });
+            
+            // Form submission with loading state
+            $('.settings-form').on('submit', function() {
+                var submitBtn = $(this).find('button[type="submit"]');
+                submitBtn.prop('disabled', true)
+                         .html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+            });
+            
+            // JSON validation for additional settings
+            $('textarea[name$=".AdditionalSettings"]').on('blur', function() {
+                var value = $(this).val().trim();
+                if (value && value !== '') {
+                    try {
+                        JSON.parse(value);
+                        $(this).removeClass('is-invalid').addClass('is-valid');
+                    } catch (e) {
+                        $(this).removeClass('is-valid').addClass('is-invalid');
+                        // You could show a tooltip or message here
+                    }
+                } else {
+                    $(this).removeClass('is-invalid is-valid');
+                }
+            });
+        });
+        
+        function resetToDefaults() {
+            if (confirm('Are you sure you want to reset all notification settings to their default values? This action cannot be undone.')) {
+                // Enable all notifications
+                $('.form-check-input').prop('checked', true).trigger('change');
+                
+                // Clear threshold values
+                $('input[name$=".ThresholdValue"]').val('');
+                
+                // Clear additional settings
+                $('textarea[name$=".AdditionalSettings"]').val('').removeClass('is-invalid is-valid');
+                
+                alert('Settings have been reset to defaults. Don\'t forget to save your changes.');
+            }
+        }
+    </script>
+}
+
+@section Styles {
+    <style>
+        .settings-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .setting-item {
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+        
+        .setting-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .setting-title {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .setting-title i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+        
+        .setting-description {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .form-switch .form-check-input {
+            width: 3rem;
+            height: 1.5rem;
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .threshold-setting, .additional-settings {
+            transition: all 0.3s ease;
+        }
+        
+        .form-control-sm {
+            font-size: 13px;
+        }
+        
+        .empty-state {
+            padding: 60px 20px;
+        }
+        
+        .form-actions {
+            border-top: 1px solid #e9ecef;
+            padding-top: 20px;
+        }
+        
+        .is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .is-valid {
+            border-color: #28a745;
+        }
+        
+        media (max-width: 768px) {
+            .setting-item .row {
+                flex-direction: column;
+            }
+            
+            .setting-item .col-md-6,
+            .setting-item .col-md-2,
+            .setting-item .col-md-4 {
+                margin-bottom: 15px;
+            }
+            
+            .form-actions {
+                text-align: center;
+            }
+            
+            .form-actions .btn {
+                display: block;
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+}

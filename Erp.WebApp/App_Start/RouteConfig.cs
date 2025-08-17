@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +12,28 @@ namespace Erp.WebApp
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            // Notification specific routes
+            routes.MapRoute(
+                name: "NotificationDetails",
+                url: "Notifications/Details/{id}",
+                defaults: new { controller = "Notifications", action = "Details" },
+                constraints: new { id = @"\d+" }
+            );
+
+            routes.MapRoute(
+                name: "NotificationMarkAsRead",
+                url: "Notifications/MarkAsRead/{id}",
+                defaults: new { controller = "Notifications", action = "MarkAsRead" },
+                constraints: new { id = @"\d+" }
+            );
+
+            routes.MapRoute(
+                name: "NotificationDelete",
+                url: "Notifications/Delete/{id}",
+                defaults: new { controller = "Notifications", action = "Delete" },
+                constraints: new { id = @"\d+" }
+            );
 
             routes.MapRoute(
                 name: "Default",

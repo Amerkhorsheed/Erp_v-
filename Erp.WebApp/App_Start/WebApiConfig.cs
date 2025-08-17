@@ -17,15 +17,8 @@ namespace Erp.WebApp
         {
             // Web API configuration and services
             
-            // Configure Unity for Web API
-            var container = new UnityContainer();
-            
-            // Register services for Web API
-            container.RegisterInstance<IConfiguration>(BuildConfiguration(), new ContainerControlledLifetimeManager());
-            container.RegisterType(typeof(ILogger<>), typeof(SimpleLogger<>));
-            container.RegisterType<IEmailService, EmailService>();
-            
-            config.DependencyResolver = new UnityDependencyResolver(container);
+            // Configure Unity for Web API using the same container as MVC
+            config.DependencyResolver = new UnityDependencyResolver(UnityConfig.Container);
 
             // Web API routes
             config.MapHttpAttributeRoutes();
