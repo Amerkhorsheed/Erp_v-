@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+@using System.Globalization
 @{
     ViewBag.Title = "Admin Dashboard";
 
@@ -151,7 +151,17 @@
     }
     .card .card-body { padding: 18px; }
 
-    .kpi-card { position: relative; overflow: hidden; color: white; border: none; }
+    /* Enhanced KPI cards with 3-D tilt */
+    .kpi-card {
+        position: relative;
+        overflow: hidden;
+        color: white;
+        border: none;
+        /* 3-D tilt support */
+        transform-style: preserve-3d;
+        perspective: 800px;
+        transition: transform .2s ease;
+    }
     .kpi-card .card-body { position: relative; z-index: 2; }
     .kpi-card .card-title {
         font-weight: 600; font-size: 0.85rem; text-transform: uppercase;
@@ -657,6 +667,28 @@
                 applyCurrency(defaultCode);
                 select.addEventListener('change', () => applyCurrency(select.value));
             }
+        })();
+
+        // --- Interactive 3-D tilt effect on KPI cards ---
+        (function initKpiTilt(){
+            const cards = document.querySelectorAll('.kpi-card');
+            const maxTilt = 8; // degrees
+            cards.forEach(card => {
+                const inner = card.querySelector('.card-body');
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const xRatio = (e.clientX - rect.left) / rect.width - 0.5;
+                    const yRatio = (e.clientY - rect.top) / rect.height - 0.5;
+                    const rotY = xRatio * 2 * maxTilt;
+                    const rotX = -yRatio * 2 * maxTilt;
+                    card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+                    if(inner) inner.style.transform = 'translateZ(35px)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                    if(inner) inner.style.transform = '';
+                });
+            });
         })();
     </script>
 }
