@@ -1,4 +1,4 @@
-@using System.Globalization
+﻿@using System.Globalization
 @{
     ViewBag.Title = "Admin Dashboard";
 
@@ -37,529 +37,186 @@
 
 <style>
     :root {
-        --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --bg-accent: radial-gradient(1400px 800px at 5% -5%, rgba(255,255,255,0.15) 0%, transparent 70%),
-                     radial-gradient(1200px 800px at 95% 5%, rgba(255,255,255,0.1) 0%, transparent 65%),
-                     radial-gradient(800px 600px at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 80%);
-        --text: #ffffff;
-        --text-muted: rgba(255,255,255,0.7);
-        --card-bg: rgba(255,255,255,0.1);
-        --card-border: rgba(255,255,255,0.2);
-        --glass: blur(20px);
-        --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        --shadow-hover: 0 35px 70px -15px rgba(0, 0, 0, 0.35);
-        --grid: rgba(255,255,255,0.1);
-        --tick: rgba(255,255,255,0.8);
-        --title-grad: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
-        --ring: rgba(255,255,255,0.3);
+        --bg: #f5f7fb;
+        --bg-accent: radial-gradient(1200px 600px at 10% -10%, #eaf1ff 0%, transparent 60%),
+                     radial-gradient(900px 600px at 110% 0%, #fff6ea 0%, transparent 55%);
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --card-bg: #ffffffcc;
+        --card-border: #e7eaf3;
+        --glass: blur(12px);
+        --shadow: 0 10px 30px -10px rgba(13, 18, 54, 0.15);
+        --shadow-hover: 0 20px 45px -12px rgba(13, 18, 54, 0.22);
+        --grid: rgba(15, 23, 42, 0.08);
+        --tick: rgba(15, 23, 42, 0.55);
+        --title-grad: linear-gradient(90deg, #6b8cff, #7c5cff 45%, #00e1ff 90%);
+        --ring: #dfe8ff;
 
-        --success-1: #00d4aa; --success-2: #00b894;
-        --info-1: #74b9ff;   --info-2: #0984e3;
-        --violet-1: #a29bfe; --violet-2: #6c5ce7;
-        --warn-1: #fdcb6e;   --warn-2: #e17055;
-        --danger-1: #fd79a8; --danger-2: #e84393;
-        
-        --neon-glow: 0 0 20px rgba(255,255,255,0.3);
-        --glass-border: 1px solid rgba(255,255,255,0.2);
-        --glass-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        --success-1: #22c55e; --success-2: #10b981;
+        --info-1: #3b82f6;   --info-2: #06b6d4;
+        --violet-1: #7c3aed; --violet-2: #a78bfa;
+        --warn-1: #f59e0b;   --warn-2: #f97316;
+        --danger-1: #ef4444; --danger-2: #fb7185;
     }
     [data-theme="dark"] {
-        --bg: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
-        --bg-accent: radial-gradient(1400px 800px at 5% -5%, rgba(124,92,255,0.15) 0%, transparent 70%),
-                     radial-gradient(1200px 800px at 95% 5%, rgba(0,225,255,0.1) 0%, transparent 65%),
-                     radial-gradient(800px 600px at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 80%);
-        --text: #ffffff;
-        --text-muted: rgba(255,255,255,0.6);
-        --card-bg: rgba(255,255,255,0.05);
-        --card-border: rgba(255,255,255,0.1);
-        --glass: blur(20px);
-        --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-        --shadow-hover: 0 35px 70px -15px rgba(0, 0, 0, 0.5);
-        --grid: rgba(255,255,255,0.08);
-        --tick: rgba(255,255,255,0.7);
-        --title-grad: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
-        --ring: rgba(255,255,255,0.2);
-        
-        --neon-glow: 0 0 20px rgba(124,92,255,0.3);
-        --glass-border: 1px solid rgba(255,255,255,0.1);
-        --glass-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        --bg: #0b1220;
+        --bg-accent: radial-gradient(1200px 600px at 0% -10%, rgba(124,92,255,.18) 0%, transparent 60%),
+                     radial-gradient(900px 600px at 120% 0%, rgba(0,225,255,.16) 0%, transparent 55%);
+        --text: #e8eefc;
+        --text-muted: #9fb0d1;
+        --card-bg: #0f172acc;
+        --card-border: #1f2a44;
+        --glass: blur(10px);
+        --shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+        --shadow-hover: 0 20px 60px -18px rgba(0, 0, 0, 0.65);
+        --grid: rgba(148, 163, 184, 0.18);
+        --tick: rgba(226, 232, 240, 0.7);
+        --title-grad: linear-gradient(90deg, #9eb4ff, #c6b7ff 50%, #9ff7ff 95%);
+        --ring: #23304d;
     }
 
     html, body {
         background: var(--bg);
         color: var(--text);
-        font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        overflow-x: hidden;
-        min-height: 100vh;
     }
-    
     body::before {
         content: "";
         position: fixed; inset: 0;
         background: var(--bg-accent);
         pointer-events: none; z-index: 0;
-        animation: backgroundShift 20s ease-in-out infinite alternate;
     }
-    
-    @keyframes backgroundShift {
-        0% { transform: scale(1) rotate(0deg); }
-        100% { transform: scale(1.05) rotate(1deg); }
-    }
-    
-    .container-fluid { 
-        position: relative; 
-        z-index: 1; 
-        padding: 2rem;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
+    .container-fluid { position: relative; z-index: 1; }
 
     .page-header {
         display: flex; align-items: center; justify-content: space-between;
-        gap: 24px; margin-bottom: 3rem;
+        gap: 16px; margin-bottom: 24px;
         flex-wrap: wrap;
-        padding: 2rem;
-        background: var(--card-bg);
-        backdrop-filter: var(--glass);
-        border: var(--glass-border);
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-        position: relative;
-        overflow: hidden;
     }
-    
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    }
-    
     .title-wrap h1 {
         margin: 0;
-        font-family: 'Poppins', 'SF Pro Display', sans-serif;
-        font-size: clamp(32px, 3.5vw, 48px);
-        font-weight: 800; 
-        letter-spacing: -0.03em;
+        font-family: Poppins, Inter, system-ui;
+        font-size: clamp(24px, 2.2vw, 36px);
+        font-weight: 700; letter-spacing: -0.02em;
         background: var(--title-grad);
-        background-size: 200% 200%;
-        -webkit-background-clip: text; 
-        background-clip: text; 
-        color: transparent;
-        animation: gradientShift 3s ease-in-out infinite;
-        text-shadow: 0 0 30px rgba(255,255,255,0.1);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    
-    @keyframes gradientShift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-    }
-    
-    .subtle { 
-        color: var(--text-muted); 
-        font-size: 1.1rem; 
-        margin-top: 8px;
-        font-weight: 400;
-        opacity: 0.9;
-    }
+    .subtle { color: var(--text-muted); font-size: 0.95rem; margin-top: 4px; }
 
     .header-actions {
-        display: inline-flex; gap: 16px; align-items: center; flex-wrap: wrap;
+        display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap;
     }
-    
     .theme-toggle, .ui-select {
-        display: inline-flex; align-items: center; gap: 12px;
-        padding: 14px 20px; 
-        border-radius: 16px;
-        background: var(--card-bg); 
-        border: var(--glass-border);
-        backdrop-filter: var(--glass);
-        box-shadow: var(--shadow), var(--glass-shadow); 
-        cursor: pointer; 
-        user-select: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 10px 14px; border-radius: 999px;
+        background: var(--card-bg); border: 1px solid var(--card-border);
+        box-shadow: var(--shadow); cursor: pointer; user-select: none;
+        transition: transform .2s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
         color: var(--text);
         font-weight: 600;
-        font-size: 0.95rem;
-        position: relative;
-        overflow: hidden;
     }
-    
-    .theme-toggle::before, .ui-select::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-        transition: left 0.5s ease;
-    }
-    
-    .theme-toggle:hover::before, .ui-select:hover::before {
-        left: 100%;
-    }
-    
-    .theme-toggle:hover, .ui-select:hover { 
-        transform: translateY(-2px) scale(1.02); 
-        box-shadow: var(--shadow-hover), var(--neon-glow); 
-        border-color: var(--ring); 
-    }
+    .theme-toggle:hover, .ui-select:hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); border-color: var(--ring); }
     .theme-toggle .dot {
-        width: 24px; height: 24px; border-radius: 50%;
+        width: 22px; height: 22px; border-radius: 50%;
         background: radial-gradient(circle at 30% 30%, #ffd36e 0%, #ffb703 60%, #f59e0b 100%);
-        box-shadow: inset 0 0 0 2px rgba(255,255,255,.2), 0 8px 20px rgba(249, 115, 22, .4);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,.15), 0 6px 14px rgba(249, 115, 22, .35);
         flex-shrink: 0;
-        transition: all 0.3s ease;
-        position: relative;
     }
-    
-    .theme-toggle .dot::after {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        border-radius: 50%;
-        background: linear-gradient(45deg, #ffd36e, #ffb703, #f59e0b);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: -1;
-    }
-    
-    .theme-toggle:hover .dot::after {
-        opacity: 0.3;
-    }
-    
     [data-theme="dark"] .theme-toggle .dot {
         background: radial-gradient(circle at 40% 40%, #90caf9 0%, #60a5fa 60%, #3b82f6 100%);
-        box-shadow: inset 0 0 0 2px rgba(255,255,255,.15), 0 8px 20px rgba(59, 130, 246, .4);
-    }
-    
-    [data-theme="dark"] .theme-toggle .dot::after {
-        background: linear-gradient(45deg, #90caf9, #60a5fa, #3b82f6);
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,.08), 0 6px 16px rgba(59, 130, 246, .35);
     }
     .ui-select select {
         appearance: none; -webkit-appearance: none; -moz-appearance: none;
         background: transparent; border: none; color: inherit; font: inherit; outline: none;
-        padding-right: 20px; cursor: pointer;
-        font-weight: 600;
+        padding-right: 18px; cursor: pointer;
     }
-    
-    .ui-select .icon { 
-        font-size: 1rem; 
-        opacity: 0.8;
-        transition: opacity 0.3s ease;
-    }
-    
-    .ui-select:hover .icon {
-        opacity: 1;
-    }
+    .ui-select .icon { font-size: 0.9rem; opacity: .7; }
 
     .card {
-        border: var(--glass-border);
+        border: 1px solid var(--card-border);
         background: var(--card-bg);
         backdrop-filter: var(--glass);
-        border-radius: 20px; 
-        box-shadow: var(--shadow), var(--glass-shadow);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
+        border-radius: 16px; box-shadow: var(--shadow);
+        transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
     }
-    
-    .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .card:hover { 
-        transform: translateY(-8px) scale(1.02); 
-        box-shadow: var(--shadow-hover), var(--neon-glow); 
-        border-color: var(--ring); 
-    }
-    
-    .card:hover::before {
-        opacity: 1;
-    }
+    .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--ring); }
     .card .card-header {
         background: transparent;
         font-weight: 700; color: var(--text);
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding: 20px 24px;
-        font-size: 1.1rem;
-        letter-spacing: -0.01em;
+        border-bottom: 1px solid rgba(127,127,127,.12);
+        padding: 16px 18px;
     }
-    
-    .card .card-body { 
-        padding: 24px; 
-    }
+    .card .card-body { padding: 18px; }
 
-    .kpi-card { 
-        position: relative; 
-        overflow: hidden; 
-        color: white; 
-        border: none; 
-        background: linear-gradient(135deg, var(--success-1), var(--success-2));
-        box-shadow: var(--shadow), 0 0 30px rgba(0,0,0,0.1);
-    }
-    
-    .kpi-card .card-body { 
-        position: relative; 
-        z-index: 2; 
-        padding: 28px;
-    }
-    
+    .kpi-card { position: relative; overflow: hidden; color: white; border: none; }
+    .kpi-card .card-body { position: relative; z-index: 2; }
     .kpi-card .card-title {
-        font-weight: 600; 
-        font-size: 0.9rem; 
-        text-transform: uppercase;
-        letter-spacing: .08em; 
-        opacity: .9;
-        margin-bottom: 8px;
+        font-weight: 600; font-size: 0.85rem; text-transform: uppercase;
+        letter-spacing: .06em; opacity: .95;
     }
-    
     .kpi-card .kpi-value {
-        font-size: clamp(32px, 3.2vw, 42px); 
-        font-weight: 800;
-        letter-spacing: -0.03em; 
-        line-height: 1.1;
-        margin-bottom: 12px;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        font-size: clamp(26px, 2.6vw, 36px); font-weight: 800;
+        letter-spacing: -0.02em; line-height: 1.15;
     }
     .kpi-trend {
-        font-size: 0.95rem; 
-        font-weight: 600; 
-        opacity: .9;
-        display: inline-flex; 
-        align-items: center; 
-        gap: 8px;
-        padding: 8px 14px; 
-        border-radius: 12px;
-        background: rgba(255,255,255,.15); 
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255,255,255,0.1);
-        transition: all 0.3s ease;
+        margin-top: 8px; font-size: 0.9rem; font-weight: 600; opacity: .95;
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 10px; border-radius: 999px;
+        background: rgba(255,255,255,.14); backdrop-filter: blur(6px);
     }
-    
-    .kpi-trend:hover {
-        background: rgba(255,255,255,.2);
-        transform: translateY(-1px);
-    }
-    
     .kpi-card .card-icon {
-        position: absolute; 
-        right: -32px; 
-        bottom: -32px;
-        font-size: 120px; 
-        opacity: 0.15;
-        filter: drop-shadow(0 10px 15px rgba(0,0,0,.3));
+        position: absolute; right: -28px; bottom: -28px;
+        font-size: 110px; opacity: 0.18;
+        filter: drop-shadow(0 8px 12px rgba(0,0,0,.2));
         transform: rotate(-15deg);
-        transition: all 0.3s ease;
     }
-    
-    .kpi-card:hover .card-icon {
-        transform: rotate(-10deg) scale(1.05);
-        opacity: 0.2;
-    }
-    
-    .kpi-glow { 
-        content: ""; 
-        position: absolute; 
-        inset: -40%;
-        background: radial-gradient(600px 300px at 15% 15%, rgba(255,255,255,.4) 0%, transparent 60%);
-        z-index: 1; 
-        pointer-events: none; 
-        mix-blend-mode: screen;
-        animation: glowPulse 3s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glowPulse {
-        0% { opacity: 0.3; transform: scale(1); }
-        100% { opacity: 0.6; transform: scale(1.05); }
-    }
+    .kpi-glow { content: ""; position: absolute; inset: -30%;
+        background: radial-gradient(550px 250px at 10% 10%, rgba(255,255,255,.3) 0%, transparent 55%);
+        z-index: 1; pointer-events: none; mix-blend-mode: screen; }
 
-    .bg-gradient-profit    { 
-        background: linear-gradient(135deg, var(--success-1), var(--success-2));
-        box-shadow: 0 0 30px rgba(0, 212, 170, 0.3);
-    }
-    .bg-gradient-revenue   { 
-        background: linear-gradient(135deg, var(--info-1), var(--info-2));
-        box-shadow: 0 0 30px rgba(116, 185, 255, 0.3);
-    }
-    .bg-gradient-customers { 
-        background: linear-gradient(135deg, var(--violet-1), var(--violet-2));
-        box-shadow: 0 0 30px rgba(162, 155, 254, 0.3);
-    }
-    .bg-gradient-suppliers { 
-        background: linear-gradient(135deg, var(--warn-1), var(--warn-2));
-        box-shadow: 0 0 30px rgba(253, 203, 110, 0.3);
-    }
+    .bg-gradient-profit    { background: linear-gradient(135deg, var(--success-1), var(--success-2)); }
+    .bg-gradient-revenue   { background: linear-gradient(135deg, var(--info-1), var(--info-2)); }
+    .bg-gradient-customers { background: linear-gradient(135deg, var(--violet-1), var(--violet-2)); }
+    .bg-gradient-suppliers { background: linear-gradient(135deg, var(--warn-1), var(--warn-2)); }
 
-    .chart-card { 
-        overflow: hidden; 
-        background: var(--card-bg);
-        backdrop-filter: var(--glass);
-    }
-    
-    .chart-card .card-header { 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between; 
-        gap: 16px; 
-    }
-    
-    .chart-actions { 
-        display: inline-flex; 
-        gap: 10px; 
-    }
-    
+    .chart-card { overflow: hidden; }
+    .chart-card .card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .chart-actions { display: inline-flex; gap: 8px; }
     .chip {
-        font-size: 0.9rem; 
-        color: var(--text);
-        border: var(--glass-border);
-        background: var(--card-bg);
-        backdrop-filter: var(--glass);
-        padding: 8px 14px; 
-        border-radius: 12px; 
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        font-weight: 500;
-        position: relative;
-        overflow: hidden;
+        font-size: .85rem; color: var(--text);
+        border: 1px solid var(--card-border);
+        background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+        padding: 6px 10px; border-radius: 10px; cursor: pointer;
+        transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
     }
-    
-    .chip::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-        transition: left 0.5s ease;
-    }
-    
-    .chip:hover::before {
-        left: 100%;
-    }
-    
-    .chip:hover { 
-        border-color: var(--ring); 
-        transform: translateY(-1px);
-        box-shadow: var(--shadow);
-    }
-    
-    .chip.active { 
-        background: linear-gradient(135deg, var(--info-1), var(--info-2)); 
-        color: white; 
-        border-color: transparent; 
-        box-shadow: 0 8px 20px -8px rgba(116, 185, 255, 0.5);
-        transform: translateY(-1px);
-    }
+    .chip:hover { border-color: var(--ring); }
+    .chip.active { background: linear-gradient(135deg, var(--info-1), var(--info-2)); color: white; border-color: transparent; box-shadow: 0 6px 16px -6px rgba(59, 130, 246, .45); }
 
     /* Chart loader helper */
     .chart-loader { display: none; }
 
-    /* Enhanced scrollbars */
-    ::-webkit-scrollbar{ 
-        width: 12px; 
-        height: 12px; 
-    }
-    ::-webkit-scrollbar-track{ 
-        background: rgba(255,255,255,0.1); 
-        border-radius: 10px; 
-    }
-    ::-webkit-scrollbar-thumb{ 
-        background: linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2)); 
-        border-radius: 10px; 
-        border: 2px solid transparent; 
-        background-clip: padding-box; 
-        transition: background 0.3s ease;
-    }
-    ::-webkit-scrollbar-thumb:hover{ 
-        background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.4)); 
-        border: 2px solid transparent; 
-    }
+    /* Subtle scrollbars */
+    ::-webkit-scrollbar{ width:10px;height:10px }
+    ::-webkit-scrollbar-thumb{ background: rgba(127,127,127,.3); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover{ background: rgba(127,127,127,.5); border: 2px solid transparent; }
 
-    /* Enhanced entrance animations */
-    @keyframes floatIn { 
-        from { 
-            opacity: 0; 
-            transform: translateY(20px) scale(0.95); 
-        } 
-        to { 
-            opacity: 1; 
-            transform: translateY(0) scale(1); 
-        } 
-    }
-    
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .stagger > [class*="col-"] { 
-        animation: floatIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) both; 
-    }
-    .stagger > [class*="col-"]:nth-child(1) { animation-delay: 0.1s; }
-    .stagger > [class*="col-"]:nth-child(2) { animation-delay: 0.2s; }
-    .stagger > [class*="col-"]:nth-child(3) { animation-delay: 0.3s; }
-    .stagger > [class*="col-"]:nth-child(4) { animation-delay: 0.4s; }
-    
-    .page-header {
-        animation: slideInLeft 1s cubic-bezier(0.4, 0, 0.2, 1) both;
-    }
-    
-    .chart-card {
-        animation: slideInRight 1s cubic-bezier(0.4, 0, 0.2, 1) both;
-        animation-delay: 0.5s;
-    }
+    /* Entrance animation */
+    keyframes floatIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .stagger > [class*="col-"] { animation: floatIn .6s ease both; }
+    .stagger > [class*="col-"]:nth-child(2) { animation-delay: .06s; }
+    .stagger > [class*="col-"]:nth-child(3) { animation-delay: .12s; }
+    .stagger > [class*="col-"]:nth-child(4) { animation-delay: .18s; }
 </style>
 
 <div class="container-fluid" data-currency="@currencySymbol">
     <!-- Page Header -->
     <div class="page-header">
         <div class="title-wrap">
-            <h1>🚀 NextGen Dashboard</h1>
-            <div class="subtle">✨ A futuristic, responsive control center powered by AI insights</div>
+            <h1>NextGen Dashboard</h1>
+            <div class="subtle">A clean, responsive, animated control center for your business.</div>
         </div>
 
         <div class="header-actions">
@@ -589,7 +246,7 @@
             <div class="card kpi-card bg-gradient-profit">
                 <span class="kpi-glow"></span>
                 <div class="card-body">
-                    <div class="card-title">💰 Total Profit</div>
+                    <div class="card-title">Total Profit</div>
                     <div class="kpi-value"
                          data-countup
                          data-format="currency"
@@ -597,7 +254,7 @@
                          data-value="@totalProfitVal.ToString(CultureInfo.InvariantCulture)">
                         @FormatCurrency(totalProfitVal)
                     </div>
-                    <div class="kpi-trend"><i class="fa-solid fa-arrow-trend-up"></i> 📈 Healthy Growth</div>
+                    <div class="kpi-trend"><i class="fa-solid fa-arrow-trend-up"></i> Healthy Growth</div>
                     <i class="fa-solid fa-chart-line card-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -607,7 +264,7 @@
             <div class="card kpi-card bg-gradient-revenue">
                 <span class="kpi-glow"></span>
                 <div class="card-body">
-                    <div class="card-title">💎 Total Revenue</div>
+                    <div class="card-title">Total Revenue</div>
                     <div class="kpi-value"
                          data-countup
                          data-format="currency"
@@ -615,7 +272,7 @@
                          data-value="@totalRevenueVal.ToString(CultureInfo.InvariantCulture)">
                         @FormatCurrency(totalRevenueVal)
                     </div>
-                    <div class="kpi-trend"><i class="fa-solid fa-signal"></i> 🚀 Steady Momentum</div>
+                    <div class="kpi-trend"><i class="fa-solid fa-signal"></i> Steady Momentum</div>
                     <i class="fa-solid fa-coins card-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -625,7 +282,7 @@
             <div class="card kpi-card bg-gradient-customers">
                 <span class="kpi-glow"></span>
                 <div class="card-body">
-                    <div class="card-title">👥 Active Customers</div>
+                    <div class="card-title">Active Customers</div>
                     <div class="kpi-value"
                          data-countup
                          data-format="int"
@@ -633,7 +290,7 @@
                          data-value="@totalCustomersVal.ToString(CultureInfo.InvariantCulture)">
                         @FormatInt(totalCustomersVal)
                     </div>
-                    <div class="kpi-trend"><i class="fa-solid fa-user-plus"></i> 🌟 Community Rising</div>
+                    <div class="kpi-trend"><i class="fa-solid fa-user-plus"></i> Community Rising</div>
                     <i class="fa-solid fa-users card-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -643,7 +300,7 @@
             <div class="card kpi-card bg-gradient-suppliers">
                 <span class="kpi-glow"></span>
                 <div class="card-body">
-                    <div class="card-title">🤝 Valued Suppliers</div>
+                    <div class="card-title">Valued Suppliers</div>
                     <div class="kpi-value"
                          data-countup
                          data-format="int"
@@ -651,7 +308,7 @@
                          data-value="@totalSuppliersVal.ToString(CultureInfo.InvariantCulture)">
                         @FormatInt(totalSuppliersVal)
                     </div>
-                    <div class="kpi-trend"><i class="fa-solid fa-handshake"></i> 🔗 Strong Network</div>
+                    <div class="kpi-trend"><i class="fa-solid fa-handshake"></i> Strong Network</div>
                     <i class="fa-solid fa-truck-fast card-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -663,12 +320,12 @@
         <div class="col-xl-8 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <span>📊 Recent Sales Transactions</span>
+                    <span>Recent Sales Transactions</span>
                     <div class="chart-actions">
-                        <input type="date" id="startDate" class="chip" style="color: var(--text); background: transparent; border: none; padding: 8px 14px; border-radius: 12px;" aria-label="Start date">
-                        <input type="date" id="endDate" class="chip" style="color: var(--text); background: transparent; border: none; padding: 8px 14px; border-radius: 12px;" aria-label="End date">
-                        <span class="chip" id="searchSales" role="button" tabindex="0">🔍 Search</span>
-                        <span class="chip" id="clearSearch" role="button" tabindex="0">🔄 Clear</span>
+                        <input type="date" id="startDate" class="chip" style="color: var(--text); background: transparent; border: none; padding: 6px 10px;" aria-label="Start date">
+                        <input type="date" id="endDate" class="chip" style="color: var(--text); background: transparent; border: none; padding: 6px 10px;" aria-label="End date">
+                        <span class="chip" id="searchSales" role="button" tabindex="0">Search</span>
+                        <span class="chip" id="clearSearch" role="button" tabindex="0">Clear</span>
                     </div>
                 </div>
                 <div class="card-body" style="max-height: 400px; overflow-y: auto;">
@@ -681,7 +338,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+
     </div>
 
     <!-- Charts Row -->
@@ -689,11 +346,11 @@
         <div class="col-xl-12 mb-4">
             <div class="card chart-card">
                 <div class="card-header">
-                    <span>📈 Monthly Performance Analytics</span>
+                    <span>Monthly Performance</span>
                     <div class="chart-actions">
-                        <span class="chip" data-action="ytd">📅 YTD</span>
-                        <span class="chip" data-action="mtd">📊 MTD</span>
-                        <span class="chip" data-action="all">📋 All</span>
+                        <span class="chip" data-action="ytd">YTD</span>
+                        <span class="chip" data-action="mtd">MTD</span>
+                        <span class="chip" data-action="all">All</span>
                     </div>
                 </div>
                 <div class="card-body" style="height: 380px;">
@@ -710,12 +367,12 @@
                 <div class="card-header">
                     <span style="display: inline-flex; align-items: center; gap: 10px;">
                         <i class="fa-solid fa-chart-line" style="color: var(--info-1);"></i>
-                        🚀 Sales Trend Analytics
+                        Sales Trend Analytics
                     </span>
                     <div class="chart-actions">
-                        <span class="chip active" id="trendDaily" data-period="daily">📅 Daily</span>
-                        <span class="chip" id="trendWeekly" data-period="weekly">📊 Weekly</span>
-                        <span class="chip" id="trendMonthly" data-period="monthly">📈 Monthly</span>
+                        <span class="chip active" id="trendDaily" data-period="daily">Daily</span>
+                        <span class="chip" id="trendWeekly" data-period="weekly">Weekly</span>
+                        <span class="chip" id="trendMonthly" data-period="monthly">Monthly</span>
                     </div>
                 </div>
                 <div class="card-body" style="height: 380px; position: relative;">
@@ -738,7 +395,7 @@
     <div class="row">
         <div class="col-xl-12 mb-4">
             <div class="card chart-card">
-                <div class="card-header">🎯 Busiest Sales Days Analysis</div>
+                <div class="card-header">Busiest Sales Days</div>
                 <div class="card-body" style="height: 430px;">
                     <canvas id="salesByDayChart" role="img" aria-label="Radar chart of total sales by weekday"></canvas>
                 </div>
@@ -773,7 +430,7 @@
             });
         })();
 
-        // --- Enhanced Count-up animation with modern easing ---
+        // --- Count-up animation (reads clean numeric data-value) ---
         (function initCountUp(){
             const els = document.querySelectorAll('[data-countup]');
             const observer = new IntersectionObserver((entries) => {
@@ -791,68 +448,36 @@
                     const nf = new Intl.NumberFormat(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
                     const fmt = (n) => format === 'currency' ? (getCurrencySymbol() + ' ' + nf.format(n)) : nf.format(n);
 
-                    // Enhanced duration and easing
-                    const duration = 1200;
-                    const start = performance.now(); 
-                    const from = 0;
-                    
-                    // Modern cubic-bezier easing
-                    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-                    const easeOutBack = (t) => {
-                        const c1 = 1.70158;
-                        const c3 = c1 + 1;
-                        return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-                    };
-                    
+                    const duration = 900;
+                    const start = performance.now(); const from = 0;
                     const step = (now) => {
                         const t = Math.min(1, (now - start) / duration);
-                        const eased = easeOutBack(t);
+                        const eased = t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
                         const val = from + (target - from) * eased;
-                        
-                        // Add subtle glow effect during animation
-                        if (t < 0.8) {
-                            el.style.textShadow = `0 0 20px rgba(255,255,255,${0.3 * (1-t)})`;
-                        } else {
-                            el.style.textShadow = '0 2px 10px rgba(0,0,0,0.2)';
-                        }
-                        
                         el.textContent = fmt(decimals ? Number(val.toFixed(decimals)) : Math.round(val));
                         if (t < 1) requestAnimationFrame(step);
-                        else {
-                            el.dataset.done = '1';
-                            // Final celebration effect
-                            el.style.transform = 'scale(1.05)';
-                            setTimeout(() => {
-                                el.style.transform = 'scale(1)';
-                                el.style.transition = 'transform 0.3s ease';
-                            }, 100);
-                        }
+                        else el.dataset.done = '1';
                     };
                     requestAnimationFrame(step);
                 });
-            }, { threshold: .25 });
+            }, { threshold: .35 });
             els.forEach(el => observer.observe(el));
         })();
 
-        // --- Enhanced Chart.js defaults ---
-        Chart.defaults.font.family = "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
-        Chart.defaults.plugins.legend.labels.boxWidth = 12;
-        Chart.defaults.elements.line.borderWidth = 4;
+        // --- Chart.js defaults ---
+        Chart.defaults.font.family = "Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial";
+        Chart.defaults.plugins.legend.labels.boxWidth = 10;
+        Chart.defaults.elements.line.borderWidth = 3;
         Chart.defaults.elements.point.radius = 0;
-        Chart.defaults.elements.point.hitRadius = 15;
-        Chart.defaults.elements.line.tension = 0.4;
-        Chart.defaults.plugins.tooltip.cornerRadius = 12;
-        Chart.defaults.plugins.tooltip.padding = 16;
+        Chart.defaults.elements.point.hitRadius = 12;
 
         const CHART_COLORS = {
-            blue: 'rgb(116, 185, 255)',
-            green: 'rgb(0, 212, 170)',
-            purple: 'rgb(162, 155, 254)',
-            orange: 'rgb(253, 203, 110)',
-            red: 'rgb(253, 121, 168)',
-            yellow: 'rgb(255, 205, 86)',
-            cyan: 'rgb(0, 225, 255)',
-            pink: 'rgb(255, 107, 193)'
+            blue: 'rgb(54, 162, 235)',
+            green: 'rgb(75, 192, 192)',
+            purple: 'rgb(153, 102, 255)',
+            orange: 'rgb(255, 159, 64)',
+            red: 'rgb(255, 99, 132)',
+            yellow: 'rgb(255, 205, 86)'
         };
 
         const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '';
@@ -1118,57 +743,24 @@
             loadSalesTrend('daily');
         })();
 
-        // --- Enhanced chart theme switching with smooth transitions ---
+        // --- Re-style charts on theme switch ---
         function updateChartTheme() {
             const legendsColor = textColor();
             const g = gridColor();
             const t = tickColor();
             const apply = (chart) => {
                 if(!chart) return;
-                
-                // Add smooth transition effect
-                chart.options.transitions = {
-                    active: {
-                        animation: {
-                            duration: 300
-                        }
-                    }
-                };
-                
-                if(chart.options.plugins?.legend?.labels) {
-                    chart.options.plugins.legend.labels.color = legendsColor;
-                    chart.options.plugins.legend.labels.font = { weight: 600 };
-                }
-                
+                if(chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = legendsColor;
                 const scales = chart.options.scales || {};
                 Object.keys(scales).forEach(axis => {
-                    if(scales[axis].grid) {
-                        scales[axis].grid.color = g;
-                        scales[axis].grid.borderColor = g;
-                    }
-                    if(scales[axis].ticks) {
-                        scales[axis].ticks.color = t;
-                        scales[axis].ticks.font = { weight: 500 };
-                    }
+                    if(scales[axis].grid)  scales[axis].grid.color = g;
+                    if(scales[axis].ticks) scales[axis].ticks.color = t;
                     if(axis === 'r') {
                         if(scales[axis].angleLines) scales[axis].angleLines.color = g;
-                        if(scales[axis].pointLabels) {
-                            scales[axis].pointLabels.color = t;
-                            scales[axis].pointLabels.font = { weight: 600 };
-                        }
+                        if(scales[axis].pointLabels) scales[axis].pointLabels.color = t;
                     }
                 });
-                
-                // Enhanced tooltip styling
-                if(chart.options.plugins?.tooltip) {
-                    chart.options.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.95)';
-                    chart.options.plugins.tooltip.titleColor = '#ffffff';
-                    chart.options.plugins.tooltip.bodyColor = '#e5e7eb';
-                    chart.options.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
-                    chart.options.plugins.tooltip.borderWidth = 1;
-                }
-                
-                chart.update('active');
+                chart.update('none');
             };
             apply(profitExpenseChart);
             apply(salesByDayChart);
@@ -1231,55 +823,39 @@
                 return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             };
 
-            // Render recent sales data with modern styling
+            // Render recent sales data
             const renderRecentSales = (salesData) => {
                 if (!salesData || salesData.length === 0) {
-                    recentSalesTable.innerHTML = `
-                        <div class="text-center" style="padding: 3rem; color: var(--text-muted);">
-                            <i class="fa-solid fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                            <div style="font-size: 1.1rem; font-weight: 500;">No sales data available</div>
-                            <div style="font-size: 0.9rem; margin-top: 0.5rem;">Try adjusting your date range</div>
-                        </div>`;
+                    recentSalesTable.innerHTML = '<div class="text-center text-muted">No sales data available</div>';
                     return;
                 }
 
                 let html = `
                     <div class="table-responsive">
-                        <table class="table table-hover" style="color: var(--text); border-collapse: separate; border-spacing: 0 8px;">
-                            <thead>
-                                <tr style="background: var(--card-bg); backdrop-filter: var(--glass); border-radius: 12px;">
-                                    <th style="padding: 16px; border: none; font-weight: 600; color: var(--text);">📋 Transaction</th>
-                                    <th style="padding: 16px; border: none; font-weight: 600; color: var(--text);">👤 Customer</th>
-                                    <th style="padding: 16px; border: none; font-weight: 600; color: var(--text);">📦 Items</th>
-                                    <th style="padding: 16px; border: none; font-weight: 600; color: var(--text);">💰 Total</th>
-                                    <th style="padding: 16px; border: none; font-weight: 600; color: var(--text);">📅 Date</th>
-                                    <th style="padding: 16px; border: none; font-weight: 600; color: var(--text);">⚡ Action</th>
+                        <table class="table table-hover" style="color: var(--text);">
+                            <thead style="background: var(--card-border);">
+                                <tr>
+                                    <th>Transaction</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                 `;
 
-                salesData.forEach((sale, index) => {
+                salesData.forEach(sale => {
                     html += `
-                        <tr style="background: var(--card-bg); backdrop-filter: var(--glass); border-radius: 12px; margin-bottom: 8px; transition: all 0.3s ease; animation: slideInUp 0.5s ease both; animation-delay: ${index * 0.1}s;">
-                            <td style="padding: 16px; border: none; border-radius: 12px 0 0 12px;">
-                                <strong style="color: var(--info-1);">#${sale.TransactionId}</strong>
-                            </td>
-                            <td style="padding: 16px; border: none;">
-                                <div style="font-weight: 500;">${sale.CustomerName}</div>
-                            </td>
-                            <td style="padding: 16px; border: none;">
-                                <span style="background: linear-gradient(135deg, var(--info-1), var(--info-2)); color: white; padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">${sale.ItemCount} items</span>
-                            </td>
-                            <td style="padding: 16px; border: none;">
-                                <strong style="color: var(--success-1); font-size: 1.1rem;">${formatCurrency(sale.TotalAmount)}</strong>
-                            </td>
-                            <td style="padding: 16px; border: none;">
-                                <div style="font-size: 0.9rem; color: var(--text-muted);">${formatDate(sale.Date)}</div>
-                            </td>
-                            <td style="padding: 16px; border: none; border-radius: 0 12px 12px 0;">
-                                <a href="/Admin/CustomerDetail/${sale.CustomerId}" 
-                                   style="background: linear-gradient(135deg, var(--violet-1), var(--violet-2)); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 6px;">
+                        <tr>
+                            <td><strong>#${sale.TransactionId}</strong></td>
+                            <td>${sale.CustomerName}</td>
+                            <td><span class="badge badge-info">${sale.ItemCount}</span></td>
+                            <td><strong>${formatCurrency(sale.TotalAmount)}</strong></td>
+                            <td>${formatDate(sale.Date)}</td>
+                            <td>
+                                <a href="/Admin/CustomerDetail/${sale.CustomerId}" class="btn btn-sm btn-outline-primary">
                                     <i class="fa fa-eye"></i> View
                                 </a>
                             </td>
