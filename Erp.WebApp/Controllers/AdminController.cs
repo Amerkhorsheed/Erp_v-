@@ -1,242 +1,141 @@
+// IMPORTANT: Make sure all your using statements are correct for your project
+using Erp.WebApp.ViewModels;
 using Erp_V1.DAL.DAL;
-using Erp_V1.DAL.DTO;
-using Newtonsoft.Json;
 using System;
-using System.Linq;
-using System.Web.Mvc;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
+using System.Linq;
+using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace Erp.WebApp.Controllers
 {
-    [CustomAuthorize(Roles = "Admin")]
+    [CustomAuthorize(Roles = "Admin")] // Assuming you have this security attribute
     public class AdminController : Controller
     {
         private readonly erp_v2Entities _dbContext = new erp_v2Entities();
 
         public ActionResult Index()
         {
-            // --- 1. KPIs (No change needed) ---
-            ViewBag.TotalProfit = CalculateTotalProfit();
-            ViewBag.TotalRevenue = (_dbContext.SALES.Sum(s => (decimal?)s.ProductSalesPrice * s.ProductSalesAmout) ?? 0).ToString("C");
-            ViewBag.TotalCustomers = _dbContext.CUSTOMER.Count(c => c.isDeleted == false);
-            ViewBag.TotalSuppliers = _dbContext.SUPPLIER.Count(s => s.isDeleted == false);
-
-            // --- 2. Profit & Expenses Chart (No change needed) ---
-            var monthlyData = _dbContext.SALES
-                .Join(_dbContext.PRODUCT, s => s.ProductID, p => p.ID, (s, p) => new { s, p })
-                .GroupBy(x => new { x.s.SalesDate.Year, x.s.SalesDate.Month })
-                .ToList()
-                .Select(g => new
-                {
-                    MonthSort = g.Key.Year * 100 + g.Key.Month,
-                    MonthLabel = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMM yyyy"),
-                    Profit = g.Sum(x => ((decimal)x.s.ProductSalesPrice - (decimal)x.p.Price) * (decimal)x.s.ProductSalesAmout)
-                })
-                .OrderBy(x => x.MonthSort)
-                .ToList();
-
-            ViewBag.ChartLabels = JsonConvert.SerializeObject(monthlyData.Select(d => d.MonthLabel));
-            ViewBag.ProfitData = JsonConvert.SerializeObject(monthlyData.Select(d => d.Profit));
-            ViewBag.ExpenseData = JsonConvert.SerializeObject(monthlyData.Select(d => 0));
-
-            // --- 3. Top 10 Products Chart (No change needed) ---
-            var topProducts = _dbContext.SALES
-                .Join(_dbContext.PRODUCT, s => s.ProductID, p => p.ID, (s, p) => new { s, p })
-                .GroupBy(x => x.p.ProductName)
-                .ToList()
-                .Select(g => new
-                {
-                    ProductName = g.Key,
-                    TotalSales = g.Sum(x => (decimal?)((decimal)x.s.ProductSalesPrice * (decimal)x.s.ProductSalesAmout)) ?? 0
-                })
-                .OrderByDescending(x => x.TotalSales)
-                .Take(10)
-                .OrderBy(x => x.TotalSales)
-                .ToList();
-
-            ViewBag.TopProductsLabels = JsonConvert.SerializeObject(topProducts.Select(p => p.ProductName));
-            ViewBag.TopProductsData = JsonConvert.SerializeObject(topProducts.Select(p => p.TotalSales));
-
-            // --- 4. FIX for Busiest Sales Day (Radar Chart) ---
-            var salesByDay = _dbContext.SALES
-                // Step 1: Select only the columns you need from the database.
-                .Select(s => new
-                {
-                    s.SalesDate,
-                    s.ProductSalesPrice,
-                    s.ProductSalesAmout
-                })
-                // Step 2: Bring this minimal data into memory.
-                .ToList()
-                // Step 3: Now perform the GroupBy in C#, where .DayOfWeek is supported.
-                .GroupBy(s => s.SalesDate.DayOfWeek)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Sum(s => (decimal?)s.ProductSalesPrice * s.ProductSalesAmout) ?? 0
-                );
-
-            var dayLabels = new string[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-            var dayData = new decimal[7];
-            for (int i = 0; i < 7; i++)
+            var model = new DashboardViewModel
             {
-                if (salesByDay.ContainsKey((DayOfWeek)i))
+                CurrencySymbol = "?", // Or get from user settings
+                KPIs = new List<KpiViewModel>
                 {
-                    dayData[i] = salesByDay[(DayOfWeek)i];
+                    new KpiViewModel
+                    {
+                        Title = "Total Profit",
+                        Value = CalculateTotalProfit(),
+                        Format = "currency",
+                        TrendText = "Healthy Growth",
+                        TrendIcon = "fa-arrow-trend-up",
+                        IconClass = "fa-chart-line",
+                        GradientClass = "bg-gradient-profit"
+                    },
+                    new KpiViewModel
+                    {
+                        Title = "Total Revenue",
+                        Value = _dbContext.SALES.Where(s => !s.isDeleted).Sum(s => (decimal?)s.ProductSalesPrice * s.ProductSalesAmout) ?? 0,
+                        Format = "currency",
+                        TrendText = "Steady Momentum",
+                        TrendIcon = "fa-signal",
+                        IconClass = "fa-coins",
+                        GradientClass = "bg-gradient-revenue"
+                    },
+                    new KpiViewModel
+                    {
+                        Title = "Active Customers",
+                        Value = _dbContext.CUSTOMER.Count(c => !c.isDeleted),
+                        Format = "int",
+                        TrendText = "Community Rising",
+                        TrendIcon = "fa-user-plus",
+                        IconClass = "fa-users",
+                        GradientClass = "bg-gradient-customers"
+                    },
+                    new KpiViewModel
+                    {
+                        Title = "Valued Suppliers",
+                        Value = _dbContext.SUPPLIER.Count(s => !s.isDeleted),
+                        Format = "int",
+                        TrendText = "Strong Network",
+                        TrendIcon = "fa-handshake",
+                        IconClass = "fa-truck-fast",
+                        GradientClass = "bg-gradient-suppliers"
+                    }
                 }
-            }
-
-            ViewBag.SalesByDayLabels = JsonConvert.SerializeObject(dayLabels);
-            ViewBag.SalesByDayData = JsonConvert.SerializeObject(dayData);
-
-            return View();
+            };
+            return View(model);
         }
 
-        // Returns last 20 transactions grouped by TransactionId with item count and total per transaction
+        // Combined endpoint for recent sales and date-filtered sales
         [HttpGet]
-        public JsonResult GetRecentSales()
+        public JsonResult GetSalesTransactions(DateTime? startDate, DateTime? endDate)
         {
-            var recent = _dbContext.SALES
-                .Where(s => !s.isDeleted)
-                .GroupBy(s => s.TransactionId)
+            var query = _dbContext.SALES.Where(s => !s.isDeleted);
+
+            if (startDate.HasValue) query = query.Where(s => s.SalesDate >= startDate.Value);
+            if (endDate.HasValue)
+            {
+                var endOfDay = endDate.Value.AddDays(1).AddTicks(-1);
+                query = query.Where(s => s.SalesDate <= endOfDay);
+            }
+
+            // Join SALES with CUSTOMER and group by stable keys to avoid unsupported FirstOrDefault() in GroupBy projections
+            var sales = query
+                .Join(_dbContext.CUSTOMER,
+                      sale => sale.CustomerID,
+                      customer => customer.ID,
+                      (sale, customer) => new { Sale = sale, Customer = customer })
+                .GroupBy(x => new { x.Sale.TransactionId, x.Customer.ID, x.Customer.CustomerName })
                 .Select(g => new
                 {
-                    TransactionId = g.Key,
-                    LatestDate = g.Max(s => s.SalesDate),
-                    CustomerId = g.OrderByDescending(s => s.SalesDate).Select(s => s.CustomerID).FirstOrDefault(),
-                    ItemCount = g.Sum(s => (int?)s.ProductSalesAmout) ?? 0,
-                    TotalAmount = g.Sum(s => (long?)(s.ProductSalesPrice * s.ProductSalesAmout)) ?? 0
+                    TransactionId = g.Key.TransactionId,
+                    LatestDate = g.Max(x => x.Sale.SalesDate),
+                    CustomerId = g.Key.ID,
+                    CustomerName = g.Key.CustomerName,
+                    ItemCount = g.Sum(x => (int?)x.Sale.ProductSalesAmout) ?? 0,
+                    // Ensure EF does decimal math by casting an operand to decimal?
+                    TotalAmount = g.Sum(x => ((decimal?)x.Sale.ProductSalesPrice) * x.Sale.ProductSalesAmout) ?? 0m
                 })
                 .OrderByDescending(x => x.LatestDate)
                 .Take(20)
                 .ToList();
 
-            var customerNames = _dbContext.CUSTOMER
-                .Where(c => !c.isDeleted)
-                .ToDictionary(c => c.ID, c => c.CustomerName);
-
-            var result = recent.Select(x => new
-            {
-                x.TransactionId,
-                x.CustomerId,
-                CustomerName = customerNames.ContainsKey(x.CustomerId) ? customerNames[x.CustomerId] : "Unknown",
-                x.ItemCount,
-                x.TotalAmount,
-                Date = x.LatestDate
+            var result = sales.Select(s => new {
+                s.TransactionId,
+                s.CustomerId,
+                s.CustomerName,
+                s.ItemCount,
+                s.TotalAmount,
+                Date = s.LatestDate
             });
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        // Filter sales by date range and return aggregated per transaction
-        [HttpGet]
-        public JsonResult SearchSalesByDate(DateTime? startDate, DateTime? endDate)
-        {
-            var query = _dbContext.SALES.Where(s => !s.isDeleted);
-            if (startDate.HasValue)
-            {
-                query = query.Where(s => DbFunctions.TruncateTime(s.SalesDate) >= DbFunctions.TruncateTime(startDate.Value));
-            }
-            if (endDate.HasValue)
-            {
-                query = query.Where(s => DbFunctions.TruncateTime(s.SalesDate) <= DbFunctions.TruncateTime(endDate.Value));
-            }
-
-            var grouped = query
-                .GroupBy(s => s.TransactionId)
-                .Select(g => new
-                {
-                    TransactionId = g.Key,
-                    LatestDate = g.Max(s => s.SalesDate),
-                    CustomerId = g.OrderByDescending(s => s.SalesDate).Select(s => s.CustomerID).FirstOrDefault(),
-                    ItemCount = g.Sum(s => (int?)s.ProductSalesAmout) ?? 0,
-                    TotalAmount = g.Sum(s => (long?)(s.ProductSalesPrice * s.ProductSalesAmout)) ?? 0
-                })
-                .OrderByDescending(x => x.LatestDate)
-                .Take(20)
-                .ToList();
-
-            var customerNames = _dbContext.CUSTOMER
-                .Where(c => !c.isDeleted)
-                .ToDictionary(c => c.ID, c => c.CustomerName);
-
-            var result2 = grouped.Select(x => new
-            {
-                x.TransactionId,
-                x.CustomerId,
-                CustomerName = customerNames.ContainsKey(x.CustomerId) ? customerNames[x.CustomerId] : "Unknown",
-                x.ItemCount,
-                x.TotalAmount,
-                Date = x.LatestDate
-            });
-
-            return Json(result2, JsonRequestBehavior.AllowGet);
-        }
-
-        // Show comprehensive customer info and sales list
-        [HttpGet]
-        public ActionResult CustomerDetail(int id)
-        {
-            var customer = _dbContext.CUSTOMER.FirstOrDefault(c => c.ID == id && !c.isDeleted);
-            if (customer == null)
-            {
-                return HttpNotFound();
-            }
-
-            var sales = _dbContext.SALES
-                .Where(s => s.CustomerID == id && !s.isDeleted)
-                .OrderByDescending(s => s.SalesDate)
-                .Select(s => new SalesDetailDTO
-                {
-                    SalesID = s.ID,
-                    CustomerID = s.CustomerID,
-                    ProductID = s.ProductID,
-                    CategoryID = s.CategoryID,
-                    SalesAmount = s.ProductSalesAmout,
-                    Price = s.ProductSalesPrice,
-                    SalesDate = s.SalesDate,
-                    TransactionId = s.TransactionId,
-                    Madfou3 = s.Madfou3.HasValue ? (int)s.Madfou3.Value : 0,
-                    Baky = s.Baky.HasValue ? (int)s.Baky.Value : 0
-                })
-                .ToList();
-
-            var model = new
-            {
-                Customer = new CustomerDetailDTO
-                {
-                    ID = customer.ID,
-                    CustomerName = customer.CustomerName,
-                    Cust_Address = customer.Cust_Address,
-                    Cust_Phone = customer.Cust_Phone,
-                    Email = customer.Email,
-                    Notes = customer.Notes,
-                    baky = customer.baky ?? 0,
-                    isDeleted = customer.isDeleted
-                },
-                Sales = sales
-            };
-
-            ViewBag.CustomerJson = JsonConvert.SerializeObject(model);
-            return View();
-        }
-
-        // Get product analytics for dashboard display
         [HttpGet]
         public JsonResult GetProductAnalytics()
         {
-            var lowStockThreshold = 10; // You can make this configurable
+            var lowStockThreshold = 10;
 
-            var totalProducts = _dbContext.PRODUCT.Count(p => !p.isDeleted);
-            var lowStockProducts = _dbContext.PRODUCT.Count(p => !p.isDeleted && p.StockAmount <= lowStockThreshold);
-            var outOfStockProducts = _dbContext.PRODUCT.Count(p => !p.isDeleted && p.StockAmount <= 0);
-            
+            var productStats = _dbContext.PRODUCT
+                .Where(p => !p.isDeleted)
+                .Select(p => new { p.StockAmount })
+                .ToList();
+
+            // FIX: Join SALES with PRODUCT to get access to ProductName before grouping
             var topSellingProducts = _dbContext.SALES
                 .Where(s => !s.isDeleted)
-                .GroupBy(s => s.ProductID)
-                .Select(g => new { 
-                    ProductId = g.Key, 
-                    TotalSold = g.Sum(s => s.ProductSalesAmout) 
+                .Join(_dbContext.PRODUCT, // The table to join with
+                      sale => sale.ProductID,     // Foreign key from SALES
+                      product => product.ID,      // Primary key from PRODUCT
+                      (sale, product) => new { Sale = sale, Product = product }) // Create a new temporary object
+                .GroupBy(joined => new { joined.Product.ID, joined.Product.ProductName }) // Group by the product info
+                .Select(g => new
+                {
+                    ProductName = g.Key.ProductName, // Access ProductName from the group key
+                    TotalSold = g.Sum(x => (int?)x.Sale.ProductSalesAmout) ?? 0
                 })
                 .OrderByDescending(x => x.TotalSold)
                 .Take(5)
@@ -244,141 +143,156 @@ namespace Erp.WebApp.Controllers
 
             var result = new
             {
-                totalProducts,
-                lowStockProducts,
-                outOfStockProducts,
-                lowStockThreshold,
+                totalProducts = productStats.Count,
+                lowStockProducts = productStats.Count(p => p.StockAmount > 0 && p.StockAmount <= lowStockThreshold),
+                outOfStockProducts = productStats.Count(p => p.StockAmount <= 0),
                 topSellingProducts
             };
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        // Get sales trend data for chart visualization
         [HttpGet]
-        public JsonResult GetSalesTrend(DateTime? startDate, DateTime? endDate, string period = "daily")
+        public JsonResult GetSalesTrend(string period = "daily")
         {
-            var query = _dbContext.SALES.Where(s => !s.isDeleted);
-            
-            // Apply date filters
-            if (startDate.HasValue)
-            {
-                query = query.Where(s => DbFunctions.TruncateTime(s.SalesDate) >= DbFunctions.TruncateTime(startDate.Value));
-            }
-            if (endDate.HasValue)
-            {
-                query = query.Where(s => DbFunctions.TruncateTime(s.SalesDate) <= DbFunctions.TruncateTime(endDate.Value));
-            }
+            var thirtyDaysAgo = DateTime.Now.Date.AddDays(-30);
+            var query = _dbContext.SALES.Where(s => !s.isDeleted && s.SalesDate >= thirtyDaysAgo);
 
-            // Default to last 30 days if no dates provided
-            if (!startDate.HasValue && !endDate.HasValue)
+            var salesData = query.Select(s => new
             {
-                var thirtyDaysAgo = DateTime.Now.AddDays(-30);
-                query = query.Where(s => DbFunctions.TruncateTime(s.SalesDate) >= DbFunctions.TruncateTime(thirtyDaysAgo));
-            }
-
-            var salesData = query.ToList();
-
-            List<object> chartData;
-            List<string> labels;
+                s.SalesDate,
+                s.TransactionId,
+                Amount = s.ProductSalesPrice * s.ProductSalesAmout
+            }).ToList();
 
             if (period.ToLower() == "weekly")
             {
-                // Group by week
                 var weeklyData = salesData
-                    .GroupBy(s => new { 
-                        Year = s.SalesDate.Year, 
-                        Week = System.Globalization.CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(
-                            s.SalesDate, 
-                            System.Globalization.CalendarWeekRule.FirstDay, 
-                            DayOfWeek.Monday) 
-                    })
-                    .Select(g => new {
-                        Period = g.Key,
-                        TotalSales = g.Sum(s => s.ProductSalesPrice * s.ProductSalesAmout),
-                        TransactionCount = g.Select(s => s.TransactionId).Distinct().Count(),
-                        Date = g.Min(s => s.SalesDate)
-                    })
-                    .OrderBy(x => x.Date)
-                    .ToList();
-
-                labels = weeklyData.Select(x => $"Week {x.Period.Week}, {x.Period.Year}").ToList();
-                chartData = weeklyData.Select(x => new { 
-                    sales = x.TotalSales, 
-                    transactions = x.TransactionCount,
-                    date = x.Date.ToString("yyyy-MM-dd")
-                }).Cast<object>().ToList();
-            }
-            else if (period.ToLower() == "monthly")
-            {
-                // Group by month
-                var monthlyData = salesData
-                    .GroupBy(s => new { s.SalesDate.Year, s.SalesDate.Month })
-                    .Select(g => new {
-                        Year = g.Key.Year,
-                        Month = g.Key.Month,
-                        TotalSales = g.Sum(s => s.ProductSalesPrice * s.ProductSalesAmout),
-                        TransactionCount = g.Select(s => s.TransactionId).Distinct().Count(),
-                        Date = new DateTime(g.Key.Year, g.Key.Month, 1)
-                    })
-                    .OrderBy(x => x.Date)
-                    .ToList();
-
-                labels = monthlyData.Select(x => new DateTime(x.Year, x.Month, 1).ToString("MMM yyyy")).ToList();
-                chartData = monthlyData.Select(x => new {
-                    sales = x.TotalSales,
-                    transactions = x.TransactionCount,
-                    date = x.Date.ToString("yyyy-MM-dd")
-                }).Cast<object>().ToList();
-            }
-            else
-            {
-                // Group by day (default)
-                var dailyData = salesData
-                    .GroupBy(s => s.SalesDate.Date)
-                    .Select(g => new {
-                        Date = g.Key,
-                        TotalSales = g.Sum(s => s.ProductSalesPrice * s.ProductSalesAmout),
+                    .GroupBy(s => CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(s.SalesDate, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
+                    .Select(g => new
+                    {
+                        Date = g.Min(s => s.SalesDate),
+                        TotalSales = g.Sum(s => (decimal?)s.Amount) ?? 0,
                         TransactionCount = g.Select(s => s.TransactionId).Distinct().Count()
                     })
                     .OrderBy(x => x.Date)
                     .ToList();
 
-                labels = dailyData.Select(x => x.Date.ToString("MMM dd")).ToList();
-                chartData = dailyData.Select(x => new { 
-                    sales = x.TotalSales, 
-                    transactions = x.TransactionCount,
-                    date = x.Date.ToString("yyyy-MM-dd")
-                }).Cast<object>().ToList();
+                return Json(new
+                {
+                    labels = weeklyData.Select(x => x.Date.ToString("MMM d")),
+                    data = weeklyData.Select(x => new { sales = x.TotalSales, transactions = x.TransactionCount })
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else if (period.ToLower() == "monthly")
+            {
+                var monthlyData = salesData
+                    .GroupBy(s => new { s.SalesDate.Year, s.SalesDate.Month })
+                    .Select(g => new {
+                        Date = new DateTime(g.Key.Year, g.Key.Month, 1),
+                        TotalSales = g.Sum(s => (decimal?)s.Amount) ?? 0,
+                        TransactionCount = g.Select(s => s.TransactionId).Distinct().Count()
+                    })
+                    .OrderBy(x => x.Date)
+                    .ToList();
+
+                return Json(new
+                {
+                    labels = monthlyData.Select(x => x.Date.ToString("MMM yyyy")),
+                    data = monthlyData.Select(x => new { sales = x.TotalSales, transactions = x.TransactionCount })
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else // Daily (Default)
+            {
+                var dailyData = salesData
+                    .GroupBy(s => s.SalesDate.Date)
+                    .Select(g => new {
+                        Date = g.Key,
+                        TotalSales = g.Sum(s => (decimal?)s.Amount) ?? 0,
+                        TransactionCount = g.Select(s => s.TransactionId).Distinct().Count()
+                    })
+                    .OrderBy(x => x.Date)
+                    .ToList();
+
+                return Json(new
+                {
+                    labels = dailyData.Select(x => x.Date.ToString("MMM d")),
+                    data = dailyData.Select(x => new { sales = x.TotalSales, transactions = x.TransactionCount })
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult CustomerDetail(int id)
+        {
+            // Load customer basic info
+            var customer = _dbContext.CUSTOMER
+                .Where(c => !c.isDeleted && c.ID == id)
+                .Select(c => new
+                {
+                    c.ID,
+                    c.CustomerName,
+                    c.Cust_Address,
+                    c.Cust_Phone,
+                    c.Notes,
+                    c.Email,
+                    c.baky
+                })
+                .FirstOrDefault();
+
+            if (customer == null)
+            {
+                return HttpNotFound("Customer not found");
             }
 
-            var result = new
+            // Load sales history for the customer
+            var sales = _dbContext.SALES
+                .Where(s => !s.isDeleted && s.CustomerID == id)
+                .OrderByDescending(s => s.SalesDate)
+                .Select(s => new
+                {
+                    s.ID,
+                    SalesID = s.ID,
+                    s.TransactionId,
+                    s.ProductID,
+                    SalesAmount = s.ProductSalesAmout,
+                    Price = s.ProductSalesPrice,
+                    Madfou3 = (long?)(s.Madfou3 ?? 0),
+                    Baky = (long?)(s.Baky ?? 0),
+                    s.SalesDate
+                })
+                .ToList();
+
+            var payload = new
             {
-                labels = labels,
-                data = chartData,
-                period = period
+                Customer = customer,
+                Sales = sales
             };
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            ViewBag.CustomerJson = JsonConvert.SerializeObject(payload);
+            return View(); // Will render Views/Admin/CustomerDetail.cshtml
         }
 
-        private string CalculateTotalProfit()
+        private decimal CalculateTotalProfit()
         {
-            var salesData = _dbContext.SALES
+            // Compute profit in SQL using double to avoid decimal cast issues, then convert to decimal in memory
+            var salesProfitDouble = _dbContext.SALES
+                .Where(s => !s.isDeleted)
                 .Join(_dbContext.PRODUCT,
                       sale => sale.ProductID, product => product.ID,
-                      (sale, product) => new {
-                          SalePrice = sale.ProductSalesPrice,
-                          CostPrice = product.Price,
-                          Discount = sale.MaxDiscount,
-                          Amount = sale.ProductSalesAmout
-                      }).ToList();
-            decimal totalSalesProfit = salesData.Sum(x => ((decimal)x.SalePrice - (decimal)x.CostPrice - (decimal)x.Discount) * (decimal)x.Amount);
-            decimal totalExpenses = _dbContext.EXPENSES.Sum(e => (decimal?)e.Amount) ?? 0;
-            return (totalSalesProfit - totalExpenses).ToString("C");
+                      (sale, product) =>
+                          ((double)sale.ProductSalesPrice
+                           - (double)product.Price
+                           - (sale.MaxDiscount.HasValue ? (double)sale.MaxDiscount.Value : 0.0))
+                          * (double)sale.ProductSalesAmout)
+                .DefaultIfEmpty(0.0)
+                .Sum();
+
+            decimal salesProfit = (decimal)salesProfitDouble;
+
+            decimal totalExpenses = _dbContext.EXPENSES.Select(e => (decimal?)e.Amount).DefaultIfEmpty(0m).Sum() ?? 0m;
+            return salesProfit - totalExpenses;
         }
-
-
 
         protected override void Dispose(bool disposing)
         {

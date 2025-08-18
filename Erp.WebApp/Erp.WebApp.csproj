@@ -379,6 +379,7 @@
     <Compile Include="Services\SimpleLogger.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CreateSaleViewModel.cs" />
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\InvoiceManagementViewModel.cs" />
     <Compile Include="ViewModels\LoginResponseViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
