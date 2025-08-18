@@ -335,7 +335,7 @@ namespace Erp.WebApp.Controllers
             {
                 // Group by day (default)
                 var dailyData = salesData
-                    .GroupBy(s => DbFunctions.TruncateTime(s.SalesDate))
+                    .GroupBy(s => s.SalesDate.Date)
                     .Select(g => new {
                         Date = g.Key,
                         TotalSales = g.Sum(s => s.ProductSalesPrice * s.ProductSalesAmout),
@@ -344,11 +344,11 @@ namespace Erp.WebApp.Controllers
                     .OrderBy(x => x.Date)
                     .ToList();
 
-                labels = dailyData.Select(x => x.Date.HasValue ? x.Date.Value.ToString("MMM dd") : "").ToList();
+                labels = dailyData.Select(x => x.Date.ToString("MMM dd")).ToList();
                 chartData = dailyData.Select(x => new { 
                     sales = x.TotalSales, 
                     transactions = x.TransactionCount,
-                    date = x.Date.HasValue ? x.Date.Value.ToString("yyyy-MM-dd") : ""
+                    date = x.Date.ToString("yyyy-MM-dd")
                 }).Cast<object>().ToList();
             }
 
