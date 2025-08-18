@@ -353,6 +353,7 @@
     <Compile Include="Controllers\InvoiceManagementController.cs" />
     <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\PartialPaymentController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\SalesManagementController.cs" />
     <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Filters\CustomAuthorizeAttribute.cs" />

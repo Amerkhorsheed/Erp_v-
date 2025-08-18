@@ -1,0 +1,236 @@
+@{
+    ViewBag.Title = "Product Analytics";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Product Analytics</h2>
+        <a href="/Admin" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fa fa-chart-line"></i> Sales Trend</span>
+                    <div class="btn-group" role="group" aria-label="Trend Period">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="trendDaily">Daily</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="trendWeekly">Weekly</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="trendStart" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">End Date</label>
+                            <input type="date" id="trendEnd" class="form-control" />
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary w-100" id="trendApply">Apply</button>
+                        </div>
+                    </div>
+                    <canvas id="salesTrendChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <i class="fa fa-info-circle"></i> Product Information
+                </div>
+                <div class="card-body" id="productInfo">
+                    <!-- dynamic -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function(){
+            const salesTrendCanvas = document.getElementById('salesTrendChart');
+            const btnDaily = document.getElementById('trendDaily');
+            const btnWeekly = document.getElementById('trendWeekly');
+            const btnApply = document.getElementById('trendApply');
+            const inputStart = document.getElementById('trendStart');
+            const inputEnd = document.getElementById('trendEnd');
+            const productInfoDiv = document.getElementById('productInfo');
+
+            let trendChart;
+            let currentPeriod = 'daily';
+
+            const getCurrency = () => localStorage.getItem('currency') || 'USD';
+            const formatCurrency = (val) => {
+                try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: getCurrency() }).format(val || 0); } catch(_){ return (val || 0).toFixed(2); }
+            };
+
+            const initTrendChart = () => {
+                if (!salesTrendCanvas) return;
+                const ctx = salesTrendCanvas.getContext('2d');
+                if (trendChart) { trendChart.destroy(); }
+                trendChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Sales',
+                                data: [],
+                                borderColor: '#4e73df',
+                                backgroundColor: 'rgba(78, 115, 223, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Transactions',
+                                data: [],
+                                borderColor: '#e74a3b',
+                                backgroundColor: 'rgba(231, 74, 59, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                position: 'left',
+                                ticks: { callback: (v) => formatCurrency(v) }
+                            },
+                            y1: {
+                                type: 'linear',
+                                position: 'right',
+                                grid: { drawOnChartArea: false }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context){
+                                        const idx = context.dataIndex;
+                                        if (context.datasetIndex === 0) {
+                                            return `Sales: ${formatCurrency(context.raw)}`;
+                                        } else {
+                                            return `Transactions: ${context.raw}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const loadSalesTrend = (period) => {
+                currentPeriod = period || currentPeriod;
+                const params = new URLSearchParams();
+                if (inputStart && inputStart.value) params.append('startDate', inputStart.value);
+                if (inputEnd && inputEnd.value) params.append('endDate', inputEnd.value);
+                params.append('period', currentPeriod);
+
+                fetch(`/Admin/GetSalesTrend?${params.toString()}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        if (!trendChart) initTrendChart();
+                        const labels = d.labels || [];
+                        const sales = (d.data || []).map(x => x.sales || 0);
+                        const transactions = (d.data || []).map(x => x.transactions || 0);
+                        trendChart.data.labels = labels;
+                        trendChart.data.datasets[0].data = sales;
+                        trendChart.data.datasets[1].data = transactions;
+                        trendChart.update();
+                    })
+                    .catch(err => {
+                        console.error('Error loading sales trend', err);
+                    });
+            };
+
+            const renderProductInfo = () => {
+                if (!productInfoDiv) return;
+                productInfoDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <h6><i class="fa fa-info-circle"></i> Product Analytics</h6>
+                        <div class="row mt-3">
+                            <div class="col-4">
+                                <small class="text-muted">Low Stock Items</small>
+                                <div class="h5">
+                                    <i class="fa fa-exclamation-triangle text-warning"></i>
+                                    <span id="lowStockCount">-</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Out of Stock</small>
+                                <div class="h5">
+                                    <i class="fa fa-times-circle text-danger"></i>
+                                    <span id="outOfStockCount">-</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Total Products</small>
+                                <div class="h5">
+                                    <i class="fa fa-boxes text-success"></i>
+                                    <span id="totalProducts">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">Top Selling (by qty)</small>
+                            <ul id="topSellingList" class="list-unstyled mb-0 small"></ul>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <a href="/Products" class="btn btn-sm btn-outline-info">
+                                <i class="fa fa-box"></i> Manage Products
+                            </a>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const loadProductAnalytics = () => {
+                if (!productInfoDiv) return;
+                productInfoDiv.innerHTML = '<div class="d-flex justify-content-center"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>';
+                fetch('/Admin/GetProductAnalytics')
+                    .then(r => r.json())
+                    .then(d => {
+                        renderProductInfo();
+                        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+                        setText('lowStockCount', d.lowStockProducts + ` (<=${d.lowStockThreshold})`);
+                        setText('outOfStockCount', d.outOfStockProducts);
+                        setText('totalProducts', d.totalProducts);
+                        const list = document.getElementById('topSellingList');
+                        if (list && Array.isArray(d.topSellingProducts)) {
+                            list.innerHTML = d.topSellingProducts.length
+                                ? d.topSellingProducts.map(x => `<li>#${x.ProductId} — <strong>${x.TotalSold}</strong> sold</li>`).join('')
+                                : '<li class="text-muted">No data</li>';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error loading product analytics', err);
+                        productInfoDiv.innerHTML = '<div class="alert alert-danger">Error loading product analytics</div>';
+                    });
+            };
+
+            // Event bindings
+            if (btnDaily) btnDaily.addEventListener('click', () => { loadSalesTrend('daily'); });
+            if (btnWeekly) btnWeekly.addEventListener('click', () => { loadSalesTrend('weekly'); });
+            if (btnApply) btnApply.addEventListener('click', () => loadSalesTrend());
+
+            // Initial load
+            initTrendChart();
+            loadSalesTrend('daily');
+            loadProductAnalytics();
+        })();
+    </script>
+}

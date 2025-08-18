@@ -190,9 +190,13 @@
         border: 1px solid var(--card-border);
         background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
         padding: 6px 10px; border-radius: 10px; cursor: pointer;
-        transition: background .2s ease, border-color .2s ease;
+        transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
     }
     .chip:hover { border-color: var(--ring); }
+    .chip.active { background: linear-gradient(135deg, var(--info-1), var(--info-2)); color: white; border-color: transparent; box-shadow: 0 6px 16px -6px rgba(59, 130, 246, .45); }
+
+    /* Chart loader helper */
+    .chart-loader { display: none; }
 
     /* Subtle scrollbars */
     ::-webkit-scrollbar{ width:10px;height:10px }
@@ -311,6 +315,32 @@
         </div>
     </div>
 
+    <!-- Recent Sales and Product Info Row -->
+    <div class="row">
+        <div class="col-xl-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <span>Recent Sales Transactions</span>
+                    <div class="chart-actions">
+                        <input type="date" id="startDate" class="chip" style="color: var(--text); background: transparent; border: none; padding: 6px 10px;" aria-label="Start date">
+                        <input type="date" id="endDate" class="chip" style="color: var(--text); background: transparent; border: none; padding: 6px 10px;" aria-label="End date">
+                        <span class="chip" id="searchSales" role="button" tabindex="0">Search</span>
+                        <span class="chip" id="clearSearch" role="button" tabindex="0">Clear</span>
+                    </div>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    <div id="recentSalesTable">
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
     <!-- Charts Row -->
     <div class="row">
         <div class="col-xl-12 mb-4">
@@ -330,17 +360,40 @@
         </div>
     </div>
 
-    <!-- Secondary Charts -->
+    <!-- Sales Trend Chart Row -->
     <div class="row">
-        <div class="col-xl-8 mb-4">
+        <div class="col-xl-12 mb-4">
             <div class="card chart-card">
-                <div class="card-header">Top 10 Products by Revenue</div>
-                <div class="card-body" style="height: 430px;">
-                    <canvas id="topProductsChart" role="img" aria-label="Horizontal bar chart of top ten products by revenue"></canvas>
+                <div class="card-header">
+                    <span style="display: inline-flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-chart-line" style="color: var(--info-1);"></i>
+                        Sales Trend Analytics
+                    </span>
+                    <div class="chart-actions">
+                        <span class="chip active" id="trendDaily" data-period="daily">Daily</span>
+                        <span class="chip" id="trendWeekly" data-period="weekly">Weekly</span>
+                        <span class="chip" id="trendMonthly" data-period="monthly">Monthly</span>
+                    </div>
+                </div>
+                <div class="card-body" style="height: 380px; position: relative;">
+                    <!-- Loading Overlay -->
+                    <div id="salesTrendLoader" class="chart-loader" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 10; border-radius: 12px;">
+                        <div style="text-align: center;">
+                            <div class="spinner-border text-primary mb-2" role="status">
+                                <span class="sr-only">Loading chart data...</span>
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Loading sales trend data...</div>
+                        </div>
+                    </div>
+                    <canvas id="salesTrendChart" role="img" aria-label="Line chart showing sales trend over time"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 mb-4">
+    </div>
+
+    <!-- Secondary Charts -->
+    <div class="row">
+        <div class="col-xl-12 mb-4">
             <div class="card chart-card">
                 <div class="card-header">Busiest Sales Days</div>
                 <div class="card-body" style="height: 430px;">
@@ -445,7 +498,7 @@
         };
 
         // Declare charts in outer scope for later updates
-        let profitExpenseChart, topProductsChart, salesByDayChart;
+        let profitExpenseChart, salesByDayChart, salesTrendChart;
 
         // --- Chart 1: Profit vs Expenses ---
         (function initLineChart(){
@@ -513,52 +566,6 @@
             });
         })();
 
-        // --- Chart 2: Top Products Horizontal Bar ---
-        (function initBarChart(){
-            const ctxBar = document.getElementById('topProductsChart').getContext('2d');
-            const barGradient = makeHGradient(ctxBar, cssVar('--violet-2') || '#a78bfa', cssVar('--info-1') || '#3b82f6', 600);
-
-            topProductsChart = new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: @Html.Raw(ViewBag.TopProductsLabels ?? "[]"),
-                    datasets: [{
-                        label: 'Total Revenue',
-                        data: @Html.Raw(ViewBag.TopProductsData ?? "[]"),
-                        backgroundColor: barGradient,
-                        borderRadius: 8,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            titleColor: '#fff', bodyColor: '#e5e7eb',
-                            callbacks: { label: (ctx) => `${getCurrencySymbol()} ${ctx.parsed.x.toLocaleString()}` }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { color: gridColor(), drawBorder: false },
-                            ticks: {
-                                color: tickColor(),
-                                callback: function(value) {
-                                    const v = Number(value);
-                                    const sym = getCurrencySymbol();
-                                    return sym + ' ' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1).replace(/\.0$/,'') + 'K' : v);
-                                }
-                            }
-                        },
-                        y: { grid: { display: false }, ticks: { color: tickColor(), font: { weight: 600 } } }
-                    }
-                }
-            });
-        })();
 
         // --- Chart 3: Sales by Day Radar ---
         (function initRadarChart(){
@@ -599,6 +606,143 @@
             });
         })();
 
+        // --- Chart 4: Sales Trend Chart ---
+        (function initSalesTrendChart(){
+            const ctx = document.getElementById('salesTrendChart').getContext('2d');
+            const gradientSales = makeVGradient(ctx, CHART_COLORS.blue, 380);
+            const gradientTransactions = makeVGradient(ctx, CHART_COLORS.orange, 380);
+
+            salesTrendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: "Sales Revenue",
+                            borderColor: CHART_COLORS.blue,
+                            backgroundColor: gradientSales,
+                            data: [],
+                            fill: true,
+                            tension: 0.35,
+                            pointHoverRadius: 6,
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 0,
+                            hitRadius: 12,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: "Transaction Count",
+                            borderColor: CHART_COLORS.orange,
+                            backgroundColor: gradientTransactions,
+                            data: [],
+                            fill: true,
+                            tension: 0.35,
+                            pointHoverRadius: 6,
+                            pointHoverBorderWidth: 2,
+                            pointRadius: 0,
+                            hitRadius: 12,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: textColor(), font: { weight: 600 } } },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#fff', bodyColor: '#e5e7eb',
+                            padding: 12, displayColors: true,
+                            callbacks: {
+                                label: (ctx) => {
+                                    if (ctx.datasetIndex === 0) {
+                                        return `${ctx.dataset.label}: ${getCurrencySymbol()} ${ctx.parsed.y.toLocaleString()}`;
+                                    } else {
+                                        return `${ctx.dataset.label}: ${ctx.parsed.y} transactions`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: gridColor(), drawBorder: false }, ticks: { color: tickColor() } },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: { color: gridColor(), drawBorder: false },
+                            ticks: {
+                                color: tickColor(),
+                                callback: (v) => {
+                                    const n = Number(v);
+                                    const sym = getCurrencySymbol();
+                                    return sym + ' ' + (Math.abs(n) >= 1000 ? (n/1000).toFixed(1).replace(/\.0$/,'') + 'K' : n);
+                                }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: {
+                                color: tickColor(),
+                                callback: (v) => Number(v).toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+        })();
+
+        // Load sales trend data
+        function loadSalesTrend(period = 'daily') {
+            const startDate = document.getElementById('startDate')?.value;
+            const endDate = document.getElementById('endDate')?.value;
+            const loader = document.getElementById('salesTrendLoader');
+            if (loader) loader.style.display = 'flex';
+
+            let url = `/Admin/GetSalesTrend?period=${period}`;
+            if (startDate) url += `&startDate=${startDate}`;
+            if (endDate) url += `&endDate=${endDate}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (salesTrendChart && data.labels && data.data) {
+                        salesTrendChart.data.labels = data.labels;
+                        salesTrendChart.data.datasets[0].data = data.data.map(item => item.sales);
+                        salesTrendChart.data.datasets[1].data = data.data.map(item => item.transactions);
+                        salesTrendChart.update();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading sales trend:', error);
+                })
+                .finally(() => {
+                    if (loader) loader.style.display = 'none';
+                });
+        }
+
+        // Wire up Sales Trend period controls and initial load
+        (function initSalesTrendControls(){
+            const chips = [
+                document.getElementById('trendDaily'),
+                document.getElementById('trendWeekly'),
+                document.getElementById('trendMonthly')
+            ].filter(Boolean);
+            chips.forEach(chip => chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                const period = chip.getAttribute('data-period') || 'daily';
+                loadSalesTrend(period);
+            }));
+            // Initial load
+            loadSalesTrend('daily');
+        })();
+
         // --- Re-style charts on theme switch ---
         function updateChartTheme() {
             const legendsColor = textColor();
@@ -619,8 +763,8 @@
                 chart.update('none');
             };
             apply(profitExpenseChart);
-            apply(topProductsChart);
             apply(salesByDayChart);
+            apply(salesTrendChart);
         }
 
         // --- Currency selector behavior & persistence ---
@@ -647,7 +791,6 @@
                 });
                 // Refresh charts to show the new symbol in ticks/tooltips
                 if (profitExpenseChart) profitExpenseChart.update('none');
-                if (topProductsChart) topProductsChart.update('none');
                 if (salesByDayChart) salesByDayChart.update('none');
             };
 
@@ -657,6 +800,124 @@
                 applyCurrency(defaultCode);
                 select.addEventListener('change', () => applyCurrency(select.value));
             }
+        })();
+
+        // --- Recent Sales & Product Info functionality ---
+        (function initDashboardData(){
+            const recentSalesTable = document.getElementById('recentSalesTable');
+            const searchBtn = document.getElementById('searchSales');
+            const clearBtn = document.getElementById('clearSearch');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            // Format currency consistently
+            const formatCurrency = (amount) => {
+                const symbol = getCurrencySymbol();
+                const formatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 });
+                return `${symbol} ${formatter.format(amount)}`;
+            };
+
+            // Format date for display
+            const formatDate = (dateStr) => {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            };
+
+            // Render recent sales data
+            const renderRecentSales = (salesData) => {
+                if (!salesData || salesData.length === 0) {
+                    recentSalesTable.innerHTML = '<div class="text-center text-muted">No sales data available</div>';
+                    return;
+                }
+
+                let html = `
+                    <div class="table-responsive">
+                        <table class="table table-hover" style="color: var(--text);">
+                            <thead style="background: var(--card-border);">
+                                <tr>
+                                    <th>Transaction</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                salesData.forEach(sale => {
+                    html += `
+                        <tr>
+                            <td><strong>#${sale.TransactionId}</strong></td>
+                            <td>${sale.CustomerName}</td>
+                            <td><span class="badge badge-info">${sale.ItemCount}</span></td>
+                            <td><strong>${formatCurrency(sale.TotalAmount)}</strong></td>
+                            <td>${formatDate(sale.Date)}</td>
+                            <td>
+                                <a href="/Admin/CustomerDetail/${sale.CustomerId}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                recentSalesTable.innerHTML = html;
+            };
+            
+            // Fetch recent sales (last 20) and render
+            const loadRecentSales = () => {
+                if (!recentSalesTable) return;
+                fetch('/Admin/GetRecentSales')
+                    .then(r => r.json())
+                    .then(data => renderRecentSales(data))
+                    .catch(err => {
+                        console.error('Failed to load recent sales', err);
+                        recentSalesTable.innerHTML = '<div class="text-center text-danger">Failed to load recent sales</div>';
+                    });
+            };
+
+            // Fetch sales by optional date range and render
+            const loadSalesByDate = () => {
+                if (!recentSalesTable) return;
+                const qs = [];
+                if (startDateInput && startDateInput.value) qs.push('startDate=' + encodeURIComponent(startDateInput.value));
+                if (endDateInput && endDateInput.value) qs.push('endDate=' + encodeURIComponent(endDateInput.value));
+                const url = '/Admin/SearchSalesByDate' + (qs.length ? '?' + qs.join('&') : '');
+                fetch(url)
+                    .then(r => r.json())
+                    .then(data => renderRecentSales(data))
+                    .catch(err => {
+                        console.error('Failed to search sales by date', err);
+                        recentSalesTable.innerHTML = '<div class="text-center text-danger">Failed to search sales</div>';
+                    });
+            };
+
+            // Wire up search and clear buttons
+            if (searchBtn) {
+                searchBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    loadSalesByDate();
+                });
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (startDateInput) startDateInput.value = '';
+                    if (endDateInput) endDateInput.value = '';
+                    loadRecentSales();
+                });
+            }
+
+            // Initialize data on page load
+            loadRecentSales();
         })();
     </script>
 }
