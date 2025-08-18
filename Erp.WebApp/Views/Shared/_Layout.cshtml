@@ -171,7 +171,7 @@
     <!-- Sidebar -->
     <nav id="sidebar">
         <div class="sidebar-header">
-            <h3><i class="fas fa-rocket"></i>ERP NextGen</h3>
+            <h3><i class="fas fa-rocket"></i>ERP</h3>
         </div>
 
         <ul class="list-unstyled components">
@@ -182,29 +182,25 @@
                     <li class="@(ViewBag.Title == "Admin Dashboard" ? "active" : "")">
                         @Html.ActionLink("Dashboard", "Index", "Admin", null, new { area = "" })
                     </li>
-                    <li class="@(ViewBag.Title.Contains("Sales") || ViewBag.Title.Contains("Sale") ? "active" : "")">
+                    @*<li class="@(ViewBag.Title.Contains("Sales") || ViewBag.Title.Contains("Sale") ? "active" : "")">
                         @Html.ActionLink("Sales", "Index", "Seller", null, new { area = "" })
                     </li>
                     <li class="@(ViewBag.Title == "Partial Payment Sales" ? "active" : "")">
                         <a href="@Url.Action("Index", "PartialPayment")">
                             <i class="fas fa-coins"></i> Partial Payment Sales
                         </a>
-                    </li>
+                    </li>*@
                     <li class="@(ViewBag.Title.Contains("Notification") ? "active" : "")">
                         <a href="@Url.Action("Index", "Notifications")">
                             <i class="fas fa-bell"></i> Notifications
                         </a>
                     </li>
-                    <li class="@(ViewBag.Title == "Invoice Management" ? "active" : "")">
+                    @*<li class="@(ViewBag.Title == "Invoice Management" ? "active" : "")">
                         <a href="@Url.Action("Index", "InvoiceManagement")">
                             <i class="fas fa-file-invoice"></i> Invoice Management
                         </a>
-                    </li>
-                    <li class="@(ViewBag.Title.Contains("Notification") ? "active" : "")">
-                        <a href="@Url.Action("Index", "Notifications")">
-                            <i class="fas fa-bell"></i> Notifications
-                        </a>
-                    </li>
+                    </li>*@
+                    
 
                     <!-- Add more admin links here -->
                 }
@@ -286,9 +282,6 @@
             @RenderBody()
         </main>
 
-        <footer class="text-center mt-4">
-            <p>&copy; @DateTime.Now.Year - Modern ERP System</p>
-        </footer>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
